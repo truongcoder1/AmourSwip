@@ -29,7 +29,7 @@
             android:text="Ngày sinh"
             android:textColor="@android:color/black"
             android:textSize="32sp"
-            android:textStyle="bold" />
+ />
 
         <!-- TextInputLayout chứa TextInputEditText -->
         <com.google.android.material.textfield.TextInputLayout

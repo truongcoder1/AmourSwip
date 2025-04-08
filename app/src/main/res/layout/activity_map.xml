@@ -29,8 +29,7 @@
             android:fontFamily="@font/poppins_bold"
             android:text="BẠN CÓ MUỐN TÌM XUNG QUANH?"
             android:textColor="@android:color/black"
-            android:textSize="32sp"
-            android:textStyle="bold" />
+            android:textSize="28sp" />
 
         <!-- Dòng chữ nhỏ "Chúng tôi sử dụng vị trí để hiện thị hồ sơ gần bạn nhất" -->
         <TextView
