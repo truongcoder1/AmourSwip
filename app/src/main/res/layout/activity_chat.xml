@@ -4,19 +4,22 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_marginTop="0dp"
-    android:background="@drawable/background_chat1">
+    android:background="@drawable/background_chat">
 
     <!-- Thanh tiêu đề -->
+
+    <!-- RecyclerView để hiển thị danh sách tin nhắn -->
+
     <LinearLayout
         android:id="@+id/header_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="25dp"
         android:background="@android:color/transparent"
         android:gravity="center_vertical"
         android:orientation="horizontal"
-        android:paddingHorizontal="12dp"
-        android:paddingVertical="8dp">
+        android:padding="12dp">
 
         <!-- Nút quay lại -->
         <ImageButton
@@ -73,8 +76,7 @@
                     android:layout_height="12dp"
                     android:layout_marginEnd="4dp"
                     android:scaleType="fitCenter"
-                    android:src="@drawable/ic_online"
- />
+                    android:src="@drawable/ic_online" />
 
                 <!-- Trạng thái -->
                 <TextView
@@ -89,34 +91,35 @@
         </LinearLayout>
 
         <!-- Nút video call -->
+
+        <!-- Nút menu -->
+
         <ImageButton
             android:id="@+id/video_call_button"
             android:layout_width="25dp"
-            android:layout_height="25dp"
+            android:layout_height="match_parent"
             android:layout_marginStart="8dp"
             android:background="@android:color/transparent"
             android:scaleType="fitCenter"
             android:src="@drawable/ic_camchat" />
 
-        <!-- Nút menu -->
         <ImageButton
             android:id="@+id/menu_button"
             android:layout_width="25dp"
-            android:layout_height="25dp"
+            android:layout_height="match_parent"
             android:layout_marginStart="8dp"
             android:background="@android:color/transparent"
             android:scaleType="fitCenter"
             android:src="@drawable/ic_dot" />
     </LinearLayout>
 
-    <!-- RecyclerView để hiển thị danh sách tin nhắn -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/messages_recycler_view"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="561dp"
         android:layout_above="@+id/input_layout"
         android:layout_below="@+id/header_layout"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="2dp"
         android:paddingHorizontal="16dp"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 
@@ -127,8 +130,9 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_margin="8dp"
-        android:background="@android:color/white"
-        android:gravity="center_vertical"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="52dp"
+        android:background="#eeeeee"
         android:orientation="horizontal"
         android:padding="4dp">
 
@@ -136,7 +140,7 @@
         <ImageButton
             android:id="@+id/gif_button"
             android:layout_width="24dp"
-            android:layout_height="24dp"
+            android:layout_height="match_parent"
             android:layout_marginEnd="8dp"
             android:background="@android:color/transparent"
             android:scaleType="fitCenter"
@@ -146,11 +150,10 @@
         <EditText
             android:id="@+id/message_input"
             android:layout_width="0dp"
-            android:layout_height="40dp"
+            android:layout_height="wrap_content"
             android:layout_marginEnd="8dp"
             android:layout_weight="1"
             android:background="@drawable/edit_text_border"
-            android:gravity="center_vertical"
             android:hint="Type..."
             android:padding="8dp"
             android:textColor="@android:color/black"
@@ -161,7 +164,7 @@
         <ImageButton
             android:id="@+id/send_button"
             android:layout_width="24dp"
-            android:layout_height="24dp"
+            android:layout_height="match_parent"
             android:background="@android:color/transparent"
             android:scaleType="fitCenter"
             android:src="@drawable/ic_sendchat" />

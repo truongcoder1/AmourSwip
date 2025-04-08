@@ -1,0 +1,264 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/background_profile">
+
+    <!-- ScrollView for main content -->
+    <ScrollView
+        android:id="@+id/scroll_view"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/navigation_bar"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="12dp">
+
+            <!-- Back Arrow -->
+            <ImageView
+                android:id="@+id/back_arrow"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_marginTop="8dp"
+                android:src="@drawable/ic_back"
+                android:contentDescription="Back"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <!-- Title -->
+
+            <!-- Settings Icon -->
+
+            <!-- Avatar Image -->
+
+            <!-- User Info -->
+            <TextView
+                android:id="@+id/title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="12dp"
+                android:layout_marginTop="24dp"
+                android:text="Chỉnh sửa hồ sơ"
+                android:textColor="@android:color/white"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                app:layout_constraintStart_toEndOf="@id/back_arrow"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <ImageView
+                android:id="@+id/settings_icon"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_marginTop="28dp"
+                android:contentDescription="Settings"
+                android:src="@drawable/ic_settings_profile"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <ImageView
+                android:id="@+id/avatar_image"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:layout_marginTop="8dp"
+                android:background="@drawable/circle_background"
+                android:clipToOutline="true"
+                android:contentDescription="Avatar"
+                android:outlineProvider="background"
+                android:src="@drawable/gai1"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.498"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/title" />
+
+            <TextView
+                android:id="@+id/user_info"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="Tên: XXX 22\nMô tả: Đang yêu, thích đi du lịch..."
+                android:textSize="14sp"
+                android:textColor="@android:color/white"
+                android:gravity="center"
+                app:layout_constraintTop_toBottomOf="@id/avatar_image"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:layout_marginTop="12dp" />
+
+            <!-- Edit Photo Button -->
+            <Button
+                android:id="@+id/edit_photo_button"
+                android:layout_width="120dp"
+                android:layout_height="40dp"
+                android:text="Sửa ảnh"
+                android:textSize="14sp"
+                android:backgroundTint="#D3D3D3"
+                android:textColor="@android:color/black"
+                app:layout_constraintTop_toBottomOf="@id/user_info"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:layout_marginTop="12dp" />
+
+            <!-- Basic Info Title -->
+            <TextView
+                android:id="@+id/basic_info_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Thông tin cơ bản"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:textColor="@android:color/white"
+                app:layout_constraintTop_toBottomOf="@id/edit_photo_button"
+                app:layout_constraintStart_toStartOf="parent"
+                android:layout_marginTop="16dp" />
+
+            <!-- Full Name -->
+            <EditText
+                android:id="@+id/edit_full_name"
+                android:layout_width="0dp"
+                android:layout_height="48dp"
+                android:hint="Họ tên"
+                android:textColor="@android:color/white"
+                android:textColorHint="#B0FFFFFF"
+                android:background="@drawable/rounded_edittext"
+                android:paddingStart="12dp"
+                android:paddingEnd="12dp"
+                android:layout_marginTop="8dp"
+                app:layout_constraintTop_toBottomOf="@id/basic_info_title"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent" />
+
+            <!-- Date of Birth -->
+            <EditText
+                android:id="@+id/edit_dob"
+                android:layout_width="0dp"
+                android:layout_height="48dp"
+                android:hint="Ngày sinh"
+                android:textColor="@android:color/white"
+                android:textColorHint="#B0FFFFFF"
+                android:background="@drawable/rounded_edittext"
+                android:paddingStart="12dp"
+                android:paddingEnd="12dp"
+                android:layout_marginTop="8dp"
+                app:layout_constraintTop_toBottomOf="@id/edit_full_name"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent" />
+
+            <!-- Interests -->
+            <EditText
+                android:id="@+id/edit_interests"
+                android:layout_width="0dp"
+                android:layout_height="48dp"
+                android:hint="Sở thích"
+                android:textColor="@android:color/white"
+                android:textColorHint="#B0FFFFFF"
+                android:background="@drawable/rounded_edittext"
+                android:paddingStart="12dp"
+                android:paddingEnd="12dp"
+                android:layout_marginTop="8dp"
+                app:layout_constraintTop_toBottomOf="@id/edit_dob"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent" />
+
+            <!-- Location -->
+            <EditText
+                android:id="@+id/edit_location"
+                android:layout_width="0dp"
+                android:layout_height="48dp"
+                android:hint="Nơi ở"
+                android:textColor="@android:color/white"
+                android:textColorHint="#B0FFFFFF"
+                android:background="@drawable/rounded_edittext"
+                android:paddingStart="12dp"
+                android:paddingEnd="12dp"
+                android:layout_marginTop="8dp"
+                app:layout_constraintTop_toBottomOf="@id/edit_interests"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent" />
+
+            <!-- Relationship -->
+            <EditText
+                android:id="@+id/edit_relationship"
+                android:layout_width="0dp"
+                android:layout_height="48dp"
+                android:hint="Mối quan hệ"
+                android:textColor="@android:color/white"
+                android:textColorHint="#B0FFFFFF"
+                android:background="@drawable/rounded_edittext"
+                android:paddingStart="12dp"
+                android:paddingEnd="12dp"
+                android:layout_marginTop="8dp"
+                app:layout_constraintTop_toBottomOf="@id/edit_location"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent" />
+
+            <!-- Religion -->
+            <EditText
+                android:id="@+id/edit_religion"
+                android:layout_width="0dp"
+                android:layout_height="48dp"
+                android:hint="Tôn giáo"
+                android:textColor="@android:color/white"
+                android:textColorHint="#B0FFFFFF"
+                android:background="@drawable/rounded_edittext"
+                android:paddingStart="12dp"
+                android:paddingEnd="12dp"
+                android:layout_marginTop="8dp"
+                app:layout_constraintTop_toBottomOf="@id/edit_relationship"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent" />
+
+            <!-- Education -->
+            <EditText
+                android:id="@+id/edit_education"
+                android:layout_width="0dp"
+                android:layout_height="48dp"
+                android:hint="Trình độ học vấn"
+                android:textColor="@android:color/white"
+                android:textColorHint="#B0FFFFFF"
+                android:background="@drawable/rounded_edittext"
+                android:paddingStart="12dp"
+                android:paddingEnd="12dp"
+                android:layout_marginTop="8dp"
+                app:layout_constraintTop_toBottomOf="@id/edit_religion"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent" />
+
+            <!-- Occupation -->
+            <EditText
+                android:id="@+id/edit_occupation"
+                android:layout_width="0dp"
+                android:layout_height="48dp"
+                android:hint="Nghề nghiệp"
+                android:textColor="@android:color/white"
+                android:textColorHint="#B0FFFFFF"
+                android:background="@drawable/rounded_edittext"
+                android:paddingStart="12dp"
+                android:paddingEnd="12dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="16dp"
+                app:layout_constraintTop_toBottomOf="@id/edit_education"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </ScrollView>
+
+    <!-- Include Navigation Bar -->
+    <include
+        android:id="@+id/navigation_bar"
+        layout="@layout/navigation_bar"
+        android:layout_width="0dp"
+        android:layout_height="60dp"
+        android:background="@android:color/white"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
