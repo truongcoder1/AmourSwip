@@ -8,6 +8,7 @@
 
     <!-- Tab Buttons -->
 
+    <!-- Tab Labels -->
     <ImageButton
         android:id="@+id/likes_tab"
         android:layout_width="0dp"
@@ -23,7 +24,6 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintWidth_percent="0.45" />
 
-    <!-- Tab Labels -->
     <ImageButton
         android:id="@+id/liked_tab"
         android:layout_width="0dp"
