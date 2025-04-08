@@ -13,6 +13,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
         android:background="@android:color/transparent"
+        android:gravity="center_vertical"
         android:orientation="horizontal"
         android:paddingHorizontal="12dp"
         android:paddingVertical="8dp">
@@ -33,7 +34,7 @@
             android:layout_width="48dp"
             android:layout_height="48dp"
             android:layout_marginEnd="8dp"
-            android:background="@drawable/custom_backgroundchat"
+            android:background="@drawable/circle_background"
             android:clipToOutline="true"
             android:outlineProvider="background"
             android:scaleType="centerCrop"
@@ -58,15 +59,33 @@
                 android:textSize="16sp"
                 android:textStyle="bold" />
 
-            <!-- Trạng thái -->
-            <TextView
-                android:id="@+id/user_status"
+            <!-- LinearLayout chứa trạng thái và icon -->
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:fontFamily="@font/poppins_regular"
-                android:text="Online"
-                android:textColor="@android:color/white"
-                android:textSize="12sp" />
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <!-- Icon bên trái "Online" -->
+                <ImageView
+                    android:id="@+id/status_icon"
+                    android:layout_width="12dp"
+                    android:layout_height="12dp"
+                    android:layout_marginEnd="4dp"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/ic_online"
+ />
+
+                <!-- Trạng thái -->
+                <TextView
+                    android:id="@+id/user_status"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/poppins_regular"
+                    android:text="Online"
+                    android:textColor="@android:color/white"
+                    android:textSize="12sp" />
+            </LinearLayout>
         </LinearLayout>
 
         <!-- Nút video call -->
