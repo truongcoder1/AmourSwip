@@ -23,14 +23,6 @@
             android:padding="12dp">
 
             <!-- Back Arrow -->
-
-            <!-- Title -->
-
-            <!-- Settings Icon -->
-
-            <!-- Avatar Image -->
-
-            <!-- User Info -->
             <ImageView
                 android:id="@+id/back_arrow"
                 android:layout_width="20dp"
@@ -41,6 +33,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
+            <!-- Title -->
             <TextView
                 android:id="@+id/title"
                 android:layout_width="wrap_content"
@@ -48,12 +41,13 @@
                 android:layout_marginStart="12dp"
                 android:layout_marginTop="24dp"
                 android:text="Chỉnh sửa hồ sơ"
-                android:textColor="@android:color/white"
+                android:textColor="@android:color/black"
                 android:textSize="18sp"
                 android:textStyle="bold"
                 app:layout_constraintStart_toEndOf="@id/back_arrow"
                 app:layout_constraintTop_toTopOf="parent" />
 
+            <!-- Settings Icon -->
             <ImageView
                 android:id="@+id/settings_icon"
                 android:layout_width="20dp"
@@ -64,6 +58,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
+            <!-- Avatar Image -->
             <ImageView
                 android:id="@+id/avatar_image"
                 android:layout_width="80dp"
@@ -79,13 +74,15 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/title" />
 
+            <!-- User Info -->
             <TextView
                 android:id="@+id/user_info"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:text="Tên: XXX 22\nMô tả: Đang yêu, thích đi du lịch..."
                 android:textSize="14sp"
-                android:textColor="@android:color/white"
+                android:textColor="@android:color/black"
+                android:fontFamily="@font/poppins_regular"
                 android:gravity="center"
                 app:layout_constraintTop_toBottomOf="@id/avatar_image"
                 app:layout_constraintStart_toStartOf="parent"
@@ -243,10 +240,24 @@
                 android:paddingStart="12dp"
                 android:paddingEnd="12dp"
                 android:layout_marginTop="8dp"
-                android:layout_marginBottom="16dp"
                 app:layout_constraintTop_toBottomOf="@id/edit_education"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent" />
+
+            <!-- Confirm Button -->
+            <Button
+                android:id="@+id/confirm_button"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:text="Xác nhận sửa"
+                android:textSize="16sp"
+                android:backgroundTint="#FF6347"
+                android:textColor="@android:color/white"
+                app:layout_constraintTop_toBottomOf="@id/edit_occupation"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="16dp" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
