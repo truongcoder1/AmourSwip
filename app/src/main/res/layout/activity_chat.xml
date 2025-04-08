@@ -4,16 +4,18 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_marginTop="0dp"
-    android:background="@drawable/background_chat">
+    android:background="@drawable/background_chat1">
 
     <!-- Thanh tiêu đề -->
     <LinearLayout
         android:id="@+id/header_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
         android:background="@android:color/transparent"
         android:orientation="horizontal"
-        android:padding="12dp">
+        android:paddingHorizontal="12dp"
+        android:paddingVertical="8dp">
 
         <!-- Nút quay lại -->
         <ImageButton
@@ -107,6 +109,7 @@
         android:layout_alignParentBottom="true"
         android:layout_margin="8dp"
         android:background="@android:color/white"
+        android:gravity="center_vertical"
         android:orientation="horizontal"
         android:padding="4dp">
 
@@ -124,10 +127,11 @@
         <EditText
             android:id="@+id/message_input"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="40dp"
             android:layout_marginEnd="8dp"
             android:layout_weight="1"
             android:background="@drawable/edit_text_border"
+            android:gravity="center_vertical"
             android:hint="Type..."
             android:padding="8dp"
             android:textColor="@android:color/black"
