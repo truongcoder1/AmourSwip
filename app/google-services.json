@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "70465673573",
+    "project_id": "amourswip",
+    "storage_bucket": "amourswip.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:70465673573:android:8100b558e9cc62daf3298c",
+        "android_client_info": {
+          "package_name": "vn.edu.tlu.cse.amourswip"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDzAWmSfM13Mb21p90IB40yqxGxFp54ME8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
