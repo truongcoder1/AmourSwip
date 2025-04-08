@@ -1,5 +1,6 @@
 plugins {
     alias(libs.plugins.android.application)
+    id("com.google.gms.google-services")
 }
 
 android {
@@ -41,5 +42,9 @@ dependencies {
     androidTestImplementation(libs.espresso.core)
 
     // Thêm thư viện CardStackView để hỗ trợ tính năng vuốt
-    implementation("com.github.yuyakaido:CardStackView:2.3.4")
+    implementation(libs.cardstackview)
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.analytics)
+    implementation(libs.firebase.auth)
+    implementation(libs.firebase.firestore)
 }
