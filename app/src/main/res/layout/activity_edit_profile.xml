@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -12,10 +11,10 @@
         android:id="@+id/scroll_view"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toTopOf="@id/navigation_bar"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
+        app:layout_constraintTop_toTopOf="parent">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -43,6 +42,7 @@
                 android:text="Chỉnh sửa hồ sơ"
                 android:textColor="@android:color/black"
                 android:textSize="18sp"
+                android:fontFamily="@font/poppins_regular"
                 android:textStyle="bold"
                 app:layout_constraintStart_toEndOf="@id/back_arrow"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -79,185 +79,196 @@
                 android:id="@+id/user_info"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:text="Tên: XXX 22\nMô tả: Đang yêu, thích đi du lịch..."
-                android:textSize="14sp"
-                android:textColor="@android:color/black"
+                android:layout_marginTop="12dp"
                 android:fontFamily="@font/poppins_regular"
                 android:gravity="center"
-                app:layout_constraintTop_toBottomOf="@id/avatar_image"
-                app:layout_constraintStart_toStartOf="parent"
+                android:text="Tên: XXX 22\nMô tả: Đang yêu, thích đi du lịch..."
+                android:textColor="@android:color/black"
+                android:textSize="14sp"
                 app:layout_constraintEnd_toEndOf="parent"
-                android:layout_marginTop="12dp" />
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/avatar_image" />
 
             <!-- Edit Photo Button -->
             <Button
                 android:id="@+id/edit_photo_button"
                 android:layout_width="120dp"
                 android:layout_height="40dp"
-                android:text="Sửa ảnh"
-                android:textSize="14sp"
+                android:layout_marginTop="12dp"
                 android:backgroundTint="#D3D3D3"
+                android:text="Sửa ảnh"
+                android:fontFamily="@font/poppins_bold"
                 android:textColor="@android:color/black"
-                app:layout_constraintTop_toBottomOf="@id/user_info"
-                app:layout_constraintStart_toStartOf="parent"
+                android:textSize="14sp"
                 app:layout_constraintEnd_toEndOf="parent"
-                android:layout_marginTop="12dp" />
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/user_info" />
 
             <!-- Basic Info Title -->
             <TextView
                 android:id="@+id/basic_info_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
                 android:text="Thông tin cơ bản"
+                android:textColor="@android:color/black"
                 android:textSize="16sp"
                 android:textStyle="bold"
-                android:textColor="@android:color/white"
-                app:layout_constraintTop_toBottomOf="@id/edit_photo_button"
+                android:fontFamily="@font/poppins_regular"
                 app:layout_constraintStart_toStartOf="parent"
-                android:layout_marginTop="16dp" />
+                app:layout_constraintTop_toBottomOf="@id/edit_photo_button" />
 
             <!-- Full Name -->
             <EditText
                 android:id="@+id/edit_full_name"
                 android:layout_width="0dp"
                 android:layout_height="48dp"
-                android:hint="Họ tên"
-                android:textColor="@android:color/white"
-                android:textColorHint="#B0FFFFFF"
+                android:layout_marginTop="8dp"
                 android:background="@drawable/rounded_edittext"
+                android:hint="Họ tên"
+                android:fontFamily="@font/poppins_regular"
                 android:paddingStart="12dp"
                 android:paddingEnd="12dp"
-                android:layout_marginTop="8dp"
-                app:layout_constraintTop_toBottomOf="@id/basic_info_title"
+                android:textColor="@android:color/white"
+                android:textColorHint="#B0FFFFFF"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent" />
+                app:layout_constraintTop_toBottomOf="@id/basic_info_title" />
 
             <!-- Date of Birth -->
             <EditText
                 android:id="@+id/edit_dob"
                 android:layout_width="0dp"
                 android:layout_height="48dp"
-                android:hint="Ngày sinh"
-                android:textColor="@android:color/white"
-                android:textColorHint="#B0FFFFFF"
+                android:layout_marginTop="8dp"
                 android:background="@drawable/rounded_edittext"
+                android:hint="Ngày sinh"
                 android:paddingStart="12dp"
                 android:paddingEnd="12dp"
-                android:layout_marginTop="8dp"
-                app:layout_constraintTop_toBottomOf="@id/edit_full_name"
+                android:fontFamily="@font/poppins_regular"
+                android:textColor="@android:color/white"
+                android:textColorHint="#B0FFFFFF"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent" />
+                app:layout_constraintTop_toBottomOf="@id/edit_full_name" />
 
             <!-- Interests -->
             <EditText
                 android:id="@+id/edit_interests"
                 android:layout_width="0dp"
                 android:layout_height="48dp"
-                android:hint="Sở thích"
-                android:textColor="@android:color/white"
-                android:textColorHint="#B0FFFFFF"
+                android:layout_marginTop="8dp"
                 android:background="@drawable/rounded_edittext"
+                android:hint="Sở thích"
+                android:fontFamily="@font/poppins_regular"
                 android:paddingStart="12dp"
                 android:paddingEnd="12dp"
-                android:layout_marginTop="8dp"
-                app:layout_constraintTop_toBottomOf="@id/edit_dob"
+                android:textColor="@android:color/white"
+                android:textColorHint="#B0FFFFFF"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent" />
+                app:layout_constraintTop_toBottomOf="@id/edit_dob" />
 
             <!-- Location -->
             <EditText
                 android:id="@+id/edit_location"
                 android:layout_width="0dp"
                 android:layout_height="48dp"
-                android:hint="Nơi ở"
-                android:textColor="@android:color/white"
-                android:textColorHint="#B0FFFFFF"
+                android:layout_marginTop="8dp"
                 android:background="@drawable/rounded_edittext"
+                android:hint="Nơi ở"
+                android:fontFamily="@font/poppins_regular"
                 android:paddingStart="12dp"
                 android:paddingEnd="12dp"
-                android:layout_marginTop="8dp"
-                app:layout_constraintTop_toBottomOf="@id/edit_interests"
+                android:textColor="@android:color/white"
+                android:textColorHint="#B0FFFFFF"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent" />
+                app:layout_constraintTop_toBottomOf="@id/edit_interests" />
 
             <!-- Relationship -->
             <EditText
                 android:id="@+id/edit_relationship"
                 android:layout_width="0dp"
                 android:layout_height="48dp"
-                android:hint="Mối quan hệ"
-                android:textColor="@android:color/white"
-                android:textColorHint="#B0FFFFFF"
+                android:layout_marginTop="8dp"
                 android:background="@drawable/rounded_edittext"
+                android:hint="Mối quan hệ"
+                android:fontFamily="@font/poppins_regular"
                 android:paddingStart="12dp"
                 android:paddingEnd="12dp"
-                android:layout_marginTop="8dp"
-                app:layout_constraintTop_toBottomOf="@id/edit_location"
+                android:textColor="@android:color/white"
+                android:textColorHint="#B0FFFFFF"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent" />
+                app:layout_constraintTop_toBottomOf="@id/edit_location" />
 
             <!-- Religion -->
             <EditText
                 android:id="@+id/edit_religion"
                 android:layout_width="0dp"
                 android:layout_height="48dp"
-                android:hint="Tôn giáo"
-                android:textColor="@android:color/white"
-                android:textColorHint="#B0FFFFFF"
+                android:layout_marginTop="8dp"
                 android:background="@drawable/rounded_edittext"
+                android:hint="Tôn giáo"
+                android:fontFamily="@font/poppins_regular"
                 android:paddingStart="12dp"
                 android:paddingEnd="12dp"
-                android:layout_marginTop="8dp"
-                app:layout_constraintTop_toBottomOf="@id/edit_relationship"
+                android:textColor="@android:color/white"
+                android:textColorHint="#B0FFFFFF"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent" />
+                app:layout_constraintTop_toBottomOf="@id/edit_relationship" />
 
             <!-- Education -->
             <EditText
                 android:id="@+id/edit_education"
                 android:layout_width="0dp"
                 android:layout_height="48dp"
-                android:hint="Trình độ học vấn"
-                android:textColor="@android:color/white"
-                android:textColorHint="#B0FFFFFF"
+                android:layout_marginTop="8dp"
                 android:background="@drawable/rounded_edittext"
+                android:hint="Trình độ học vấn"
+                android:fontFamily="@font/poppins_regular"
                 android:paddingStart="12dp"
                 android:paddingEnd="12dp"
-                android:layout_marginTop="8dp"
-                app:layout_constraintTop_toBottomOf="@id/edit_religion"
+                android:textColor="@android:color/white"
+                android:textColorHint="#B0FFFFFF"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent" />
+                app:layout_constraintTop_toBottomOf="@id/edit_religion" />
 
             <!-- Occupation -->
             <EditText
                 android:id="@+id/edit_occupation"
                 android:layout_width="0dp"
                 android:layout_height="48dp"
-                android:hint="Nghề nghiệp"
-                android:textColor="@android:color/white"
-                android:textColorHint="#B0FFFFFF"
+                android:layout_marginTop="8dp"
                 android:background="@drawable/rounded_edittext"
+                android:hint="Nghề nghiệp"
+                android:fontFamily="@font/poppins_regular"
                 android:paddingStart="12dp"
                 android:paddingEnd="12dp"
-                android:layout_marginTop="8dp"
-                app:layout_constraintTop_toBottomOf="@id/edit_education"
+                android:textColor="@android:color/white"
+                android:textColorHint="#B0FFFFFF"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent" />
+                app:layout_constraintTop_toBottomOf="@id/edit_education" />
 
             <!-- Confirm Button -->
             <Button
                 android:id="@+id/confirm_button"
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
-                android:text="Xác nhận sửa"
-                android:textSize="16sp"
-                android:backgroundTint="#FF6347"
-                android:textColor="@android:color/white"
-                app:layout_constraintTop_toBottomOf="@id/edit_occupation"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
                 android:layout_marginTop="16dp"
-                android:layout_marginBottom="16dp" />
+                android:layout_marginBottom="16dp"
+                android:backgroundTint="#FF6347"
+                android:text="Xác nhận sửa"
+                android:fontFamily="@font/poppins_bold"
+                android:textColor="@android:color/black"
+                android:textSize="16sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/edit_occupation" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
@@ -270,7 +281,7 @@
         android:layout_height="60dp"
         android:background="@android:color/white"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
