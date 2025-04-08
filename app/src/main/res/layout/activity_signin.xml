@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/background_signin">
+
+    <!-- LinearLayout để căn giữa dọc -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        android:paddingHorizontal="40dp">
+
+        <!-- Tiêu đề "Đăng nhập" -->
+        <TextView
+
+            android:id="@+id/sign_in_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/poppins_bold"
+            android:text="@string/sign_in"
+            android:textColor="@android:color/black"
+            android:textSize="32sp"
+            android:textStyle="bold" />
+
+        <!-- EditText cho "Tài khoản" -->
+        <EditText
+            android:fontFamily="@font/poppins_bold"
+            android:id="@+id/username_input"
+            android:layout_width="280dp"
+            android:layout_height="48dp"
+            android:layout_marginTop="40dp"
+            android:background="@drawable/edit_text_background"
+            android:drawableEnd="@drawable/ic_person"
+            android:drawablePadding="8dp"
+            android:elevation="4dp"
+            android:hint="@string/username"
+            android:paddingHorizontal="16dp"
+            android:paddingVertical="12dp"
+            android:textColorHint="#A0A0A0"
+            android:textSize="16sp"/>
+
+        <!-- EditText cho "Mật khẩu" -->
+        <EditText
+            android:fontFamily="@font/poppins_bold"
+            android:id="@+id/password_input"
+            android:layout_width="280dp"
+            android:layout_height="48dp"
+            android:layout_marginTop="16dp"
+            android:background="@drawable/edit_text_background"
+            android:drawableEnd="@drawable/ic_eye"
+            android:drawablePadding="8dp"
+            android:elevation="4dp"
+            android:hint="@string/password"
+            android:inputType="textPassword"
+            android:paddingHorizontal="16dp"
+            android:paddingVertical="12dp"
+            android:textColorHint="#A0A0A0"
+            android:textSize="16sp"/>
+
+        <!-- Nút "Đăng nhập" -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/sign_in_button"
+            android:layout_width="280dp"
+            android:layout_height="56dp"
+            android:layout_marginTop="32dp"
+            android:backgroundTint="#C87DD7"
+            android:elevation="4dp"
+            android:fontFamily="@font/poppins_bold"
+            android:paddingHorizontal="35dp"
+            android:paddingVertical="12dp"
+            android:text="@string/sign_in"
+            android:textColor="@android:color/black"
+            android:textSize="16sp"
+            app:cornerRadius="50dp" />
+
+        <!-- Dòng chữ "Chưa có tài khoản? Đăng ký ngay" -->
+        <TextView
+            android:id="@+id/sign_up_prompt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:fontFamily="@font/poppins_bold"
+            android:text="@string/no_account_sign_up"
+            android:textColor="@android:color/white"
+            android:textSize="12sp" />
+
+    </LinearLayout>
+
+</RelativeLayout>

@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <!-- Gradient background thay thế background_gender -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/background_prefergender" />
+
+    <!-- LinearLayout chứa các thành phần -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="250dp"
+        android:layout_marginBottom="40dp"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        android:paddingHorizontal="40dp">
+
+        <TextView
+            android:id="@+id/looking_for_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/poppins_bold"
+            android:text="Giới tính mà bạn thích?"
+            android:textColor="@android:color/black"
+            android:textSize="32sp"
+            android:textStyle="bold" />
+
+        <!-- Nút "TẤT CẢ" -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/all_button"
+            android:layout_width="280dp"
+            android:layout_height="56dp"
+            android:layout_marginTop="24dp"
+            android:backgroundTint="#FFFFFF"
+            android:fontFamily="@font/poppins_regular"
+            android:paddingHorizontal="16dp"
+            android:paddingVertical="12dp"
+            android:text="Tất cả"
+            android:textColor="@android:color/black"
+            android:textSize="16sp"
+            app:cornerRadius="24dp" />
+
+        <!-- Nút "NAM" -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/male_button"
+            android:layout_width="280dp"
+            android:layout_height="56dp"
+            android:layout_marginTop="16dp"
+            android:backgroundTint="#B3E5FC"
+            android:fontFamily="@font/poppins_regular"
+            android:paddingHorizontal="16dp"
+            android:paddingVertical="12dp"
+            android:text="Nam"
+            android:textColor="@android:color/black"
+            android:textSize="16sp"
+            app:cornerRadius="24dp" />
+
+        <!-- Nút "NỮ" -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/female_button"
+            android:layout_width="280dp"
+            android:layout_height="56dp"
+            android:layout_marginTop="16dp"
+            android:backgroundTint="#F8C1D0"
+            android:fontFamily="@font/poppins_regular"
+            android:paddingHorizontal="16dp"
+            android:paddingVertical="12dp"
+            android:text="Nữ"
+            android:textColor="@android:color/black"
+            android:textSize="16sp"
+            app:cornerRadius="24dp" />
+
+        <!-- Nút "TIẾP" -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/next_button"
+            android:layout_width="280dp"
+            android:layout_height="56dp"
+            android:layout_marginTop="32dp"
+            android:layout_marginBottom="20dp"
+            android:backgroundTint="#C87DD7"
+            android:fontFamily="@font/poppins_bold"
+            android:paddingHorizontal="35dp"
+            android:paddingVertical="12dp"
+            android:text="Tiếp"
+            android:textColor="@android:color/black"
+            android:textSize="16sp"
+            app:cornerRadius="50dp" />
+
+    </LinearLayout>
+
+</RelativeLayout>

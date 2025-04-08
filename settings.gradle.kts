@@ -11,11 +11,14 @@ pluginManagement {
         gradlePluginPortal()
     }
 }
+// settings.gradle.kts
 dependencyResolutionManagement {
-    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS) // Yêu cầu ưu tiên repository từ settings
     repositories {
         google()
         mavenCentral()
+        maven { url = uri("https://jitpack.io") }
+
     }
 }
 

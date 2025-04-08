@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/background_gender">
+
+    <!-- LinearLayout để căn giữa dọc -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="220dp"
+        android:layout_marginBottom="40dp"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        android:paddingHorizontal="40dp">
+
+        <!-- Tiêu đề "Giới tính của bạn là gì?" -->
+        <TextView
+            android:id="@+id/gender_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/poppins_bold"
+            android:text="@string/gender_title"
+            android:textColor="@android:color/black"
+            android:textSize="32sp"
+            android:textStyle="bold" />
+
+        <!-- Nút "Nam" -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/male_button"
+            android:layout_width="280dp"
+            android:layout_height="56dp"
+            android:layout_marginTop="24dp"
+            android:backgroundTint="#B3E5FC"
+            android:drawableStart="@drawable/ic_male"
+            android:drawablePadding="8dp"
+            android:fontFamily="@font/poppins_regular"
+            android:paddingHorizontal="16dp"
+            android:paddingVertical="12dp"
+            android:text="@string/male"
+            android:textColor="@android:color/black"
+            android:textSize="16sp"
+            app:cornerRadius="24dp" />
+
+        <!-- Nút "Nữ" -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/female_button"
+            android:layout_width="280dp"
+            android:layout_height="56dp"
+            android:layout_marginTop="16dp"
+            android:backgroundTint="#F8C1D0"
+            android:drawableStart="@drawable/ic_female"
+            android:drawablePadding="8dp"
+            android:fontFamily="@font/poppins_regular"
+            android:paddingHorizontal="16dp"
+            android:paddingVertical="12dp"
+            android:text="@string/female"
+            android:textColor="@android:color/black"
+            android:textSize="16sp"
+            app:cornerRadius="24dp" />
+
+        <!-- Nút "Khác" -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/other_button"
+            android:layout_width="280dp"
+            android:layout_height="56dp"
+            android:layout_marginTop="16dp"
+            android:backgroundTint="#FFCCBC"
+            android:drawablePadding="8dp"
+            android:fontFamily="@font/poppins_regular"
+            android:paddingHorizontal="16dp"
+            android:paddingVertical="12dp"
+            android:text="@string/other"
+            android:textColor="@android:color/black"
+            android:textSize="16sp"
+            app:cornerRadius="24dp" />
+
+        <!-- Nút "Tiếp" -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/next_button"
+            android:layout_width="280dp"
+            android:layout_height="56dp"
+            android:layout_marginTop="32dp"
+            android:layout_marginBottom="20dp"
+            android:backgroundTint="#C87DD7"
+            android:fontFamily="@font/poppins_bold"
+            android:paddingHorizontal="35dp"
+            android:paddingVertical="12dp"
+            android:text="@string/next"
+            android:textColor="@android:color/black"
+            android:textSize="16sp"
+            app:cornerRadius="50dp" />
+
+    </LinearLayout>
+
+</RelativeLayout>

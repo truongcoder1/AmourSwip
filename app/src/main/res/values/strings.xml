@@ -1,3 +1,17 @@
 <resources>
     <string name="app_name">AmourSwip</string>
+    <string name="find_your_love">Tìm kiếm tình yêu của bạn!</string>
+    <string name="sign_up">Đăng ký</string>
+    <string name="sign_in">Đăng nhập</string>>
+    <string name="username">Tài khoản</string>
+    <string name="password">Mật khẩu</string>
+    <string name="no_account_sign_up">Chưa có tài khoản? Đăng ký ngay</string>
+    <string name="warning_email">Vui lòng nhập đúng định dạng đăng ký email!!</string>
+    <string name="email">Email</string>
+    <string name="confirm_password">Xác nhận mật khẩu</string>
+    <string name="gender_title">Giới tính của bạn là gì?</string>
+    <string name="male">Nam</string>
+    <string name="female">Nữ</string>
+    <string name="other">Khác</string>
+    <string name="next">Tiếp</string>
 </resources>

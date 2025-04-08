@@ -8,7 +8,7 @@ android {
 
     defaultConfig {
         applicationId = "vn.edu.tlu.cse.amourswip"
-        minSdk = 30
+        minSdk = 29
         targetSdk = 35
         versionCode = 1
         versionName = "1.0"
@@ -32,7 +32,6 @@ android {
 }
 
 dependencies {
-
     implementation(libs.appcompat)
     implementation(libs.material)
     implementation(libs.activity)
@@ -40,4 +39,7 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
+
+    // Thêm thư viện CardStackView để hỗ trợ tính năng vuốt
+    implementation("com.github.yuyakaido:CardStackView:2.3.4")
 }

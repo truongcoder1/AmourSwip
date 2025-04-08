@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <!-- Background đã có sẵn -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/background_map" />
+
+    <!-- LinearLayout chứa các thành phần -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="250dp"
+        android:layout_marginBottom="40dp"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        android:paddingHorizontal="40dp">
+
+        <!-- Tiêu đề "BẠN CÓ MUỐN TÌM XUNG QUANH?" -->
+        <TextView
+            android:id="@+id/location_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/poppins_bold"
+            android:text="BẠN CÓ MUỐN TÌM XUNG QUANH?"
+            android:textColor="@android:color/black"
+            android:textSize="32sp"
+            android:textStyle="bold" />
+
+        <!-- Dòng chữ nhỏ "Chúng tôi sử dụng vị trí để hiện thị hồ sơ gần bạn nhất" -->
+        <TextView
+            android:id="@+id/location_hint"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:fontFamily="@font/poppins_regular"
+            android:gravity="center"
+            android:text="Chúng tôi sử dụng vị trí để hiện thị hồ sơ gần bạn nhất"
+            android:textColor="@android:color/black"
+            android:textSize="14sp" />
+
+        <!-- ImageView cho biểu tượng bản đồ, đặt dưới TextView -->
+        <ImageView
+            android:id="@+id/map_icon"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_marginTop="16dp"
+            android:src="@drawable/ic_maplocation"
+            android:scaleType="fitCenter" />
+
+        <!-- LinearLayout chứa hai nút "Cho phép" và "Bỏ qua" -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="32dp"
+            android:gravity="center_horizontal"
+            android:orientation="horizontal">
+
+            <!-- Nút "Cho phép" -->
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/allow_button"
+                android:layout_width="130dp"
+                android:layout_height="56dp"
+                android:layout_marginEnd="8dp"
+                android:backgroundTint="#C87DD7"
+                android:fontFamily="@font/poppins_bold"
+                android:paddingHorizontal="16dp"
+                android:paddingVertical="12dp"
+                android:text="Cho phép"
+                android:textColor="@android:color/black"
+                android:textSize="16sp"
+                app:cornerRadius="50dp" />
+
+            <!-- Nút "Bỏ qua" -->
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/skip_button"
+                android:layout_width="130dp"
+                android:layout_height="56dp"
+                android:layout_marginStart="8dp"
+                android:backgroundTint="#FFFFFF"
+                android:fontFamily="@font/poppins_regular"
+                android:paddingHorizontal="16dp"
+                android:paddingVertical="12dp"
+                android:text="Bỏ qua"
+                android:textColor="#C87DD7"
+                android:textSize="16sp"
+                app:cornerRadius="50dp"
+                app:strokeColor="#C87DD7"
+                app:strokeWidth="2dp" />
+        </LinearLayout>
+    </LinearLayout>
+</RelativeLayout>

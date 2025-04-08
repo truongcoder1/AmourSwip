@@ -1,8 +1,24 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- Base application theme. -->
+    <!-- Base application theme -->
     <style name="Base.Theme.AmourSwip" parent="Theme.Material3.DayNight.NoActionBar">
-        <!-- Customize your light theme here. -->
-        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+        <!-- Customize your light theme here -->
+        <!-- Primary color for the app (used for buttons if backgroundTint is not set) -->
+        <item name="colorPrimary">#C87DD7</item> <!-- Màu tím cho nút Đăng nhập làm mặc định -->
+        <item name="colorOnPrimary">@android:color/black</item> <!-- Màu chữ trên nút -->
+        <item name="colorSurface">@android:color/white</item> <!-- Màu bề mặt (background) -->
+        <item name="android:statusBarColor">?attr/colorSurface</item> <!-- Màu thanh trạng thái -->
+        <item name="android:windowBackground">@drawable/background_gradient</item> <!-- Background gradient -->
+
+        <!-- Đảm bảo backgroundTint được ưu tiên -->
+        <item name="materialButtonStyle">@style/Widget.AmourSwip.Button</item>
+    </style>
+
+    <!-- Tùy chỉnh style cho MaterialButton -->
+    <style name="Widget.AmourSwip.Button" parent="Widget.Material3.Button">
+        <item name="android:backgroundTint">@null</item> <!-- Không áp dụng backgroundTint mặc định -->
+        <item name="android:background">@null</item> <!-- Không áp dụng background mặc định -->
+        <item name="cornerRadius">50dp</item> <!-- Bo góc mặc định giống Figma -->
+        <item name="elevation">4dp</item> <!-- Đổ bóng -->
     </style>
 
     <style name="Theme.AmourSwip" parent="Base.Theme.AmourSwip" />

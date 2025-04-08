@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <!-- Gradient background với hoa hồng và trái tim (đã có trong background) -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/background_prefergender" />
+
+    <!-- LinearLayout chứa các thành phần -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        android:paddingHorizontal="40dp">
+
+        <!-- Tiêu đề "Ngày sinh" -->
+        <TextView
+            android:id="@+id/birthday_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/poppins_bold"
+            android:text="Ngày sinh"
+            android:textColor="@android:color/black"
+            android:textSize="32sp"
+            android:textStyle="bold" />
+
+        <!-- TextInputLayout chứa TextInputEditText -->
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="280dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:hint="DD/MM/YYYY"
+            app:boxBackgroundColor="#FFFFFF"
+            app:boxBackgroundMode="outline"
+            app:boxCornerRadiusBottomEnd="24dp"
+            app:boxCornerRadiusBottomStart="24dp"
+            app:boxCornerRadiusTopEnd="24dp"
+            app:boxCornerRadiusTopStart="24dp"
+            app:boxStrokeColor="#808080"
+            app:hintTextColor="#808080">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/birthday_input"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:cursorVisible="false"
+                android:focusable="false"
+                android:fontFamily="@font/poppins_regular"
+                android:imeOptions="actionDone"
+                android:inputType="date"
+                android:paddingHorizontal="16dp"
+                android:paddingVertical="12dp"
+                android:textColor="@android:color/black"
+                android:textSize="16sp" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <!-- Nút "Tiếp" -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/next_button"
+            android:layout_width="280dp"
+            android:layout_height="56dp"
+            android:layout_marginTop="32dp"
+            android:layout_marginBottom="20dp"
+            android:backgroundTint="#C87DD7"
+            android:fontFamily="@font/poppins_bold"
+            android:paddingHorizontal="35dp"
+            android:paddingVertical="12dp"
+            android:text="Tiếp"
+            android:textColor="@android:color/black"
+            android:textSize="16sp"
+            app:cornerRadius="50dp" />
+    </LinearLayout>
+</RelativeLayout>

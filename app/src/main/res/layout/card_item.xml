@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="450dp"
+    android:background="@android:color/white"
+    android:clipToPadding="false"
+    android:padding="8dp">
+
+    <!-- Hình ảnh người dùng -->
+    <ImageView
+        android:id="@+id/user_image"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/info_layout"
+        android:layout_marginBottom="8dp"
+        android:adjustViewBounds="true"
+        android:scaleType="fitCenter"
+        android:src="@drawable/gai1" />
+
+    <!-- LinearLayout chứa thông tin người dùng -->
+    <LinearLayout
+        android:id="@+id/info_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_margin="16dp"
+        android:background="#80000000"
+        android:orientation="vertical"
+        android:padding="8dp">
+
+        <!-- Tên và tuổi -->
+        <TextView
+            android:id="@+id/user_name_age"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/poppins_bold"
+            android:text="Dan, 29"
+            android:textColor="@android:color/white"
+            android:textSize="24sp"
+            android:textStyle="bold" />
+
+        <!-- LinearLayout chứa khoảng cách, trạng thái và các icon -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <!-- Icon bên trái khoảng cách -->
+            <ImageView
+                android:id="@+id/distance_icon"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_marginEnd="8dp"
+                android:scaleType="fitCenter"
+                android:src="@drawable/ic_locationitem" /> <!-- Placeholder icon cho khoảng cách -->
+
+            <!-- Khoảng cách -->
+            <TextView
+                android:id="@+id/user_distance"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/poppins_regular"
+                android:text="0.8 KM"
+                android:textColor="@android:color/white"
+                android:textSize="14sp" />
+
+            <!-- Khoảng cách giữa khoảng cách và trạng thái -->
+            <Space
+                android:layout_width="16dp"
+                android:layout_height="wrap_content" />
+
+            <!-- Icon bên trái trạng thái -->
+            <ImageView
+                android:id="@+id/status_icon"
+                android:layout_width="12dp"
+                android:layout_height="12dp"
+                android:layout_marginEnd="8dp"
+                android:scaleType="fitCenter"
+                android:src="@drawable/ic_active" /> <!-- Placeholder icon cho trạng thái -->
+
+            <!-- Trạng thái -->
+            <TextView
+                android:id="@+id/user_status"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/poppins_regular"
+                android:text="Active Now"
+                android:textColor="@android:color/white"
+                android:textSize="14sp" />
+        </LinearLayout>
+    </LinearLayout>
+</RelativeLayout>

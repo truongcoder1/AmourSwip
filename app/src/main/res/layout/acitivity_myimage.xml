@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <!-- Background đã có sẵn -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/background_prefergender" />
+
+    <!-- LinearLayout chứa các thành phần -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="250dp"
+        android:layout_marginBottom="40dp"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        android:paddingHorizontal="40dp">
+
+        <!-- Tiêu đề "Ảnh của bạn" -->
+        <TextView
+            android:id="@+id/photo_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/poppins_bold"
+            android:text="Ảnh của bạn"
+            android:textColor="@android:color/black"
+            android:textSize="32sp"
+            android:textStyle="bold" />
+
+        <!-- LinearLayout chứa hai nút "Tải ảnh" và "Chụp ảnh" -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:gravity="center_horizontal"
+            android:orientation="horizontal">
+
+            <!-- Cột chứa ImageView và nút "Tải ảnh" -->
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:gravity="center_horizontal"
+                android:orientation="vertical">
+
+                <!-- ImageView cho biểu tượng "Tải ảnh" -->
+                <ImageView
+                    android:layout_width="36dp"
+                    android:layout_height="36dp"
+                    android:layout_marginBottom="8dp"
+                    android:src="@drawable/ic_upload" />
+
+                <!-- Nút "Tải ảnh" -->
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/upload_button"
+                    android:layout_width="130dp"
+                    android:layout_height="56dp"
+                    android:backgroundTint="#FFFFFF"
+                    android:fontFamily="@font/poppins_regular"
+                    android:paddingHorizontal="16dp"
+                    android:paddingVertical="12dp"
+                    android:text="Tải ảnh"
+                    android:textColor="@android:color/black"
+                    android:textSize="16sp"
+                    app:cornerRadius="24dp" />
+            </LinearLayout>
+
+            <!-- Cột chứa ImageView và nút "Chụp ảnh" -->
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:gravity="center_horizontal"
+                android:orientation="vertical">
+
+                <!-- ImageView cho biểu tượng "Chụp ảnh" -->
+                <ImageView
+                    android:layout_width="36dp"
+                    android:layout_height="36dp"
+                    android:layout_marginBottom="8dp"
+                    android:src="@drawable/ic_camera" />
+
+                <!-- Nút "Chụp ảnh" -->
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/camera_button"
+                    android:layout_width="130dp"
+                    android:layout_height="56dp"
+                    android:backgroundTint="#FFFFFF"
+                    android:fontFamily="@font/poppins_regular"
+                    android:paddingHorizontal="16dp"
+                    android:paddingVertical="12dp"
+                    android:text="Chụp ảnh"
+                    android:textColor="@android:color/black"
+                    android:textSize="16sp"
+                    app:cornerRadius="24dp" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- Dòng chữ nhỏ "Thêm ảnh để đạt được cái match!" -->
+        <TextView
+            android:id="@+id/photo_hint"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:fontFamily="@font/poppins_regular"
+            android:text="Thêm ảnh để đạt được cái match!"
+            android:textColor="@android:color/black"
+            android:textSize="14sp" />
+
+        <!-- LinearLayout chứa hai nút "Tiếp" và "Bỏ qua" -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="32dp"
+            android:gravity="center_horizontal"
+            android:orientation="horizontal">
+
+            <!-- Nút "Tiếp" -->
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/next_button"
+                android:layout_width="130dp"
+                android:layout_height="56dp"
+                android:layout_marginEnd="8dp"
+                android:backgroundTint="#C87DD7"
+                android:fontFamily="@font/poppins_bold"
+                android:paddingHorizontal="16dp"
+                android:paddingVertical="12dp"
+                android:text="Tiếp"
+                android:textColor="@android:color/black"
+                android:textSize="16sp"
+                app:cornerRadius="50dp" />
+
+            <!-- Nút "Bỏ qua" -->
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/skip_button"
+                android:layout_width="130dp"
+                android:layout_height="56dp"
+                android:layout_marginStart="8dp"
+                android:backgroundTint="#FFFFFF"
+                android:fontFamily="@font/poppins_regular"
+                android:paddingHorizontal="16dp"
+                android:paddingVertical="12dp"
+                android:text="Bỏ qua"
+                android:textColor="#C87DD7"
+                android:textSize="16sp"
+                app:cornerRadius="50dp"
+                app:strokeColor="#C87DD7"
+                app:strokeWidth="2dp" />
+        </LinearLayout>
+    </LinearLayout>
+</RelativeLayout>
