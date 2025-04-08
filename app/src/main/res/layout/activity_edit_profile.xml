@@ -23,15 +23,6 @@
             android:padding="12dp">
 
             <!-- Back Arrow -->
-            <ImageView
-                android:id="@+id/back_arrow"
-                android:layout_width="20dp"
-                android:layout_height="20dp"
-                android:layout_marginTop="8dp"
-                android:src="@drawable/ic_back"
-                android:contentDescription="Back"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
 
             <!-- Title -->
 
@@ -40,6 +31,16 @@
             <!-- Avatar Image -->
 
             <!-- User Info -->
+            <ImageView
+                android:id="@+id/back_arrow"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_marginTop="28dp"
+                android:contentDescription="Back"
+                android:src="@drawable/ic_back"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
             <TextView
                 android:id="@+id/title"
                 android:layout_width="wrap_content"
