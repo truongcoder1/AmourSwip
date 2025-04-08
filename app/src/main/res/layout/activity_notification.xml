@@ -23,4 +23,19 @@
         android:layout_height="50dp"
         android:layout_alignParentBottom="true"
         android:layout_marginBottom="8dp" />
+
+    <!-- ImageButton cho chatbot (nằm trên icon Person) -->
+    <ImageButton
+        android:id="@+id/chatbot_button"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="16dp"
+        android:layout_above="@id/navigation_bar"
+        android:layout_marginBottom="20dp"
+        android:background="@android:color/transparent"
+        android:contentDescription="Chatbot"
+        android:scaleType="fitCenter"
+        android:src="@drawable/ic_chatbot" />
+
 </RelativeLayout>
