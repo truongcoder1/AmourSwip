@@ -1,4 +1,4 @@
-package vn.edu.tlu.cse.amourswip.Activity;
+package vn.edu.tlu.cse.amourswip.activity;
 
 import android.content.Intent;
 import android.net.Uri;
@@ -12,8 +12,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
-import vn.edu.tlu.cse.amourswip.Activity.MapActivity;
-import vn.edu.tlu.cse.amourswip.Datalayer.repository.UserRepository;
+import vn.edu.tlu.cse.amourswip.datalayer.repository.UserRepository;
 import vn.edu.tlu.cse.amourswip.R;
 
 import java.util.ArrayList;

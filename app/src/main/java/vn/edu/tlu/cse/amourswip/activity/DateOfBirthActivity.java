@@ -1,4 +1,4 @@
-package vn.edu.tlu.cse.amourswip.Activity;
+package vn.edu.tlu.cse.amourswip.activity;
 
 import android.app.DatePickerDialog;
 import android.content.Intent;
@@ -8,8 +8,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
 
-import vn.edu.tlu.cse.amourswip.Activity.EditPhotosActivity;
-import vn.edu.tlu.cse.amourswip.Datalayer.repository.UserRepository;
+import vn.edu.tlu.cse.amourswip.datalayer.repository.UserRepository;
 import vn.edu.tlu.cse.amourswip.R;
 
 import java.util.Calendar;

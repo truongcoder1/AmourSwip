@@ -1,4 +1,4 @@
-package vn.edu.tlu.cse.amourswip.Activity;
+package vn.edu.tlu.cse.amourswip.activity;
 
 import androidx.appcompat.app.AppCompatActivity;
 
