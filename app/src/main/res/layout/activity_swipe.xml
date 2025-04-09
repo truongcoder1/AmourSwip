@@ -44,13 +44,4 @@
             android:scaleType="fitCenter"
             android:src="@drawable/ic_like" />
     </LinearLayout>
-
-    <!-- Nhúng thanh điều hướng từ layout riêng -->
-    <include
-        android:id="@+id/navigation_bar"
-        layout="@layout/navigation_bar"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:layout_alignParentBottom="true"
-        android:layout_marginBottom="8dp" />
 </RelativeLayout>

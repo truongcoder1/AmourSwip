@@ -1,14 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/background_profile">
 
     <!-- Tab Buttons -->
-
-    <!-- Tab Labels -->
     <ImageButton
         android:id="@+id/likes_tab"
         android:layout_width="0dp"
@@ -39,54 +36,46 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintWidth_percent="0.45" />
 
+    <!-- Tab Labels -->
     <TextView
         android:id="@+id/likes_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Lượt thích"
+        android:textColor="@android:color/black"
         android:textSize="16sp"
         android:textStyle="bold"
-        android:textColor="@android:color/black"
-        app:layout_constraintTop_toTopOf="@id/likes_tab"
         app:layout_constraintBottom_toBottomOf="@id/likes_tab"
+        app:layout_constraintEnd_toEndOf="@id/likes_tab"
         app:layout_constraintStart_toStartOf="@id/likes_tab"
-        app:layout_constraintEnd_toEndOf="@id/likes_tab" />
+        app:layout_constraintTop_toTopOf="@id/likes_tab" />
 
     <TextView
         android:id="@+id/liked_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Đã thích"
+        android:textColor="@android:color/black"
         android:textSize="16sp"
         android:textStyle="bold"
-        android:textColor="@android:color/black"
-        app:layout_constraintTop_toTopOf="@id/liked_tab"
         app:layout_constraintBottom_toBottomOf="@id/liked_tab"
+        app:layout_constraintEnd_toEndOf="@id/liked_tab"
         app:layout_constraintStart_toStartOf="@id/liked_tab"
-        app:layout_constraintEnd_toEndOf="@id/liked_tab" />
+        app:layout_constraintTop_toTopOf="@id/liked_tab" />
 
     <!-- RecyclerView for user list -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/user_recycler_view"
-        android:layout_width="405dp"
-        android:layout_height="520dp"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         android:layout_marginTop="16dp"
+        android:layout_marginBottom="60dp"
         android:padding="8dp"
         app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/likes_tab"
         app:spanCount="2" />
-
-    <!-- Include Navigation Bar -->
-    <include
-        android:id="@+id/navigation_bar"
-        layout="@layout/navigation_bar"
-        android:layout_width="0dp"
-        android:layout_height="60dp"
-        android:background="@android:color/white"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

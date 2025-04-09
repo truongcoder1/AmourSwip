@@ -11,7 +11,7 @@
         android:id="@+id/scroll_view"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        app:layout_constraintBottom_toTopOf="@id/navigation_bar"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -19,6 +19,7 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="60dp"
             android:padding="12dp">
 
             <!-- Back Arrow -->
@@ -39,10 +40,10 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="12dp"
                 android:layout_marginTop="24dp"
+                android:fontFamily="@font/poppins_regular"
                 android:text="Chỉnh sửa hồ sơ"
                 android:textColor="@android:color/black"
                 android:textSize="18sp"
-                android:fontFamily="@font/poppins_regular"
                 android:textStyle="bold"
                 app:layout_constraintStart_toEndOf="@id/back_arrow"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -96,8 +97,8 @@
                 android:layout_height="40dp"
                 android:layout_marginTop="12dp"
                 android:backgroundTint="#D3D3D3"
-                android:text="Sửa ảnh"
                 android:fontFamily="@font/poppins_bold"
+                android:text="Sửa ảnh"
                 android:textColor="@android:color/black"
                 android:textSize="14sp"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -110,11 +111,11 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
+                android:fontFamily="@font/poppins_regular"
                 android:text="Thông tin cơ bản"
                 android:textColor="@android:color/black"
                 android:textSize="16sp"
                 android:textStyle="bold"
-                android:fontFamily="@font/poppins_regular"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/edit_photo_button" />
 
@@ -125,8 +126,8 @@
                 android:layout_height="48dp"
                 android:layout_marginTop="8dp"
                 android:background="@drawable/rounded_edittext"
-                android:hint="Họ tên"
                 android:fontFamily="@font/poppins_regular"
+                android:hint="Họ tên"
                 android:paddingStart="12dp"
                 android:paddingEnd="12dp"
                 android:textColor="@android:color/white"
@@ -142,10 +143,10 @@
                 android:layout_height="48dp"
                 android:layout_marginTop="8dp"
                 android:background="@drawable/rounded_edittext"
+                android:fontFamily="@font/poppins_regular"
                 android:hint="Ngày sinh"
                 android:paddingStart="12dp"
                 android:paddingEnd="12dp"
-                android:fontFamily="@font/poppins_regular"
                 android:textColor="@android:color/white"
                 android:textColorHint="#B0FFFFFF"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -159,8 +160,8 @@
                 android:layout_height="48dp"
                 android:layout_marginTop="8dp"
                 android:background="@drawable/rounded_edittext"
-                android:hint="Sở thích"
                 android:fontFamily="@font/poppins_regular"
+                android:hint="Sở thích"
                 android:paddingStart="12dp"
                 android:paddingEnd="12dp"
                 android:textColor="@android:color/white"
@@ -176,8 +177,8 @@
                 android:layout_height="48dp"
                 android:layout_marginTop="8dp"
                 android:background="@drawable/rounded_edittext"
-                android:hint="Nơi ở"
                 android:fontFamily="@font/poppins_regular"
+                android:hint="Nơi ở"
                 android:paddingStart="12dp"
                 android:paddingEnd="12dp"
                 android:textColor="@android:color/white"
@@ -193,8 +194,8 @@
                 android:layout_height="48dp"
                 android:layout_marginTop="8dp"
                 android:background="@drawable/rounded_edittext"
-                android:hint="Mối quan hệ"
                 android:fontFamily="@font/poppins_regular"
+                android:hint="Mối quan hệ"
                 android:paddingStart="12dp"
                 android:paddingEnd="12dp"
                 android:textColor="@android:color/white"
@@ -210,8 +211,8 @@
                 android:layout_height="48dp"
                 android:layout_marginTop="8dp"
                 android:background="@drawable/rounded_edittext"
-                android:hint="Tôn giáo"
                 android:fontFamily="@font/poppins_regular"
+                android:hint="Tôn giáo"
                 android:paddingStart="12dp"
                 android:paddingEnd="12dp"
                 android:textColor="@android:color/white"
@@ -227,8 +228,8 @@
                 android:layout_height="48dp"
                 android:layout_marginTop="8dp"
                 android:background="@drawable/rounded_edittext"
-                android:hint="Trình độ học vấn"
                 android:fontFamily="@font/poppins_regular"
+                android:hint="Trình độ học vấn"
                 android:paddingStart="12dp"
                 android:paddingEnd="12dp"
                 android:textColor="@android:color/white"
@@ -244,8 +245,8 @@
                 android:layout_height="48dp"
                 android:layout_marginTop="8dp"
                 android:background="@drawable/rounded_edittext"
-                android:hint="Nghề nghiệp"
                 android:fontFamily="@font/poppins_regular"
+                android:hint="Nghề nghiệp"
                 android:paddingStart="12dp"
                 android:paddingEnd="12dp"
                 android:textColor="@android:color/white"
@@ -262,8 +263,8 @@
                 android:layout_marginTop="16dp"
                 android:layout_marginBottom="16dp"
                 android:backgroundTint="#E6C576EB"
-                android:text="Xác nhận"
                 android:fontFamily="@font/poppins_bold"
+                android:text="Xác nhận"
                 android:textColor="@android:color/black"
                 android:textSize="16sp"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -272,16 +273,5 @@
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
-
-    <!-- Include Navigation Bar -->
-    <include
-        android:id="@+id/navigation_bar"
-        layout="@layout/navigation_bar"
-        android:layout_width="0dp"
-        android:layout_height="60dp"
-        android:background="@android:color/white"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

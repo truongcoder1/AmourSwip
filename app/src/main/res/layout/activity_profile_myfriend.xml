@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -12,14 +11,15 @@
         android:id="@+id/scroll_view"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/navigation_bar"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
+        app:layout_constraintTop_toTopOf="parent">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="60dp"
             android:padding="16dp">
 
             <!-- Back Arrow -->
@@ -41,10 +41,10 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="40dp"
+                android:fontFamily="@font/poppins_bold"
                 android:text="Hồ sơ của Ngọc"
                 android:textColor="@android:color/black"
                 android:textSize="18sp"
-                android:fontFamily="@font/poppins_bold"
                 app:layout_constraintStart_toEndOf="@id/back_arrow"
                 app:layout_constraintTop_toTopOf="parent" />
 
@@ -81,64 +81,64 @@
                 android:id="@+id/user_info"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:text="Tên: Ngốc Cream 22\nGiới tính: Nữ\nSở thích: Anh, người\nMô tả: Đang yêu, thích đi du lịch ...\n\nKhoảng cách: 3.6 km"
-                android:textSize="14sp"
-                android:textColor="@android:color/black"
-                android:fontFamily="@font/poppins_regular"
-                app:layout_constraintTop_toBottomOf="@id/avatar_image"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
                 android:layout_marginTop="16dp"
-                android:paddingHorizontal="8dp" />
+                android:fontFamily="@font/poppins_regular"
+                android:paddingHorizontal="8dp"
+                android:text="Tên: Ngốc Cream 22\nGiới tính: Nữ\nSở thích: Anh, người\nMô tả: Đang yêu, thích đi du lịch ...\n\nKhoảng cách: 3.6 km"
+                android:textColor="@android:color/black"
+                android:textSize="14sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/avatar_image" />
 
             <!-- Buttons -->
             <Button
                 android:id="@+id/message_button"
                 android:layout_width="120dp"
                 android:layout_height="40dp"
-                android:text="Nhắn tin"
-                android:textSize="14sp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="8dp"
                 android:backgroundTint="#D3D3D3"
                 android:fontFamily="@font/poppins_bold"
+                android:text="Nhắn tin"
                 android:textColor="@android:color/black"
-                app:layout_constraintTop_toBottomOf="@id/user_info"
-                app:layout_constraintStart_toStartOf="parent"
+                android:textSize="14sp"
                 app:layout_constraintEnd_toStartOf="@id/cancel_match_button"
-                android:layout_marginTop="16dp"
-                android:layout_marginEnd="8dp" />
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/user_info" />
 
             <Button
                 android:id="@+id/cancel_match_button"
                 android:layout_width="120dp"
                 android:layout_height="40dp"
-                android:text="Huỷ ghép"
-                android:fontFamily="@font/poppins_bold"
-                android:textSize="14sp"
-                android:backgroundTint="#E6C576EB"
-                android:textColor="@android:color/black"
-                app:layout_constraintTop_toBottomOf="@id/user_info"
-                app:layout_constraintStart_toEndOf="@id/message_button"
-                app:layout_constraintEnd_toEndOf="parent"
+                android:layout_marginStart="8dp"
                 android:layout_marginTop="16dp"
-                android:layout_marginStart="8dp" />
+                android:backgroundTint="#E6C576EB"
+                android:fontFamily="@font/poppins_bold"
+                android:text="Huỷ ghép"
+                android:textColor="@android:color/black"
+                android:textSize="14sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/message_button"
+                app:layout_constraintTop_toBottomOf="@id/user_info" />
 
             <!-- Photo Collection Title -->
             <TextView
                 android:id="@+id/photo_collection_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
                 android:text="Bộ sưu tập ảnh"
+                android:textColor="@android:color/black"
                 android:textSize="16sp"
                 android:textStyle="bold"
-                android:textColor="@android:color/black"
-                app:layout_constraintTop_toBottomOf="@id/message_button"
                 app:layout_constraintStart_toStartOf="parent"
-                android:layout_marginTop="24dp" />
+                app:layout_constraintTop_toBottomOf="@id/message_button" />
 
             <!-- Photo Grid -->
             <GridView
                 android:id="@+id/photo_grid"
-                android:layout_width="390dp"
+                android:layout_width="0dp"
                 android:layout_height="197dp"
                 android:layout_marginTop="12dp"
                 android:background="@android:color/transparent"
@@ -152,16 +152,5 @@
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
-
-    <!-- Include Navigation Bar -->
-    <include
-        android:id="@+id/navigation_bar"
-        layout="@layout/navigation_bar"
-        android:layout_width="0dp"
-        android:layout_height="60dp"
-        android:background="@android:color/white"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
