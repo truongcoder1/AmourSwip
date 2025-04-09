@@ -7,9 +7,6 @@
     android:background="@drawable/background_chat">
 
     <!-- Thanh tiêu đề -->
-
-    <!-- RecyclerView để hiển thị danh sách tin nhắn -->
-
     <LinearLayout
         android:id="@+id/header_layout"
         android:layout_width="match_parent"
@@ -91,9 +88,6 @@
         </LinearLayout>
 
         <!-- Nút video call -->
-
-        <!-- Nút menu -->
-
         <ImageButton
             android:id="@+id/video_call_button"
             android:layout_width="25dp"
@@ -103,6 +97,7 @@
             android:scaleType="fitCenter"
             android:src="@drawable/ic_camchat" />
 
+        <!-- Nút menu -->
         <ImageButton
             android:id="@+id/menu_button"
             android:layout_width="25dp"
@@ -113,10 +108,11 @@
             android:src="@drawable/ic_dot" />
     </LinearLayout>
 
+    <!-- RecyclerView để hiển thị danh sách tin nhắn -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/messages_recycler_view"
         android:layout_width="match_parent"
-        android:layout_height="561dp"
+        android:layout_height="0dp"
         android:layout_above="@+id/input_layout"
         android:layout_below="@+id/header_layout"
         android:layout_marginTop="2dp"
