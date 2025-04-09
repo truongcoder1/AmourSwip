@@ -8,8 +8,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.google.firebase.auth.FirebaseAuth;
 
 import vn.edu.tlu.cse.amourswip.Activity.SelectGenderActivity;
-import vn.edu.tlu.cse.amourswip.Datalayer.Model.User;
-import vn.edu.tlu.cse.amourswip.Datalayer.Repository.UserRepository;
+import vn.edu.tlu.cse.amourswip.Datalayer.model.User;
+import vn.edu.tlu.cse.amourswip.Datalayer.repository.UserRepository;
 import vn.edu.tlu.cse.amourswip.R;
 
 public class SignUpActivity extends AppCompatActivity {

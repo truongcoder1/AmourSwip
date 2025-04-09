@@ -38,7 +38,7 @@ public class SignInActivity extends AppCompatActivity {
 
         // Kiểm tra nếu người dùng đã đăng nhập
         if (auth.getCurrentUser() != null) {
-            startActivity(new Intent(this, MainActivity.class));
+            startActivity(new Intent(this, vn.edu.tlu.cse.amourswip.Activity.MainActivity.class));
             finish();
             return;
         }
@@ -62,7 +62,7 @@ public class SignInActivity extends AppCompatActivity {
                         .addOnCompleteListener(SignInActivity.this, task -> {
                             if (task.isSuccessful()) {
                                 Toast.makeText(SignInActivity.this, "Đăng nhập thành công", Toast.LENGTH_SHORT).show();
-                                startActivity(new Intent(SignInActivity.this, MainActivity.class));
+                                startActivity(new Intent(SignInActivity.this, vn.edu.tlu.cse.amourswip.Activity.MainActivity.class));
                                 finish();
                             } else {
                                 Toast.makeText(SignInActivity.this, "Đăng nhập thất bại: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
@@ -75,7 +75,7 @@ public class SignInActivity extends AppCompatActivity {
         signUpPrompt.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(SignInActivity.this, SignUpActivity.class));
+                startActivity(new Intent(SignInActivity.this, vn.edu.tlu.cse.amourswip.Activity.SignUpActivity.class));
             }
         });
     }

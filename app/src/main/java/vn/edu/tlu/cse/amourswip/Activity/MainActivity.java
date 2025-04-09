@@ -2,33 +2,22 @@ package vn.edu.tlu.cse.amourswip.Activity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
-import android.widget.ImageButton;
-import android.widget.LinearLayout;
+import android.view.MenuItem;
 import android.widget.Toast;
-
-import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.navigation.NavController;
-import androidx.navigation.fragment.NavHostFragment;
-import androidx.navigation.ui.NavigationUI;
-
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-
 import vn.edu.tlu.cse.amourswip.R;
+import vn.edu.tlu.cse.amourswip.Activity.SignInActivity;
 
 public class MainActivity extends AppCompatActivity {
 
     private FirebaseAuth auth;
     private DatabaseReference database;
-    private LinearLayout navigationBar;
-    private ImageButton navDownloadButton;
-    private ImageButton navLikeButton;
-    private ImageButton navChatButton;
-    private ImageButton navProfileButton;
+    private BottomNavigationView bottomNavigationView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,39 +35,28 @@ public class MainActivity extends AppCompatActivity {
             return;
         }
 
-        // Khởi tạo các view bằng findViewById
-        navigationBar = findViewById(R.id.navigation_bar);
-        navDownloadButton = findViewById(R.id.nav_download_button);
-        navLikeButton = findViewById(R.id.nav_like_button);
-        navChatButton = findViewById(R.id.nav_chat_button);
-        navProfileButton = findViewById(R.id.nav_profile_button);
+        // Khởi tạo BottomNavigationView bằng findViewById
+        bottomNavigationView = findViewById(R.id.bottom_navigation);
 
-        // Xử lý sự kiện nhấn các nút trong navigation bar
-        navDownloadButton.setOnClickListener(new View.OnClickListener() {
+        // Xử lý sự kiện nhấn các tab trong BottomNavigationView
+        bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
-            public void onClick(View v) {
-                Toast.makeText(MainActivity.this, "Swipe button clicked", Toast.LENGTH_SHORT).show();
-            }
-        });
-
-        navLikeButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(MainActivity.this, "Like button clicked", Toast.LENGTH_SHORT).show();
-            }
-        });
-
-        navChatButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(MainActivity.this, "Chat button clicked", Toast.LENGTH_SHORT).show();
-            }
-        });
-
-        navProfileButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(MainActivity.this, "Profile button clicked", Toast.LENGTH_SHORT).show();
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                int itemId = item.getItemId();
+                if (itemId == R.id.swipeFragment) {
+                    Toast.makeText(MainActivity.this, "Swipe button clicked", Toast.LENGTH_SHORT).show();
+                    return true;
+                } else if (itemId == R.id.listChatFragment) {
+                    Toast.makeText(MainActivity.this, "Chat button clicked", Toast.LENGTH_SHORT).show();
+                    return true;
+                } else if (itemId == R.id.profileFragment) {
+                    Toast.makeText(MainActivity.this, "Profile button clicked", Toast.LENGTH_SHORT).show();
+                    return true;
+                } else if (itemId == R.id.likeFragment) {
+                    Toast.makeText(MainActivity.this, "Like button clicked", Toast.LENGTH_SHORT).show();
+                    return true;
+                }
+                return false;
             }
         });
     }
