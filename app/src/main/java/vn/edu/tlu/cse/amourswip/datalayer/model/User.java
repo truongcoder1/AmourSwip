@@ -1,4 +1,4 @@
-package vn.edu.tlu.cse.amourswip.Datalayer.model;
+package vn.edu.tlu.cse.amourswip.datalayer.model;
 
 import java.util.List;
 

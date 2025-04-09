@@ -1,4 +1,4 @@
-package vn.edu.tlu.cse.amourswip.Activity;
+package vn.edu.tlu.cse.amourswip.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -11,7 +11,6 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import vn.edu.tlu.cse.amourswip.R;
-import vn.edu.tlu.cse.amourswip.Activity.SignInActivity;
 
 public class MainActivity extends AppCompatActivity {
 
