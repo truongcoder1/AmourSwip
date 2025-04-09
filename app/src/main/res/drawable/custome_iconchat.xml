@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Khi tab được chọn (state_checked="true"): không áp dụng tint -->
+    <item android:drawable="@drawable/ic_chat" android:state_checked="true">
+        <bitmap android:tint="#FF0000" /> <!-- Màu đỏ -->
+    </item>
+    <!-- Khi tab không được chọn (state_checked="false"): áp dụng tint màu xám -->
+    <item android:drawable="@drawable/ic_chat" android:state_checked="false">
+        <bitmap android:tint="#808080" /> <!-- Màu xám -->
+    </item>
+</selector>

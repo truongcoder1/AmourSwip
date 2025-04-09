@@ -11,4 +11,5 @@
         <item name="android:calendarTextColor">@android:color/black</item>
         <item name="android:dayOfWeekBackground">#D1C4E9</item>
     </style>
+
 </resources>

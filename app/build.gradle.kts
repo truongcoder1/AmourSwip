@@ -53,4 +53,5 @@ dependencies {
     implementation (libs.navigation.ui)
     implementation (libs.firebase.storage)
     implementation (libs.appcompat.v161)
+    implementation (libs.material)
 }
