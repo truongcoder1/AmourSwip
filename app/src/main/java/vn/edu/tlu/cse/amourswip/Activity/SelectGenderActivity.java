@@ -6,7 +6,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
-import vn.edu.tlu.cse.amourswip.Datalayer.Repository.UserRepository;
+import vn.edu.tlu.cse.amourswip.Datalayer.repository.UserRepository;
 import vn.edu.tlu.cse.amourswip.R;
 
 public class SelectGenderActivity extends AppCompatActivity {

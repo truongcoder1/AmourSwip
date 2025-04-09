@@ -1,4 +1,4 @@
-package vn.edu.tlu.cse.amourswip.activity;
+package vn.edu.tlu.cse.amourswip.Activity;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -7,9 +7,9 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import com.google.firebase.auth.FirebaseAuth;
 
-import vn.edu.tlu.cse.amourswip.activity.SelectGenderActivity;
-import vn.edu.tlu.cse.amourswip.datalayer.model.User;
-import vn.edu.tlu.cse.amourswip.datalayer.repository.UserRepository;
+import vn.edu.tlu.cse.amourswip.Activity.SelectGenderActivity;
+import vn.edu.tlu.cse.amourswip.Datalayer.model.User;
+import vn.edu.tlu.cse.amourswip.Datalayer.repository.UserRepository;
 import vn.edu.tlu.cse.amourswip.R;
 
 public class SignUpActivity extends AppCompatActivity {

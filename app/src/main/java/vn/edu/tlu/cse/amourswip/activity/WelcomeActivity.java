@@ -1,4 +1,4 @@
-package vn.edu.tlu.cse.amourswip.activity;
+package vn.edu.tlu.cse.amourswip.Activity;
 
 import static androidx.core.content.ContextCompat.startActivity;
 
@@ -11,6 +11,8 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.firebase.auth.FirebaseAuth;
 
+import vn.edu.tlu.cse.amourswip.Activity.SignInActivity;
+import vn.edu.tlu.cse.amourswip.Activity.SignUpActivity;
 import vn.edu.tlu.cse.amourswip.R;
 
 public class WelcomeActivity extends AppCompatActivity {
@@ -32,7 +34,7 @@ public class WelcomeActivity extends AppCompatActivity {
 
         // Kiểm tra trạng thái đăng nhập
         if (auth.getCurrentUser() != null) {
-            startActivity(new Intent(this, vn.edu.tlu.cse.amourswip.activity.MainActivity.class));
+            startActivity(new Intent(this, vn.edu.tlu.cse.amourswip.Activity.MainActivity.class));
             finish();
             return;
         }

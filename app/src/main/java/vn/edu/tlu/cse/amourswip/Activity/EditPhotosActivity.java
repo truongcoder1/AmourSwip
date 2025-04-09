@@ -13,7 +13,7 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
 import vn.edu.tlu.cse.amourswip.Activity.MapActivity;
-import vn.edu.tlu.cse.amourswip.Datalayer.Repository.UserRepository;
+import vn.edu.tlu.cse.amourswip.Datalayer.repository.UserRepository;
 import vn.edu.tlu.cse.amourswip.R;
 
 import java.util.ArrayList;

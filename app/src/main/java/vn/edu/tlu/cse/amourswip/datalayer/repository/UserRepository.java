@@ -1,11 +1,11 @@
-package vn.edu.tlu.cse.amourswip.datalayer.repository;
+package vn.edu.tlu.cse.amourswip.Datalayer.repository;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import vn.edu.tlu.cse.amourswip.datalayer.model.User;
+import vn.edu.tlu.cse.amourswip.Datalayer.model.User;
 
 public class UserRepository {
 

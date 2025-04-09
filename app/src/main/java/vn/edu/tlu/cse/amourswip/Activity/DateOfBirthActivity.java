@@ -1,17 +1,22 @@
 package vn.edu.tlu.cse.amourswip.Activity;
 
+import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
-import android.widget.EditText;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
-import vn.edu.tlu.cse.amourswip.Datalayer.Repository.UserRepository;
+import com.google.android.material.button.MaterialButton;
+import com.google.android.material.textfield.TextInputEditText;
+
 import vn.edu.tlu.cse.amourswip.Activity.EditPhotosActivity;
+import vn.edu.tlu.cse.amourswip.Datalayer.repository.UserRepository;
 import vn.edu.tlu.cse.amourswip.R;
+
+import java.util.Calendar;
 
 public class DateOfBirthActivity extends AppCompatActivity {
 
-    private EditText etDateOfBirth;
+    private TextInputEditText birthdayInput;
     private UserRepository userRepository;
 
     @Override
@@ -19,15 +24,19 @@ public class DateOfBirthActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dateofbirth);
 
-        etDateOfBirth = findViewById(R.id.birthday_input);
+        birthdayInput = findViewById(R.id.birthday_input);
+        MaterialButton nextButton = findViewById(R.id.next_button);
         userRepository = new UserRepository();
 
-        findViewById(R.id.next_button).setOnClickListener(v -> {
-            String dateOfBirth = etDateOfBirth.getText().toString().trim();
+        // Hiển thị DatePickerDialog khi nhấn vào TextInputEditText
+        birthdayInput.setOnClickListener(v -> showDatePickerDialog());
+
+        nextButton.setOnClickListener(v -> {
+            String dateOfBirth = birthdayInput.getText().toString().trim();
 
             // Kiểm tra dữ liệu đầu vào
             if (!isValidDateFormat(dateOfBirth)) {
-                Toast.makeText(DateOfBirthActivity.this, "Vui lòng nhập ngày sinh theo định dạng DD/MM/YYYY", Toast.LENGTH_SHORT).show();
+                Toast.makeText(DateOfBirthActivity.this, "Vui lòng chọn ngày sinh theo định dạng DD/MM/YYYY", Toast.LENGTH_SHORT).show();
                 return;
             }
 
@@ -57,6 +66,28 @@ public class DateOfBirthActivity extends AppCompatActivity {
                 }
             });
         });
+    }
+
+    private void showDatePickerDialog() {
+        // Lấy ngày hiện tại làm giá trị mặc định
+        Calendar calendar = Calendar.getInstance();
+        int year = calendar.get(Calendar.YEAR);
+        int month = calendar.get(Calendar.MONTH);
+        int day = calendar.get(Calendar.DAY_OF_MONTH);
+
+        // Tạo DatePickerDialog với calendar mode
+        DatePickerDialog datePickerDialog = new DatePickerDialog(
+                this,
+                R.style.CustomDatePickerDialogTheme,
+                (view, selectedYear, selectedMonth, selectedDay) -> {
+                    String date = String.format("%02d/%02d/%04d", selectedDay, selectedMonth + 1, selectedYear);
+                    birthdayInput.setText(date);
+                },
+                year, month, day
+        );
+
+        // Hiển thị dialog
+        datePickerDialog.show();
     }
 
     // Kiểm tra định dạng DD/MM/YYYY

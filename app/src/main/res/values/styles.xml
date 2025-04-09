@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="CustomDatePickerDialogTheme" parent="Theme.AppCompat.Light.Dialog">
+        <item name="android:windowBackground">@android:color/white</item>
+        <item name="android:datePickerStyle">@style/CustomDatePickerStyle</item>
+    </style>
+
+    <style name="CustomDatePickerStyle">
+        <item name="android:headerBackground">#C87DD7</item>
+        <item name="android:calendarTextColor">@android:color/black</item>
+        <item name="android:dayOfWeekBackground">#D1C4E9</item>
+    </style>
+</resources>

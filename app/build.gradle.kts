@@ -52,4 +52,5 @@ dependencies {
     implementation (libs.navigation.fragment.v277)
     implementation (libs.navigation.ui)
     implementation (libs.firebase.storage)
+    implementation (libs.appcompat.v161)
 }
