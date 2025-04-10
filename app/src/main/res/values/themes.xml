@@ -21,7 +21,9 @@
         <item name="elevation">4dp</item> <!-- Đổ bóng -->
     </style>
 
-
+    <style name="AppTheme" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <!-- Các tùy chỉnh khác -->
+    </style>
 
     <style name="Theme.AmourSwip" parent="Base.Theme.AmourSwip" />
 </resources>

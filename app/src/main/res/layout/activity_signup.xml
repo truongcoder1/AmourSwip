@@ -8,8 +8,9 @@
     <!-- LinearLayout để căn giữa ngang và kéo xuống thấp -->
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="467dp"
-        android:layout_marginTop="250dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="50dp"
         android:gravity="center_horizontal"
         android:orientation="vertical"
         android:paddingHorizontal="40dp">
@@ -37,16 +38,24 @@
             android:textSize="12sp"
             android:visibility="gone" />
 
-        <!-- EditText cho "Email" -->
-        <EditText
-            android:id="@+id/email_input"
+        <!-- TextInputLayout cho "Email" -->
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/email_input_layout"
             android:layout_width="280dp"
-            android:layout_height="48dp"
+            android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:background="@drawable/edit_text_background"
-            android:drawableEnd="@drawable/ic_email"
-            android:drawablePadding="8dp"
             android:elevation="4dp"
+            app:hintEnabled="false"
+            app:boxBackgroundMode="none"
+            app:endIconMode="custom"
+            app:endIconDrawable="@drawable/ic_email">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/email_input"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@null"
             android:fontFamily="@font/poppins_bold"
             android:hint="@string/email"
             android:inputType="textEmailAddress"
@@ -55,75 +64,106 @@
             android:textColorHint="#A0A0A0"
             android:textSize="16sp" />
 
-        <!-- EditText cho "Tài khoản" -->
-        <EditText
-            android:id="@+id/username_input"
-            android:layout_width="280dp"
-            android:layout_height="48dp"
-            android:layout_marginTop="16dp"
-            android:background="@drawable/edit_text_background"
-            android:drawableEnd="@drawable/ic_person"
-            android:drawablePadding="8dp"
-            android:elevation="4dp"
-            android:fontFamily="@font/poppins_bold"
-            android:hint="@string/username"
-            android:paddingHorizontal="16dp"
-            android:paddingVertical="12dp"
-            android:textColorHint="#A0A0A0"
-            android:textSize="16sp" />
+    </com.google.android.material.textfield.TextInputLayout>
 
-        <!-- EditText cho "Mật khẩu" -->
-        <EditText
-            android:id="@+id/password_input"
-            android:layout_width="280dp"
-            android:layout_height="48dp"
-            android:layout_marginTop="16dp"
-            android:background="@drawable/edit_text_background"
-            android:drawableEnd="@drawable/ic_eye"
-            android:drawablePadding="8dp"
-            android:elevation="4dp"
-            android:fontFamily="@font/poppins_bold"
-            android:hint="@string/password"
-            android:inputType="textPassword"
-            android:paddingHorizontal="16dp"
-            android:paddingVertical="12dp"
-            android:textColorHint="#A0A0A0"
-            android:textSize="16sp" />
+    <!-- TextInputLayout cho "Tài khoản" -->
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/username_input_layout"
+        android:layout_width="280dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:background="@drawable/edit_text_background"
+        android:elevation="4dp"
+        app:hintEnabled="false"
+        app:boxBackgroundMode="none"
+        app:endIconMode="custom"
+        app:endIconDrawable="@drawable/ic_person">
 
-        <!-- EditText cho "Xác nhận mật khẩu" -->
-        <EditText
-            android:id="@+id/confirm_password_input"
-            android:layout_width="280dp"
-            android:layout_height="48dp"
-            android:layout_marginTop="16dp"
-            android:background="@drawable/edit_text_background"
-            android:drawableEnd="@drawable/ic_eye"
-            android:drawablePadding="8dp"
-            android:elevation="4dp"
-            android:fontFamily="@font/poppins_bold"
-            android:hint="@string/confirm_password"
-            android:inputType="textPassword"
-            android:paddingHorizontal="16dp"
-            android:paddingVertical="12dp"
-            android:textColorHint="#A0A0A0"
-            android:textSize="16sp" />
+    <com.google.android.material.textfield.TextInputEditText
+        android:id="@+id/username_input"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@null"
+        android:fontFamily="@font/poppins_bold"
+        android:hint="@string/username"
+        android:inputType="text"
+        android:paddingHorizontal="16dp"
+        android:paddingVertical="12dp"
+        android:textColorHint="#A0A0A0"
+        android:textSize="16sp" />
 
-        <!-- Nút "Đăng ký" -->
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/sign_up_button"
-            android:layout_width="280dp"
-            android:layout_height="56dp"
-            android:layout_marginTop="32dp"
-            android:backgroundTint="#C87DD7"
-            android:elevation="4dp"
-            android:fontFamily="@font/poppins_bold"
-            android:paddingHorizontal="35dp"
-            android:paddingVertical="12dp"
-            android:text="@string/sign_up"
-            android:textColor="@android:color/black"
-            android:textSize="16sp"
-            app:cornerRadius="50dp" />
+</com.google.android.material.textfield.TextInputLayout>
+
+    <!-- TextInputLayout cho "Mật khẩu" -->
+<com.google.android.material.textfield.TextInputLayout
+    android:id="@+id/password_input_layout"
+    android:layout_width="280dp"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="16dp"
+    app:hintEnabled="false"
+    app:passwordToggleEnabled="true"
+    app:boxBackgroundMode="none"
+    android:background="@drawable/edit_text_background"
+    android:elevation="4dp">
+
+<com.google.android.material.textfield.TextInputEditText
+    android:id="@+id/password_input"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@null"
+    android:fontFamily="@font/poppins_bold"
+    android:hint="@string/password"
+    android:inputType="textPassword"
+    android:paddingHorizontal="16dp"
+    android:paddingVertical="12dp"
+    android:textColorHint="#A0A0A0"
+    android:textSize="16sp" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <!-- TextInputLayout cho "Xác nhận mật khẩu" -->
+<com.google.android.material.textfield.TextInputLayout
+    android:id="@+id/confirm_password_input_layout"
+    android:layout_width="280dp"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="16dp"
+    app:hintEnabled="false"
+    app:passwordToggleEnabled="true"
+    app:boxBackgroundMode="none"
+    android:background="@drawable/edit_text_background"
+    android:elevation="4dp">
+
+<com.google.android.material.textfield.TextInputEditText
+    android:id="@+id/confirm_password_input"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@null"
+    android:fontFamily="@font/poppins_bold"
+    android:hint="@string/confirm_password"
+    android:inputType="textPassword"
+    android:paddingHorizontal="16dp"
+    android:paddingVertical="12dp"
+    android:textColorHint="#A0A0A0"
+    android:textSize="16sp" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <!-- Nút "Đăng ký" -->
+<com.google.android.material.button.MaterialButton
+    android:id="@+id/sign_up_button"
+    android:layout_width="280dp"
+    android:layout_height="56dp"
+    android:layout_marginTop="32dp"
+    android:backgroundTint="#C87DD7"
+    android:elevation="4dp"
+    android:fontFamily="@font/poppins_bold"
+    android:paddingHorizontal="35dp"
+    android:paddingVertical="12dp"
+    android:text="@string/sign_up"
+    android:textColor="@android:color/black"
+    android:textSize="16sp"
+    app:cornerRadius="50dp" />
 
     </LinearLayout>
 
-</RelativeLayout>
+    </RelativeLayout>
