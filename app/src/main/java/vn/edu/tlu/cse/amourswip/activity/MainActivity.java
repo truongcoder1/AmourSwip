@@ -14,7 +14,6 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import vn.edu.tlu.cse.amourswip.R;
-import vn.edu.tlu.cse.amourswip.activity.SignInActivity;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -58,17 +57,30 @@ public class MainActivity extends AppCompatActivity {
                             navController.navigate(R.id.swipeFragment);
                             return true;
                         } else if (itemId == R.id.listChatFragment) {
-                            Toast.makeText(MainActivity.this, "Chat button clicked - Chưa triển khai", Toast.LENGTH_SHORT).show();
+                            navController.navigate(R.id.listChatFragment);
                             return true;
                         } else if (itemId == R.id.profileFragment) {
-                            Toast.makeText(MainActivity.this, "Profile button clicked - Chưa triển khai", Toast.LENGTH_SHORT).show();
+                            navController.navigate(R.id.profileFragment);
                             return true;
                         } else if (itemId == R.id.likeFragment) {
+                            navController.navigate(R.id.likeFragment);
                             Toast.makeText(MainActivity.this, "Like button clicked - Chưa triển khai", Toast.LENGTH_SHORT).show();
                             return true;
                         }
                         return false;
                     });
+
+                    // Xử lý điều hướng từ Intent (ví dụ: từ ProfileMyFriendActivity)
+                    Intent intent = getIntent();
+                    if (intent != null && intent.hasExtra("navigateTo")) {
+                        String navigateTo = intent.getStringExtra("navigateTo");
+                        if ("chatFragment".equals(navigateTo)) {
+                            String friendId = intent.getStringExtra("friendId");
+                            Bundle bundle = new Bundle();
+                            bundle.putString("friendId", friendId);
+                            navController.navigate(R.id.chatFragment, bundle);
+                        }
+                    }
                 } catch (IllegalStateException e) {
                     Toast.makeText(MainActivity.this, "Lỗi khởi tạo NavController: " + e.getMessage(), Toast.LENGTH_LONG).show();
                 }

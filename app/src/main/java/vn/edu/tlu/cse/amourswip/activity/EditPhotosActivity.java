@@ -3,127 +3,208 @@ package vn.edu.tlu.cse.amourswip.activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.provider.MediaStore;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.GridView;
+import android.widget.ImageView;
 import android.widget.Toast;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
-
-import vn.edu.tlu.cse.amourswip.datalayer.repository.UserRepository;
+import vn.edu.tlu.cse.amourswip.adapter.PhotoAdapter;
 import vn.edu.tlu.cse.amourswip.R;
-
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 public class EditPhotosActivity extends AppCompatActivity {
 
-    private UserRepository userRepository;
+    private ImageView backArrow;
+    private ImageView settingsIcon;
+    private GridView photoGrid;
+    private Button addButton;
+    private Button deleteButton;
+    private Button confirmButton;
+    private DatabaseReference userRef;
     private StorageReference storageRef;
     private List<String> photoUrls = new ArrayList<>();
-    private ActivityResultLauncher<String> pickImageLauncher;
-    private ActivityResultLauncher<Intent> takePictureLauncher;
+    private PhotoAdapter photoAdapter;
+    private int selectedPosition = -1; // Vị trí ảnh được chọn để xóa
+    private ActivityResultLauncher<Intent> pickImageLauncher;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.acitivity_myimage);
+        setContentView(R.layout.activity_edit_photos);
 
-        userRepository = new UserRepository();
-        storageRef = FirebaseStorage.getInstance().getReference("user_photos");
+        // Khởi tạo các view bằng findViewById
+        backArrow = findViewById(R.id.back_arrow);
+        settingsIcon = findViewById(R.id.settings_icon);
+        photoGrid = findViewById(R.id.photo_grid);
+        addButton = findViewById(R.id.add_button);
+        deleteButton = findViewById(R.id.delete_button);
+        confirmButton = findViewById(R.id.confirm_button);
 
-        Button btnUploadPhoto = findViewById(R.id.upload_button);
-        Button btnTakePhoto = findViewById(R.id.camera_button);
-        Button btnNext = findViewById(R.id.next_button);
-        Button btnSkip = findViewById(R.id.skip_button);
+        // Khởi tạo Firebase
+        String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        userRef = FirebaseDatabase.getInstance().getReference().child("users").child(userId);
+        storageRef = FirebaseStorage.getInstance().getReference().child("user_photos").child(userId);
 
-        // Khởi tạo ActivityResultLauncher để chọn ảnh từ thư viện
-        pickImageLauncher = registerForActivityResult(new ActivityResultContracts.GetContent(), uri -> {
-            if (uri != null) {
-                uploadPhoto(uri);
-            }
-        });
+        // Khởi tạo GridView adapter
+        photoAdapter = new PhotoAdapter(this, photoUrls);
+        photoGrid.setAdapter(photoAdapter);
 
-        // Khởi tạo ActivityResultLauncher để chụp ảnh bằng camera
-        takePictureLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
+        // Lấy danh sách ảnh từ Firebase
+        loadPhotos();
+
+        // Khởi tạo ActivityResultLauncher để chọn ảnh
+        pickImageLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
             if (result.getResultCode() == RESULT_OK && result.getData() != null) {
-                Uri uri = result.getData().getData();
-                if (uri == null) {
-                    // Nếu không có URI (trường hợp chụp ảnh trực tiếp), lấy từ extras
-                    Bundle extras = result.getData().getExtras();
-                    if (extras != null && extras.get("data") != null) {
-                        // Xử lý ảnh chụp (cần lưu ảnh vào bộ nhớ để lấy URI, ở đây tôi giả định bạn sẽ xử lý thêm)
-                        Toast.makeText(this, "Ảnh đã chụp, nhưng cần xử lý thêm để lưu", Toast.LENGTH_SHORT).show();
-                    }
+                Uri imageUri = result.getData().getData();
+                if (imageUri != null) {
+                    uploadImageToFirebase(imageUri);
+                }
+            }
+        });
+
+        // Xử lý nút quay lại
+        backArrow.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
+
+        // Xử lý nút cài đặt
+        settingsIcon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(EditPhotosActivity.this, SettingActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        // Xử lý nút thêm ảnh
+        addButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(Intent.ACTION_PICK);
+                intent.setType("image/*");
+                pickImageLauncher.launch(intent);
+            }
+        });
+
+        // Xử lý nút xóa ảnh
+        deleteButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (selectedPosition != -1) {
+                    deletePhoto(selectedPosition);
+                    selectedPosition = -1; // Reset vị trí đã chọn
                 } else {
-                    uploadPhoto(uri);
+                    Toast.makeText(EditPhotosActivity.this, "Vui lòng chọn một ảnh để xóa", Toast.LENGTH_SHORT).show();
                 }
             }
         });
 
-        btnUploadPhoto.setOnClickListener(v -> {
-            // Mở trình chọn ảnh
-            pickImageLauncher.launch("image/*");
-        });
-
-        btnTakePhoto.setOnClickListener(v -> {
-            // Mở camera để chụp ảnh
-            Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-            if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
-                takePictureLauncher.launch(takePictureIntent);
-            } else {
-                Toast.makeText(this, "Không tìm thấy ứng dụng camera", Toast.LENGTH_SHORT).show();
+        // Xử lý sự kiện chọn ảnh trong GridView
+        photoGrid.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                selectedPosition = position;
+                Toast.makeText(EditPhotosActivity.this, "Đã chọn ảnh số " + (position + 1), Toast.LENGTH_SHORT).show();
             }
         });
 
-        btnNext.setOnClickListener(v -> {
-            if (photoUrls.isEmpty()) {
-                Toast.makeText(this, "Vui lòng thêm ít nhất một ảnh", Toast.LENGTH_SHORT).show();
-                return;
+        // Xử lý nút xác nhận
+        confirmButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                savePhotosToFirebase();
             }
-
-            // Cập nhật danh sách URL ảnh vào Realtime Database
-            userRepository.updateUserField("photos", photoUrls, new UserRepository.OnUserActionListener() {
-                @Override
-                public void onSuccess() {
-                    // Chuyển đến màn hình yêu cầu GPS
-                    Intent intent = new Intent(EditPhotosActivity.this, MapActivity.class);
-                    startActivity(intent);
-                }
-
-                @Override
-                public void onFailure(String errorMessage) {
-                    Toast.makeText(EditPhotosActivity.this, "Lỗi khi cập nhật ảnh: " + errorMessage, Toast.LENGTH_SHORT).show();
-                }
-            });
-        });
-
-        btnSkip.setOnClickListener(v -> {
-            // Chuyển đến màn hình yêu cầu GPS mà không lưu ảnh
-            Intent intent = new Intent(EditPhotosActivity.this, MapActivity.class);
-            startActivity(intent);
         });
     }
 
-    private void uploadPhoto(Uri uri) {
-        String userId = userRepository.getCurrentUserId();
-        if (userId != null) {
-            StorageReference photoRef = storageRef.child(userId + "/" + System.currentTimeMillis() + ".jpg");
+    private void loadPhotos() {
+        userRef.child("photos").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                photoUrls.clear();
+                for (DataSnapshot photoSnapshot : snapshot.getChildren()) {
+                    String photoUrl = photoSnapshot.getValue(String.class);
+                    if (photoUrl != null) {
+                        photoUrls.add(photoUrl);
+                    }
+                }
+                photoAdapter.notifyDataSetChanged();
+            }
 
-            photoRef.putFile(uri)
-                    .addOnSuccessListener(taskSnapshot -> {
-                        photoRef.getDownloadUrl().addOnSuccessListener(downloadUri -> {
-                            photoUrls.add(downloadUri.toString());
-                            Toast.makeText(EditPhotosActivity.this, "Tải ảnh lên thành công", Toast.LENGTH_SHORT).show();
-                        });
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Toast.makeText(EditPhotosActivity.this, "Lỗi khi tải ảnh: " + error.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void uploadImageToFirebase(Uri imageUri) {
+        // Tạo tên file duy nhất cho ảnh
+        String fileName = UUID.randomUUID().toString() + ".jpg";
+        StorageReference imageRef = storageRef.child(fileName);
+
+        // Tải ảnh lên Firebase Storage
+        imageRef.putFile(imageUri)
+                .addOnSuccessListener(taskSnapshot -> {
+                    // Lấy URL của ảnh đã tải lên
+                    imageRef.getDownloadUrl().addOnSuccessListener(uri -> {
+                        String downloadUrl = uri.toString();
+                        photoUrls.add(downloadUrl);
+                        photoAdapter.notifyDataSetChanged();
+                        Toast.makeText(EditPhotosActivity.this, "Thêm ảnh thành công", Toast.LENGTH_SHORT).show();
+                    });
+                })
+                .addOnFailureListener(e -> {
+                    Toast.makeText(EditPhotosActivity.this, "Lỗi khi tải ảnh lên: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                });
+    }
+
+    private void deletePhoto(int position) {
+        if (position >= 0 && position < photoUrls.size()) {
+            String photoUrl = photoUrls.get(position);
+            // Xóa ảnh khỏi danh sách
+            photoUrls.remove(position);
+            photoAdapter.notifyDataSetChanged();
+
+            // Xóa ảnh khỏi Firebase Storage (nếu cần)
+            StorageReference photoRef = FirebaseStorage.getInstance().getReferenceFromUrl(photoUrl);
+            photoRef.delete()
+                    .addOnSuccessListener(aVoid -> {
+                        Toast.makeText(EditPhotosActivity.this, "Xóa ảnh thành công", Toast.LENGTH_SHORT).show();
                     })
                     .addOnFailureListener(e -> {
-                        Toast.makeText(EditPhotosActivity.this, "Lỗi khi tải ảnh lên", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(EditPhotosActivity.this, "Lỗi khi xóa ảnh: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                     });
-        } else {
-            Toast.makeText(EditPhotosActivity.this, "Không tìm thấy người dùng hiện tại", Toast.LENGTH_SHORT).show();
         }
+    }
+
+    private void savePhotosToFirebase() {
+        // Lưu danh sách ảnh mới lên Firebase Realtime Database
+        userRef.child("photos").setValue(photoUrls)
+                .addOnSuccessListener(aVoid -> {
+                    Toast.makeText(EditPhotosActivity.this, "Cập nhật ảnh thành công", Toast.LENGTH_SHORT).show();
+                    finish();
+                })
+                .addOnFailureListener(e -> {
+                    Toast.makeText(EditPhotosActivity.this, "Lỗi khi lưu ảnh: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                });
     }
 }

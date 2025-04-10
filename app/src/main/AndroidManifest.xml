@@ -42,8 +42,13 @@
         <activity android:name=".activity.SelectGenderActivity" />
         <activity android:name=".activity.PreferGenderActivity" />
         <activity android:name=".activity.DateOfBirthActivity" />
-        <activity android:name=".activity.EditPhotosActivity" />
+        <activity android:name=".activity.MyimageActivity" />
         <activity android:name=".activity.MapActivity" />
+        <activity android:name=".activity.SettingActivity" />
+        <activity android:name=".activity.EditProfileActivity" />
+        <activity android:name=".activity.ProfileMyFriendActivity"/>
+        <activity android:name=".activity.EditPhotosActivity" />
+
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="vn.edu.tlu.cse.amourswip.fileprovider"

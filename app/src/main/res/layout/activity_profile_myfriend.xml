@@ -47,19 +47,6 @@
                 android:textSize="18sp"
                 app:layout_constraintStart_toEndOf="@id/back_arrow"
                 app:layout_constraintTop_toTopOf="parent" />
-
-            <!-- Settings Icon -->
-            <ImageView
-                android:id="@+id/settings_icon"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:layout_marginTop="40dp"
-                android:layout_marginEnd="4dp"
-                android:contentDescription="Settings"
-                android:src="@drawable/ic_settings_profile"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
             <!-- Avatar Image -->
             <ImageView
                 android:id="@+id/avatar_image"

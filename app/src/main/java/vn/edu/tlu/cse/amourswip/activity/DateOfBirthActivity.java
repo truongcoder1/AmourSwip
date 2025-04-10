@@ -55,7 +55,7 @@ public class DateOfBirthActivity extends AppCompatActivity {
                 @Override
                 public void onSuccess() {
                     // Chuyển đến màn hình thêm ảnh
-                    Intent intent = new Intent(DateOfBirthActivity.this, EditPhotosActivity.class);
+                    Intent intent = new Intent(DateOfBirthActivity.this, MyimageActivity.class);
                     startActivity(intent);
                 }
 

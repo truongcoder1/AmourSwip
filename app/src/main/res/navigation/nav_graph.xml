@@ -10,4 +10,28 @@
         android:name="vn.edu.tlu.cse.amourswip.fragment.SwipeFragment"
         android:label="SwipeFragment" />
 
+    <!-- ListChatFragment -->
+<!--    <fragment-->
+<!--        android:id="@+id/listChatFragment"-->
+<!--        android:name="vn.edu.tlu.cse.amourswip.fragment.ListChatFragment"-->
+<!--        android:label="ListChatFragment" />-->
+
+    <!-- ProfileFragment -->
+    <fragment
+        android:id="@+id/profileFragment"
+        android:name="vn.edu.tlu.cse.amourswip.fragment.ProfileFragment"
+        android:label="ProfileFragment" />
+
+    <!-- LikeFragment -->
+<!--    <fragment-->
+<!--        android:id="@+id/likeFragment"-->
+<!--        android:name="vn.edu.tlu.cse.amourswip.fragment.LikeFragment"-->
+<!--        android:label="LikeFragment" />-->
+
+    <!-- ChatFragment -->
+    <fragment
+        android:id="@+id/chatFragment"
+        android:name="vn.edu.tlu.cse.amourswip.fragment.ChatFragment"
+        android:label="ChatFragment" />
+
 </navigation>

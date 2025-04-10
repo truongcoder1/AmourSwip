@@ -57,4 +57,5 @@ dependencies {
     implementation (libs.firebase.storage)
     implementation (libs.appcompat.v161)
     implementation (libs.material)
+    implementation (libs.glide)
 }
