@@ -5,6 +5,7 @@ import java.util.List;
 public class User {
     private String uid;
     private String email;
+    private String name; // Thêm thuộc tính name
     private String gender;
     private String preferredGender;
     private String dateOfBirth;
@@ -12,21 +13,22 @@ public class User {
     private boolean locationEnabled;
     private double latitude;
     private double longitude;
-    private String religion;        // Tôn giáo
-    private String residence;       // Nơi ở
-    private String educationLevel;  // Trình độ học vấn
-    private String occupation;      // Nghề nghiệp (không bắt buộc)
+    private String religion;
+    private String residence;
+    private String educationLevel;
+    private String occupation;
 
     // Constructor rỗng (yêu cầu bởi Firebase)
     public User() {
     }
 
     // Constructor đầy đủ
-    public User(String uid, String email, String gender, String preferredGender, String dateOfBirth,
+    public User(String uid, String email, String name, String gender, String preferredGender, String dateOfBirth,
                 List<String> photos, boolean locationEnabled, double latitude, double longitude,
                 String religion, String residence, String educationLevel, String occupation) {
         this.uid = uid;
         this.email = email;
+        this.name = name;
         this.gender = gender;
         this.preferredGender = preferredGender;
         this.dateOfBirth = dateOfBirth;
@@ -55,6 +57,14 @@ public class User {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getGender() {

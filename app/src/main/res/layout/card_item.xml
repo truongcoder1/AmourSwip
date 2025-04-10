@@ -4,7 +4,9 @@
     android:layout_height="450dp"
     android:background="@android:color/white"
     android:clipToPadding="false"
-    android:padding="8dp">
+    android:padding="8dp"
+    android:elevation="4dp"
+    android:translationZ="4dp">
 
     <!-- Hình ảnh người dùng -->
     <ImageView
@@ -14,7 +16,7 @@
         android:layout_above="@+id/info_layout"
         android:layout_marginBottom="8dp"
         android:adjustViewBounds="true"
-        android:scaleType="fitCenter"
+        android:scaleType="centerCrop"
         android:src="@drawable/gai1" />
 
     <!-- LinearLayout chứa thông tin người dùng -->
@@ -23,10 +25,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:layout_margin="16dp"
+        android:layout_margin="8dp"
         android:background="#80000000"
         android:orientation="vertical"
-        android:padding="8dp">
+        android:padding="12dp">
 
         <!-- Tên và tuổi -->
         <TextView
@@ -34,9 +36,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="@font/poppins_bold"
-            android:text="Dan, 29"
+            android:text="Liz, 25"
             android:textColor="@android:color/white"
-            android:textSize="24sp"
+            android:textSize="28sp"
             android:textStyle="bold" />
 
         <!-- LinearLayout chứa khoảng cách, trạng thái và các icon -->
@@ -49,11 +51,11 @@
             <!-- Icon bên trái khoảng cách -->
             <ImageView
                 android:id="@+id/distance_icon"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
+                android:layout_width="17dp"
+                android:layout_height="20dp"
                 android:layout_marginEnd="8dp"
                 android:scaleType="fitCenter"
-                android:src="@drawable/ic_locationitem" /> <!-- Placeholder icon cho khoảng cách -->
+                android:src="@drawable/ic_locationitem" />
 
             <!-- Khoảng cách -->
             <TextView
@@ -61,9 +63,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/poppins_regular"
-                android:text="0.8 KM"
+                android:text="0.0 KM"
                 android:textColor="@android:color/white"
-                android:textSize="14sp" />
+                android:textSize="16sp" />
 
             <!-- Khoảng cách giữa khoảng cách và trạng thái -->
             <Space
@@ -77,7 +79,7 @@
                 android:layout_height="12dp"
                 android:layout_marginEnd="8dp"
                 android:scaleType="fitCenter"
-                android:src="@drawable/ic_active" /> <!-- Placeholder icon cho trạng thái -->
+                android:src="@drawable/ic_active" />
 
             <!-- Trạng thái -->
             <TextView
@@ -87,7 +89,7 @@
                 android:fontFamily="@font/poppins_regular"
                 android:text="Active Now"
                 android:textColor="@android:color/white"
-                android:textSize="14sp" />
+                android:textSize="16sp" />
         </LinearLayout>
     </LinearLayout>
 </RelativeLayout>

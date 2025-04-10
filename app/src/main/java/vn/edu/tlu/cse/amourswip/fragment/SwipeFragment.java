@@ -1,0 +1,435 @@
+package vn.edu.tlu.cse.amourswip.fragment;
+
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.app.Dialog;
+import android.media.MediaPlayer;
+import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ImageButton;
+import android.widget.TextView;
+import android.widget.Toast;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
+import com.google.android.material.button.MaterialButton;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+import com.yuyakaido.android.cardstackview.CardStackLayoutManager;
+import com.yuyakaido.android.cardstackview.CardStackListener;
+import com.yuyakaido.android.cardstackview.CardStackView;
+import com.yuyakaido.android.cardstackview.Direction;
+import com.yuyakaido.android.cardstackview.Duration;
+import com.yuyakaido.android.cardstackview.SwipeAnimationSetting;
+import java.util.ArrayList;
+import java.util.List;
+import vn.edu.tlu.cse.amourswip.R;
+import vn.edu.tlu.cse.amourswip.adapter.CardStackAdapter;
+import vn.edu.tlu.cse.amourswip.datalayer.model.User;
+
+public class SwipeFragment extends Fragment {
+
+    private CardStackView cardStackView;
+    private ImageButton skipButton;
+    private ImageButton likeButton;
+    private View skipCircle;
+    private View likeCircle;
+    private View rootView; // Thêm biến để lưu rootView của activity_swipe.xml
+    private FirebaseAuth auth;
+    private DatabaseReference database;
+    private String currentUserId;
+    private List<User> userList;
+    private CardStackAdapter adapter;
+    private CardStackLayoutManager layoutManager;
+    private User currentUser;
+    private NavController navController;
+
+    @Nullable
+    @Override
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        return inflater.inflate(R.layout.activity_swipe, container, false);
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        // Lưu rootView để sử dụng cho việc hiển thị LIKE và NOPE
+        rootView = view;
+
+        // Khởi tạo NavController
+        navController = Navigation.findNavController(view);
+
+        // Khởi tạo Firebase Authentication và Database
+        auth = FirebaseAuth.getInstance();
+        database = FirebaseDatabase.getInstance().getReference();
+
+        // Kiểm tra trạng thái đăng nhập
+        if (auth.getCurrentUser() == null) {
+            Toast.makeText(getActivity(), "Vui lòng đăng nhập", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        currentUserId = auth.getCurrentUser().getUid();
+
+        // Khởi tạo các view
+        cardStackView = view.findViewById(R.id.card_stack_view);
+        skipButton = view.findViewById(R.id.skip_button);
+        likeButton = view.findViewById(R.id.like_button);
+        skipCircle = view.findViewById(R.id.skip_circle);
+        likeCircle = view.findViewById(R.id.like_circle);
+
+        // Khởi tạo danh sách người dùng
+        userList = new ArrayList<>();
+
+        // Thiết lập CardStackView
+        layoutManager = new CardStackLayoutManager(getContext(), new CardStackListener() {
+            @Override
+            public void onCardDragging(Direction direction, float ratio) {
+                // Hiển thị vòng tròn xanh khi vuốt
+                if (direction == Direction.Right) {
+                    likeCircle.setVisibility(View.VISIBLE);
+                    likeCircle.setAlpha(ratio);
+                    likeButton.setImageResource(R.drawable.ic_like_black);
+                    skipCircle.setVisibility(View.INVISIBLE);
+                    skipButton.setImageResource(R.drawable.ic_dislike2);
+                } else if (direction == Direction.Left) {
+                    skipCircle.setVisibility(View.VISIBLE);
+                    skipCircle.setAlpha(ratio);
+                    skipButton.setImageResource(R.drawable.ic_dislike2_black);
+                    likeCircle.setVisibility(View.INVISIBLE);
+                    likeButton.setImageResource(R.drawable.ic_like);
+                }
+            }
+
+            @Override
+            public void onCardSwiped(Direction direction) {
+                // Ẩn vòng tròn xanh sau khi vuốt hoàn tất
+                skipCircle.setVisibility(View.INVISIBLE);
+                likeCircle.setVisibility(View.INVISIBLE);
+                skipButton.setImageResource(R.drawable.ic_dislike2);
+                likeButton.setImageResource(R.drawable.ic_like);
+
+                if (userList.isEmpty()) {
+                    return; // Thoát nếu userList rỗng
+                }
+
+                User otherUser = userList.get(layoutManager.getTopPosition() - 1);
+                if (direction == Direction.Right) {
+                    likeUser(otherUser);
+                    showLikeAnimation();
+                } else if (direction == Direction.Left) {
+                    showSkipAnimation();
+                }
+            }
+
+            @Override
+            public void onCardRewound() {
+            }
+
+            @Override
+            public void onCardCanceled() {
+                // Ẩn vòng tròn xanh nếu vuốt bị hủy
+                skipCircle.setVisibility(View.INVISIBLE);
+                likeCircle.setVisibility(View.INVISIBLE);
+                skipButton.setImageResource(R.drawable.ic_dislike2);
+                likeButton.setImageResource(R.drawable.ic_like);
+            }
+
+            @Override
+            public void onCardAppeared(View view, int position) {
+            }
+
+            @Override
+            public void onCardDisappeared(View view, int position) {
+                if (position >= userList.size() - 1) {
+                    loadUsers();
+                }
+            }
+        });
+
+        // Thiết lập animation vuốt
+        SwipeAnimationSetting swipeAnimationSetting = new SwipeAnimationSetting.Builder()
+                .setDirection(Direction.Right)
+                .setDuration(Duration.Normal.duration)
+                .build();
+        layoutManager.setSwipeAnimationSetting(swipeAnimationSetting);
+        cardStackView.setLayoutManager(layoutManager);
+
+        // Thiết lập adapter
+        adapter = new CardStackAdapter(userList);
+        cardStackView.setAdapter(adapter);
+
+        // Xử lý sự kiện nhấn nút "Bỏ qua"
+        skipButton.setOnClickListener(v -> {
+            SwipeAnimationSetting setting = new SwipeAnimationSetting.Builder()
+                    .setDirection(Direction.Left)
+                    .setDuration(Duration.Normal.duration)
+                    .build();
+            layoutManager.setSwipeAnimationSetting(setting);
+            cardStackView.swipe();
+        });
+
+        // Xử lý sự kiện nhấn nút "Thích"
+        likeButton.setOnClickListener(v -> {
+            SwipeAnimationSetting setting = new SwipeAnimationSetting.Builder()
+                    .setDirection(Direction.Right)
+                    .setDuration(Duration.Normal.duration)
+                    .build();
+            layoutManager.setSwipeAnimationSetting(setting);
+            cardStackView.swipe();
+        });
+
+        // Tải thông tin người dùng hiện tại
+        loadCurrentUser();
+    }
+
+    private void loadCurrentUser() {
+        database.child("users").child(currentUserId).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                currentUser = snapshot.getValue(User.class);
+                if (currentUser != null && currentUser.getPreferredGender() != null) {
+                    loadUsers();
+                } else {
+                    Toast.makeText(getActivity(), "Không tìm thấy thông tin người dùng hiện tại hoặc thiếu dữ liệu giới tính ưa thích", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Toast.makeText(getActivity(), "Lỗi tải thông tin người dùng: " + error.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void loadUsers() {
+        if (currentUser == null) return;
+
+        database.child("users").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                userList.clear();
+                for (DataSnapshot userSnapshot : snapshot.getChildren()) {
+                    User user = userSnapshot.getValue(User.class);
+                    if (user != null && !user.getUid().equals(currentUserId)) {
+                        String preferredGender = currentUser.getPreferredGender();
+                        String userGender = user.getGender();
+                        if (preferredGender != null && userGender != null && preferredGender.equals(userGender)) {
+                            userList.add(user);
+                        } else {
+                            userList.add(user);
+                        }
+                    }
+                }
+                if (currentUser.getLatitude() != 0 && currentUser.getLongitude() != 0) {
+                    adapter.setCurrentUserLocation(currentUser.getLatitude(), currentUser.getLongitude());
+                }
+                adapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Toast.makeText(getActivity(), "Lỗi tải danh sách người dùng: " + error.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void likeUser(User otherUser) {
+        database.child("likes").child(currentUserId).child(otherUser.getUid()).setValue(true)
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        checkForMatch(otherUser);
+                    } else {
+                        Toast.makeText(getActivity(), "Lỗi khi thích: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                });
+    }
+
+    private void checkForMatch(User otherUser) {
+        database.child("likes").child(otherUser.getUid()).child(currentUserId)
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        if (snapshot.exists()) {
+                            String chatId = currentUserId.compareTo(otherUser.getUid()) < 0
+                                    ? currentUserId + "_" + otherUser.getUid()
+                                    : otherUser.getUid() + "_" + currentUserId;
+
+                            database.child("matches").child(currentUserId).child(otherUser.getUid()).setValue(true);
+                            database.child("matches").child(otherUser.getUid()).child(currentUserId).setValue(true);
+
+                            database.child("chats").child(chatId).child("participants").child(currentUserId).setValue(true);
+                            database.child("chats").child(chatId).child("participants").child(otherUser.getUid()).setValue(true);
+
+                            showMatchDialog(otherUser, chatId);
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+                        Toast.makeText(getActivity(), "Lỗi kiểm tra match: " + error.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                });
+    }
+
+    private void showMatchDialog(User otherUser, String chatId) {
+        Dialog matchDialog = new Dialog(getContext(), android.R.style.Theme_Black_NoTitleBar_Fullscreen);
+        matchDialog.setContentView(R.layout.match_notification);
+
+        ImageButton closeButton = matchDialog.findViewById(R.id.close_button);
+        TextView matchTitle = matchDialog.findViewById(R.id.match_title);
+        MaterialButton chatButton = matchDialog.findViewById(R.id.chat_button);
+        MaterialButton continueButton = matchDialog.findViewById(R.id.continue_button);
+
+        if (otherUser.getName() != null) {
+            matchTitle.setText("Bạn đã tìm được người phù hợp với " + otherUser.getName() + "!");
+        } else {
+            matchTitle.setText("Bạn đã tìm được người phù hợp!");
+        }
+
+        closeButton.setOnClickListener(v -> matchDialog.dismiss());
+
+        chatButton.setOnClickListener(v -> {
+            matchDialog.dismiss();
+        });
+
+        continueButton.setOnClickListener(v -> matchDialog.dismiss());
+
+        matchDialog.show();
+    }
+
+    private void showLikeAnimation() {
+        // Lấy topView của card_item (thẻ người dùng)
+        View topView = layoutManager.getTopView();
+        if (topView != null) {
+            topView.animate()
+                    .scaleX(1.1f)
+                    .scaleY(1.1f)
+                    .setDuration(200)
+                    .start();
+
+            // Tạo TextView cho chữ "LIKE"
+            TextView likeText = new TextView(getContext());
+            likeText.setText("LIKE");
+            likeText.setTextColor(getResources().getColor(android.R.color.white));
+            likeText.setTextSize(48);
+            likeText.setTypeface(null, android.graphics.Typeface.BOLD);
+            likeText.setBackgroundResource(R.drawable.like_background);
+            likeText.setPadding(24, 12, 24, 12);
+            likeText.setLayoutParams(new ViewGroup.LayoutParams(
+                    ViewGroup.LayoutParams.WRAP_CONTENT,
+                    ViewGroup.LayoutParams.WRAP_CONTENT
+            ));
+
+            // Thêm chữ "LIKE" vào topView (card_item)
+            ((ViewGroup) topView).addView(likeText);
+
+            // Đo kích thước của TextView trước khi đặt vị trí
+            likeText.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
+            int textWidth = likeText.getMeasuredWidth();
+            int textHeight = likeText.getMeasuredHeight();
+
+            // Đặt vị trí ở mép trên bên trái của card_item
+            likeText.setX(16); // Cách mép trái của card_item 16dp
+            likeText.setY(16); // Cách mép trên của card_item 16dp
+
+            // Xoay chéo chữ "LIKE" (góc 45 độ)
+            likeText.setRotation(45f);
+
+            likeText.setScaleX(0f);
+            likeText.setScaleY(0f);
+            likeText.setAlpha(1f);
+            likeText.animate()
+                    .scaleX(1.5f)
+                    .scaleY(1.5f)
+                    .alpha(0f)
+                    .setDuration(500)
+                    .setListener(new AnimatorListenerAdapter() {
+                        @Override
+                        public void onAnimationEnd(Animator animation) {
+                            ((ViewGroup) topView).removeView(likeText);
+                        }
+                    })
+                    .start();
+
+            // Phát âm thanh khi vuốt sang phải
+            MediaPlayer mediaPlayer = MediaPlayer.create(getContext(), R.raw.swipe_sound2);
+            if (mediaPlayer != null) {
+                mediaPlayer.start();
+                mediaPlayer.setOnCompletionListener(mp -> mp.release());
+            }
+        }
+    }
+
+    private void showSkipAnimation() {
+        // Lấy topView của card_item (thẻ người dùng)
+        View topView = layoutManager.getTopView();
+        if (topView != null) {
+            topView.animate()
+                    .scaleX(1.1f)
+                    .scaleY(1.1f)
+                    .setDuration(200)
+                    .start();
+
+            // Tạo TextView cho chữ "NOPE"
+            TextView nopeText = new TextView(getContext());
+            nopeText.setText("NOPE");
+            nopeText.setTextColor(getResources().getColor(android.R.color.white));
+            nopeText.setTextSize(48);
+            nopeText.setTypeface(null, android.graphics.Typeface.BOLD);
+            nopeText.setBackgroundResource(R.drawable.nope_background);
+            nopeText.setPadding(24, 12, 24, 12);
+            nopeText.setLayoutParams(new ViewGroup.LayoutParams(
+                    ViewGroup.LayoutParams.WRAP_CONTENT,
+                    ViewGroup.LayoutParams.WRAP_CONTENT
+            ));
+
+            // Thêm chữ "NOPE" vào topView (card_item)
+            ((ViewGroup) topView).addView(nopeText);
+
+            // Đo kích thước của TextView trước khi đặt vị trí
+            nopeText.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
+            int textWidth = nopeText.getMeasuredWidth();
+            int textHeight = nopeText.getMeasuredHeight();
+
+            // Đặt vị trí ở mép trên bên phải của card_item, lùi gần hơn để tránh mất chữ
+            nopeText.setX(topView.getWidth() - textWidth - 32); // Lùi gần hơn (tăng từ 16dp lên 32dp)
+            nopeText.setY(32); // Lùi gần hơn (tăng từ 16dp lên 32dp)
+
+            // Xoay chéo chữ "NOPE" (góc -45 độ)
+            nopeText.setRotation(-45f);
+
+            nopeText.setScaleX(0f);
+            nopeText.setScaleY(0f);
+            nopeText.setAlpha(1f);
+            nopeText.animate()
+                    .scaleX(1.5f)
+                    .scaleY(1.5f)
+                    .alpha(0f)
+                    .setDuration(500)
+                    .setListener(new AnimatorListenerAdapter() {
+                        @Override
+                        public void onAnimationEnd(Animator animation) {
+                            ((ViewGroup) topView).removeView(nopeText);
+                        }
+                    })
+                    .start();
+
+            // Phát âm thanh khi vuốt sang trái
+            MediaPlayer mediaPlayer = MediaPlayer.create(getContext(), R.raw.swipe_sound2);
+            if (mediaPlayer != null) {
+                mediaPlayer.start();
+                mediaPlayer.setOnCompletionListener(mp -> mp.release());
+            }
+        }
+    }
+}

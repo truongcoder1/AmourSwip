@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/background_swipe1">
+    android:background="@drawable/background_gradient">
 
     <!-- CardStackView để hiển thị các thẻ người dùng -->
     <com.yuyakaido.android.cardstackview.CardStackView
@@ -12,7 +12,7 @@
         android:layout_height="match_parent"
         android:layout_margin="16dp"
         android:layout_marginTop="16dp"
-        android:layout_marginBottom="80dp" />
+        android:layout_marginBottom="100dp" />
 
     <!-- LinearLayout chứa các nút hành động (chồng lên CardStackView) -->
     <LinearLayout
@@ -20,28 +20,62 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:layout_marginBottom="70dp"
+        android:layout_marginBottom="16dp"
         android:gravity="center_horizontal"
         android:orientation="horizontal">
 
-        <!-- Nút "Bỏ qua" -->
-        <ImageButton
-            android:id="@+id/skip_button"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:layout_marginEnd="16dp"
-            android:background="@drawable/button_background"
-            android:scaleType="fitCenter"
-            android:src="@drawable/ic_skip" />
+        <!-- FrameLayout cho nút "Không thích" (X) -->
+        <FrameLayout
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:layout_marginEnd="32dp">
 
-        <!-- Nút "Thích" -->
-        <ImageButton
-            android:id="@+id/like_button"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:layout_marginStart="16dp"
-            android:background="@drawable/button_background"
-            android:scaleType="fitCenter"
-            android:src="@drawable/ic_like" />
+            <!-- Vòng tròn xanh (ẩn mặc định) -->
+            <View
+                android:id="@+id/skip_circle"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:layout_gravity="center"
+                android:background="@drawable/circle_green"
+                android:visibility="invisible" />
+
+            <!-- Nút "Không thích" (X) -->
+            <ImageButton
+                android:id="@+id/skip_button"
+                android:layout_width="64dp"
+                android:layout_height="64dp"
+                android:layout_gravity="center"
+                android:background="@null"
+                android:scaleType="centerInside"
+                android:src="@drawable/ic_dislike2"
+                android:stateListAnimator="@drawable/button_scale_animator" />
+        </FrameLayout>
+
+        <!-- FrameLayout cho nút "Thích" (Trái tim) -->
+        <FrameLayout
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:layout_marginStart="32dp">
+
+            <!-- Vòng tròn xanh (ẩn mặc định) -->
+            <View
+                android:id="@+id/like_circle"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:layout_gravity="center"
+                android:background="@drawable/circle_green"
+                android:visibility="invisible" />
+
+            <!-- Nút "Thích" (Trái tim) -->
+            <ImageButton
+                android:id="@+id/like_button"
+                android:layout_width="64dp"
+                android:layout_height="64dp"
+                android:layout_gravity="center"
+                android:background="@null"
+                android:scaleType="centerInside"
+                android:src="@drawable/ic_like"
+                android:stateListAnimator="@drawable/button_scale_animator" />
+        </FrameLayout>
     </LinearLayout>
 </RelativeLayout>
