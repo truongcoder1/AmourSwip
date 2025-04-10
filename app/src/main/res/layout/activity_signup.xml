@@ -32,9 +32,11 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:fontFamily="@font/poppins_regular"
-            android:text="@string/warning_email"
+            android:text=""
             android:textColor="#FF0000"
-            android:textSize="12sp" />
+            android:textSize="12sp"
+            android:visibility="gone"
+            />
 
         <!-- EditText cho "Email" -->
         <EditText
