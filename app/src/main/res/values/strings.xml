@@ -3,7 +3,7 @@
     <string name="find_your_love">Tìm kiếm tình yêu của bạn!</string>
     <string name="sign_up">Đăng ký</string>
     <string name="sign_in">Đăng nhập</string>>
-    <string name="username">Tài khoản</string>
+    <string name="username">Họ Tên</string>
     <string name="password">Mật khẩu</string>
     <string name="no_account_sign_up">Chưa có tài khoản? Đăng ký ngay</string>
     <string name="warning_email">Vui lòng nhập đúng định dạng đăng ký email!!</string>
