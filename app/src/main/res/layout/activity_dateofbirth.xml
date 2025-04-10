@@ -1,21 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    tools:context=".activity.DateOfBirthActivity">
 
-    <!-- Gradient background với hoa hồng và trái tim (đã có trong background) -->
+    <!-- Gradient background -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@drawable/background_prefergender" />
+        android:background="@drawable/background_prefergender" /> <!-- Đảm bảo drawable tồn tại -->
 
     <!-- LinearLayout chứa các thành phần -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"
+        android:layout_centerInParent="true"
         android:gravity="center_horizontal"
         android:orientation="vertical"
         android:paddingHorizontal="40dp">
@@ -30,35 +31,20 @@
             android:textColor="@android:color/black"
             android:textSize="32sp" />
 
-        <!-- TextInputLayout chứa TextInputEditText -->
-        <com.google.android.material.textfield.TextInputLayout
-            android:layout_width="280dp"
+        <!-- DatePicker Widget với chế độ Spinner -->
+        <DatePicker
+            android:id="@+id/date_picker_spinner"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="24dp"
-            android:hint="DD/MM/YYYY"
-            app:boxBackgroundColor="#FFFFFF"
-            app:boxBackgroundMode="outline"
-            app:boxCornerRadiusBottomEnd="24dp"
-            app:boxCornerRadiusBottomStart="24dp"
-            app:boxCornerRadiusTopEnd="24dp"
-            app:boxCornerRadiusTopStart="24dp"
-            app:boxStrokeColor="#808080"
-            app:hintTextColor="#808080">
+            android:datePickerMode="spinner"
+            android:calendarViewShown="false"
+            />
+        <!--
+            android:datePickerMode="spinner" -> Bật chế độ spinner
+            android:calendarViewShown="false" -> Ẩn chế độ lịch (không cần thiết với spinner)
+        -->
 
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/birthday_input"
-                android:layout_width="match_parent"
-                android:layout_height="56dp"
-                android:cursorVisible="false"
-                android:focusable="false"
-                android:focusableInTouchMode="false"
-                android:fontFamily="@font/poppins_regular"
-                android:imeOptions="actionDone"
-                android:paddingHorizontal="16dp"
-                android:paddingVertical="12dp"
-                android:textColor="@android:color/black"
-                android:textSize="16sp" />
-        </com.google.android.material.textfield.TextInputLayout>
 
         <!-- Nút "Tiếp" -->
         <com.google.android.material.button.MaterialButton
@@ -76,4 +62,5 @@
             android:textSize="16sp"
             app:cornerRadius="50dp" />
     </LinearLayout>
+
 </RelativeLayout>

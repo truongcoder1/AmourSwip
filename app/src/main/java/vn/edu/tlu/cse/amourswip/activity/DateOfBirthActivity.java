@@ -1,143 +1,108 @@
 package vn.edu.tlu.cse.amourswip.activity;
 
-import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
+import android.widget.DatePicker;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
-import com.google.android.material.button.MaterialButton;
-import com.google.android.material.textfield.TextInputEditText;
 
-import vn.edu.tlu.cse.amourswip.datalayer.repository.UserRepository;
-import vn.edu.tlu.cse.amourswip.R;
+import com.google.android.material.button.MaterialButton;
 
 import java.util.Calendar;
+import java.util.Locale;
+
+import vn.edu.tlu.cse.amourswip.R;
+import vn.edu.tlu.cse.amourswip.datalayer.repository.UserRepository;
 
 public class DateOfBirthActivity extends AppCompatActivity {
 
-    private TextInputEditText birthdayInput;
+    private static final String TAG = "DateOfBirthActivity";
+    private static final String DATE_FORMAT = "%02d/%02d/%04d";
+    private static final int MIN_YEAR_LOGIC = 1900;
+    private static final int MIN_AGE = 18;
+
+    private DatePicker datePickerSpinner;
+    private MaterialButton nextButton;
     private UserRepository userRepository;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dateofbirth);
-
-        birthdayInput = findViewById(R.id.birthday_input);
-        MaterialButton nextButton = findViewById(R.id.next_button);
+        datePickerSpinner = findViewById(R.id.date_picker_spinner);
+        nextButton = findViewById(R.id.next_button);
         userRepository = new UserRepository();
-
-        // Hiển thị DatePickerDialog khi nhấn vào TextInputEditText
-        birthdayInput.setOnClickListener(v -> showDatePickerDialog());
-
-        nextButton.setOnClickListener(v -> {
-            String dateOfBirth = birthdayInput.getText().toString().trim();
-
-            // Kiểm tra dữ liệu đầu vào
-            if (!isValidDateFormat(dateOfBirth)) {
-                Toast.makeText(DateOfBirthActivity.this, "Vui lòng chọn ngày sinh theo định dạng DD/MM/YYYY", Toast.LENGTH_SHORT).show();
-                return;
+        Calendar today = Calendar.getInstance();
+        Calendar defaultDisplayDate = Calendar.getInstance();
+        defaultDisplayDate.add(Calendar.YEAR, -MIN_AGE);
+        datePickerSpinner.updateDate(
+                defaultDisplayDate.get(Calendar.YEAR),
+                defaultDisplayDate.get(Calendar.MONTH),
+                defaultDisplayDate.get(Calendar.DAY_OF_MONTH)
+        );
+        nextButton.setOnClickListener(v -> proceedToNextStep());
+    }
+    private void proceedToNextStep() {
+        // Lấy ngày tháng trực tiếp từ DatePicker widget
+        int year = datePickerSpinner.getYear();
+        int month = datePickerSpinner.getMonth();
+        int day = datePickerSpinner.getDayOfMonth();
+        // Tạo chuỗi ngày sinh theo định dạng DD/MM/YYYY
+        String dateOfBirthString = String.format(Locale.getDefault(), DATE_FORMAT, day, month + 1, year);
+        Log.d(TAG, "Selected date from spinner: " + dateOfBirthString);
+        if (!isValidDate(day, month + 1, year)) {
+            Toast.makeText(this, R.string.error_invalid_date_logical, Toast.LENGTH_SHORT).show();
+            return;
+        }
+        if (!isUserAgeValid(day, month + 1, year)) {
+            Toast.makeText(this, R.string.error_user_underage, Toast.LENGTH_SHORT).show();
+            return;
+        }
+        saveDateOfBirth(dateOfBirthString);
+    }
+    private boolean isUserAgeValid(int day, int month, int year) {
+        Calendar dobCalendar = Calendar.getInstance();
+        dobCalendar.set(year, month - 1, day);
+        Calendar cutoffDate = Calendar.getInstance();
+        cutoffDate.add(Calendar.YEAR, -MIN_AGE);
+        cutoffDate.set(Calendar.HOUR_OF_DAY, 0); cutoffDate.set(Calendar.MINUTE, 0); cutoffDate.set(Calendar.SECOND, 0); cutoffDate.set(Calendar.MILLISECOND, 0);
+        dobCalendar.set(Calendar.HOUR_OF_DAY, 0); dobCalendar.set(Calendar.MINUTE, 0); dobCalendar.set(Calendar.SECOND, 0); dobCalendar.set(Calendar.MILLISECOND, 0);
+        return !dobCalendar.after(cutoffDate);
+    }
+    private void saveDateOfBirth(String dateOfBirth) {
+        nextButton.setEnabled(false);
+        userRepository.updateUserField("dateOfBirth", dateOfBirth, new UserRepository.OnUserActionListener() {
+            @Override
+            public void onSuccess() {
+                Log.i(TAG, "Date of birth updated successfully.");
+                Intent intent = new Intent(DateOfBirthActivity.this, MyimageActivity.class);
+                startActivity(intent);
+                finish();
             }
-
-            // Kiểm tra ngày sinh hợp lệ
-            String[] parts = dateOfBirth.split("/");
-            int day = Integer.parseInt(parts[0]);
-            int month = Integer.parseInt(parts[1]);
-            int year = Integer.parseInt(parts[2]);
-
-            if (!isValidDate(day, month, year)) {
-                Toast.makeText(DateOfBirthActivity.this, "Ngày sinh không hợp lệ", Toast.LENGTH_SHORT).show();
-                return;
+            @Override
+            public void onFailure(String errorMessage) {
+                Log.e(TAG, "Failed to update date of birth: " + errorMessage);
+                Toast.makeText(DateOfBirthActivity.this, getString(R.string.error_saving_dob) + errorMessage, Toast.LENGTH_LONG).show();
+                nextButton.setEnabled(true);
             }
-
-            // Cập nhật ngày sinh vào Realtime Database
-            userRepository.updateUserField("dateOfBirth", dateOfBirth, new UserRepository.OnUserActionListener() {
-                @Override
-                public void onSuccess() {
-                    // Chuyển đến màn hình thêm ảnh
-                    Intent intent = new Intent(DateOfBirthActivity.this, MyimageActivity.class);
-                    startActivity(intent);
-                }
-
-                @Override
-                public void onFailure(String errorMessage) {
-                    Toast.makeText(DateOfBirthActivity.this, "Lỗi khi cập nhật ngày sinh: " + errorMessage, Toast.LENGTH_SHORT).show();
-                }
-            });
         });
     }
 
-    private void showDatePickerDialog() {
-        // Lấy ngày hiện tại làm giá trị mặc định
-        Calendar calendar = Calendar.getInstance();
-        int year = calendar.get(Calendar.YEAR);
-        int month = calendar.get(Calendar.MONTH);
-        int day = calendar.get(Calendar.DAY_OF_MONTH);
 
-        // Tạo DatePickerDialog với calendar mode
-        DatePickerDialog datePickerDialog = new DatePickerDialog(
-                this,
-                R.style.CustomDatePickerDialogTheme,
-                (view, selectedYear, selectedMonth, selectedDay) -> {
-                    String date = String.format("%02d/%02d/%04d", selectedDay, selectedMonth + 1, selectedYear);
-                    birthdayInput.setText(date);
-                },
-                year, month, day
-        );
-
-        // Hiển thị dialog
-        datePickerDialog.show();
-    }
-
-    // Kiểm tra định dạng DD/MM/YYYY
-    private boolean isValidDateFormat(String date) {
-        if (date.length() != 10) return false;
-        if (!date.matches("\\d{2}/\\d{2}/\\d{4}")) return false;
-
-        String[] parts = date.split("/");
-        if (parts.length != 3) return false;
-
-        try {
-            Integer.parseInt(parts[0]); // Ngày
-            Integer.parseInt(parts[1]); // Tháng
-            Integer.parseInt(parts[2]); // Năm
-        } catch (NumberFormatException e) {
-            return false;
-        }
-
-        return true;
-    }
-
-    // Kiểm tra ngày sinh hợp lệ
     private boolean isValidDate(int day, int month, int year) {
-        // Kiểm tra năm (ví dụ: từ 1900 đến năm hiện tại)
-        int currentYear = java.util.Calendar.getInstance().get(java.util.Calendar.YEAR);
-        if (year < 1900 || year > currentYear) {
+        if (year <= 0) {
+            Log.w(TAG, "isValidDate check: Year is zero or negative (" + year + ")");
             return false;
         }
-
-        // Kiểm tra tháng
-        if (month < 1 || month > 12) {
+        if (month < 1 || month > 12) return false;
+        if (day < 1 || day > 31) return false;
+        if (month == 2) {
+            boolean isLeap = (year % 4 == 0 && year % 100 != 0) || (year % 400 == 0);
+            if (day > (isLeap ? 29 : 28)) return false;
+        } else if ((month == 4 || month == 6 || month == 9 || month == 11) && day > 30) {
             return false;
         }
-
-        // Kiểm tra ngày
-        if (day < 1 || day > 31) {
-            return false;
-        }
-
-        // Kiểm tra số ngày trong tháng
-        if (month == 2) { // Tháng 2
-            boolean isLeapYear = (year % 4 == 0 && year % 100 != 0) || (year % 400 == 0);
-            if (isLeapYear) {
-                return day <= 29;
-            } else {
-                return day <= 28;
-            }
-        } else if (month == 4 || month == 6 || month == 9 || month == 11) { // Các tháng 30 ngày
-            return day <= 30;
-        }
-
         return true;
     }
 }

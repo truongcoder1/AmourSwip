@@ -14,4 +14,12 @@
     <string name="female">Nữ</string>
     <string name="other">Khác</string>
     <string name="next">Tiếp</string>
+    <string name="error_dob_required">Vui lòng chọn ngày sinh.</string>
+    <string name="error_invalid_date_format">Định dạng ngày không hợp lệ.</string>
+    <string name="error_parsing_date">Lỗi xử lý ngày đã chọn.</string>
+    <string name="error_invalid_date_logical">Ngày sinh không hợp lệ.</string>
+    <string name="error_invalid_date_selected">Ngày được chọn không hợp lệ.</string>
+    <string name="error_saving_dob">Lỗi khi lưu ngày sinh: </string>
+    <string name="error_user_underage">Bạn phải đủ 18 tuổi để sử dụng ứng dụng.</string>
+
 </resources>
