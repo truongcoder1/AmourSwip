@@ -91,7 +91,8 @@
             android:text="@string/next"
             android:textColor="@android:color/black"
             android:textSize="16sp"
-            app:cornerRadius="50dp" />
+            app:cornerRadius="50dp"
+            android:enabled="false" /> <!-- Add this line -->
 
     </LinearLayout>
 

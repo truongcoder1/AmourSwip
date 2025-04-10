@@ -8,4 +8,8 @@
     <color name="signup_button">#F0C3F4</color>
     <color name="login_button">#B73CFE</color>
     <color name="purple_blur">#7371FC</color>
+    <color name="purple_500">#9C27B0</color> <!-- Ví dụ màu có sẵn -->
+    <color name="black">#FF000000</color>
+    <color name="selected_button_stroke_color">#C87DD7</color>
+    <color name="next_button_color">#C87DD7</color> <!-- Màu nút Tiếp -->
 </resources>
