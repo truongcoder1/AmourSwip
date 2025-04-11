@@ -3,20 +3,19 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".activity.DateOfBirthActivity">
+    android:layout_height="match_parent">
 
-    <!-- Gradient background -->
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@drawable/background_prefergender" /> <!-- Đảm bảo drawable tồn tại -->
+        android:background="@drawable/background_prefergender" />
 
-    <!-- LinearLayout chứa các thành phần -->
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
+        android:layout_marginTop="220dp"
         android:gravity="center_horizontal"
         android:orientation="vertical"
         android:paddingHorizontal="40dp">
@@ -40,10 +39,7 @@
             android:datePickerMode="spinner"
             android:calendarViewShown="false"
             />
-        <!--
-            android:datePickerMode="spinner" -> Bật chế độ spinner
-            android:calendarViewShown="false" -> Ẩn chế độ lịch (không cần thiết với spinner)
-        -->
+
 
 
         <!-- Nút "Tiếp" -->

@@ -5,11 +5,10 @@
     android:layout_height="match_parent"
     android:background="@drawable/background_gender">
 
-    <!-- LinearLayout để căn giữa dọc -->
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
         android:layout_marginTop="220dp"
         android:layout_marginBottom="40dp"
         android:gravity="center_horizontal"
@@ -85,14 +84,14 @@
             android:layout_marginTop="32dp"
             android:layout_marginBottom="20dp"
             android:backgroundTint="#C87DD7"
+            android:enabled="false"
             android:fontFamily="@font/poppins_bold"
             android:paddingHorizontal="35dp"
             android:paddingVertical="12dp"
             android:text="@string/next"
             android:textColor="@android:color/black"
             android:textSize="16sp"
-            app:cornerRadius="50dp"
-            android:enabled="false" /> <!-- Add this line -->
+            app:cornerRadius="50dp" />
 
     </LinearLayout>
 

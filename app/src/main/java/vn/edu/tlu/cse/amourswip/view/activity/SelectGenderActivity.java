@@ -20,13 +20,13 @@ public class SelectGenderActivity extends AppCompatActivity {
     private MaterialButton btnNext;
     private String selectedGender = null;
 
-    // --- Cấu hình cho trạng thái nút ---
+
     private int selectedStrokeWidth;
     private ColorStateList selectedStrokeColor;
     private final int defaultStrokeWidth = 0;
-    private final float SELECTED_ALPHA = 1.0f; // Alpha cho nút được chọn (không đổi)
-    private final float UNSELECTED_ALPHA = 0.65f; // Alpha cho nút KHÔNG được chọn (mờ hơn)
-    // ---------------------------------
+    private final float SELECTED_ALPHA = 1.0f;
+    private final float UNSELECTED_ALPHA = 0.65f;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,11 +45,10 @@ public class SelectGenderActivity extends AppCompatActivity {
         selectedStrokeColor = ContextCompat.getColorStateList(this, R.color.selected_button_stroke_color);
 
         // --- Ban đầu, làm mờ tất cả các nút giới tính một chút ---
-        // (Trừ khi bạn muốn một nút được chọn mặc định)
-        setButtonState(btnMale, false); // false = không được chọn
+
+        setButtonState(btnMale, false);
         setButtonState(btnFemale, false);
         setButtonState(btnOther, false);
-        // ----------------------------------------------------
 
 
         // Listener for gender selection buttons
@@ -61,9 +60,9 @@ public class SelectGenderActivity extends AppCompatActivity {
 
             // --- Áp dụng trạng thái "được chọn" cho nút ĐƯỢC CHỌN ---
             MaterialButton selectedButton = (MaterialButton) v;
-            setButtonState(selectedButton, true); // true = được chọn
+            setButtonState(selectedButton, true);
 
-            // --- Lưu giới tính đã chọn ---
+
             int id = v.getId();
             if (id == R.id.male_button) {
                 selectedGender = "Nam";
@@ -73,20 +72,20 @@ public class SelectGenderActivity extends AppCompatActivity {
                 selectedGender = "Khác";
             }
 
-            // --- Kích hoạt nút Next ---
+
             btnNext.setEnabled(selectedGender != null);
         };
 
-        // Set the listener to gender buttons
+
         btnMale.setOnClickListener(onGenderSelected);
         btnFemale.setOnClickListener(onGenderSelected);
         btnOther.setOnClickListener(onGenderSelected);
 
-        // Listener for the Next button (không thay đổi nhiều, chỉ thêm xử lý enable/disable)
+
         btnNext.setOnClickListener(v -> {
             if (selectedGender != null) {
-                btnNext.setEnabled(false); // Vô hiệu hóa tạm thời
-                // Disable luôn các nút chọn giới tính để tránh thay đổi trong lúc gửi
+                btnNext.setEnabled(false);
+
                 btnMale.setEnabled(false);
                 btnFemale.setEnabled(false);
                 btnOther.setEnabled(false);
@@ -96,8 +95,7 @@ public class SelectGenderActivity extends AppCompatActivity {
                     public void onSuccess() {
                         Intent intent = new Intent(SelectGenderActivity.this, PreferGenderActivity.class);
                         startActivity(intent);
-                        // Nếu thành công và chuyển màn hình, không cần enable lại các nút ở đây
-                        // finish(); // Optional
+
                     }
 
                     @Override
@@ -110,26 +108,20 @@ public class SelectGenderActivity extends AppCompatActivity {
                         btnOther.setEnabled(true);
                     }
                 });
-            } else {
-                Toast.makeText(SelectGenderActivity.this, "Vui lòng chọn giới tính", Toast.LENGTH_SHORT).show();
             }
         });
     }
 
-    /**
-     * Hàm tiện ích để đặt trạng thái trực quan cho một nút giới tính.
-     * @param button Nút cần thay đổi.
-     * @param isSelected true nếu nút này đang được chọn, false nếu không.
-     */
+
     private void setButtonState(MaterialButton button, boolean isSelected) {
         if (isSelected) {
-            button.setAlpha(SELECTED_ALPHA); // Đặt lại alpha về đầy đủ
+            button.setAlpha(SELECTED_ALPHA);
             button.setStrokeWidth(selectedStrokeWidth);
             button.setStrokeColor(selectedStrokeColor);
         } else {
-            button.setAlpha(UNSELECTED_ALPHA); // Làm mờ nút
+            button.setAlpha(UNSELECTED_ALPHA);
             button.setStrokeWidth(defaultStrokeWidth);
-            button.setStrokeColor(null); // Xóa màu đường viền
+            button.setStrokeColor(null);
         }
     }
 }

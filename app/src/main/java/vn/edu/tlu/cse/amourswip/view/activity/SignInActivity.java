@@ -36,7 +36,7 @@ public class SignInActivity extends AppCompatActivity {
         // Khởi tạo Firebase Authentication
         auth = FirebaseAuth.getInstance();
 
-        // Kiểm tra nếu người dùng đã đăng nhập
+
         if (auth.getCurrentUser() != null) {
             startActivity(new Intent(this, MainActivity.class));
             finish();
@@ -55,8 +55,8 @@ public class SignInActivity extends AppCompatActivity {
                     return;
                 }
 
-                // Giả định username là email (có thể cần ánh xạ username thành email nếu cần)
-                String email = username + "@gmail.com"; // Thay bằng logic thực tế nếu cần
+
+                String email = username + "@gmail.com";
 
                 auth.signInWithEmailAndPassword(email, password)
                         .addOnCompleteListener(SignInActivity.this, task -> {
@@ -71,7 +71,7 @@ public class SignInActivity extends AppCompatActivity {
             }
         });
 
-        // Xử lý sự kiện nhấn "Chưa có tài khoản? Đăng ký ngay"
+
         signUpPrompt.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
