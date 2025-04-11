@@ -10,8 +10,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="250dp"
-        android:layout_marginBottom="40dp"
+        android:layout_marginTop="220dp"
         android:gravity="center_horizontal"
         android:orientation="vertical"
         android:paddingHorizontal="40dp">
@@ -147,5 +146,21 @@
                 app:strokeColor="#C87DD7"
                 app:strokeWidth="2dp" />
         </LinearLayout>
+        <!-- Bọc ImageView bằng CardView -->
+        <androidx.cardview.widget.CardView
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:layout_marginTop="40dp"
+            app:cardCornerRadius="16dp"
+            app:cardElevation="0dp"
+            android:backgroundTint="@android:color/transparent" >
+
+        <ImageView
+            android:id="@+id/selected_photo_preview"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:contentDescription="Xem trước ảnh đã chọn"
+            android:scaleType="centerCrop" />
+    </androidx.cardview.widget.CardView>
     </LinearLayout>
 </RelativeLayout>

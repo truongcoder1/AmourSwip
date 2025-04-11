@@ -60,4 +60,5 @@ dependencies {
     implementation (libs.glide)
     implementation (libs.annotation)
     implementation (libs.play.services.location)
+    implementation(libs.cardview)
 }
