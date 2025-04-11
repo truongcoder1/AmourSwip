@@ -15,14 +15,15 @@
         android:paddingHorizontal="16dp"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 
-    <!-- ImageButton cho chatbot (nằm trên BottomNavigationView) -->
+    <!-- ImageButton cho chatbot (nằm ở góc dưới bên phải, ngay trên BottomNavigationView) -->
     <ImageButton
         android:id="@+id/chatbot_button"
         android:layout_width="60dp"
         android:layout_height="60dp"
         android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
         android:layout_marginEnd="16dp"
-        android:layout_marginBottom="80dp"
+        android:layout_marginBottom="64dp"
         android:background="@android:color/transparent"
         android:contentDescription="Chatbot"
         android:scaleType="fitCenter"

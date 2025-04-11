@@ -7,31 +7,45 @@
     <!-- SwipeFragment -->
     <fragment
         android:id="@+id/swipeFragment"
-        android:name="vn.edu.tlu.cse.amourswip.fragment.SwipeFragment"
-        android:label="SwipeFragment" />
+        android:name="vn.edu.tlu.cse.amourswip.view.fragment.SwipeFragment"
+        android:label="SwipeFragment">
+        <action
+            android:id="@+id/action_swipeFragment_to_listChatFragment"
+            app:destination="@id/listChatFragment"
+            app:popUpTo="@id/swipeFragment"
+            app:popUpToInclusive="false" />
+    </fragment>
 
     <!-- ListChatFragment -->
-<!--    <fragment-->
-<!--        android:id="@+id/listChatFragment"-->
-<!--        android:name="vn.edu.tlu.cse.amourswip.fragment.ListChatFragment"-->
-<!--        android:label="ListChatFragment" />-->
+    <fragment
+        android:id="@+id/listChatFragment"
+        android:name="vn.edu.tlu.cse.amourswip.view.fragment.ListChatFragment"
+        android:label="ListChatFragment">
+        <action
+            android:id="@+id/action_listChatFragment_to_chatFragment"
+            app:destination="@id/chatFragment"
+            app:popUpTo="@id/listChatFragment"
+            app:popUpToInclusive="false" />
+    </fragment>
 
     <!-- ProfileFragment -->
     <fragment
         android:id="@+id/profileFragment"
-        android:name="vn.edu.tlu.cse.amourswip.fragment.ProfileFragment"
+        android:name="vn.edu.tlu.cse.amourswip.view.fragment.ProfileFragment"
         android:label="ProfileFragment" />
 
-    <!-- LikeFragment -->
-<!--    <fragment-->
-<!--        android:id="@+id/likeFragment"-->
-<!--        android:name="vn.edu.tlu.cse.amourswip.fragment.LikeFragment"-->
-<!--        android:label="LikeFragment" />-->
+    <!-- LikeFragment (Đã bị comment, giữ nguyên) -->
+    <!--
+    <fragment
+        android:id="@+id/likeFragment"
+        android:name="vn.edu.tlu.cse.amourswip.fragment.LikeFragment"
+        android:label="LikeFragment" />
+    -->
 
     <!-- ChatFragment -->
     <fragment
         android:id="@+id/chatFragment"
-        android:name="vn.edu.tlu.cse.amourswip.fragment.ChatFragment"
+        android:name="vn.edu.tlu.cse.amourswip.view.fragment.ChatFragment"
         android:label="ChatFragment" />
 
 </navigation>

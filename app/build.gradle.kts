@@ -58,4 +58,5 @@ dependencies {
     implementation (libs.appcompat.v161)
     implementation (libs.material)
     implementation (libs.glide)
+    implementation (libs.annotation)
 }

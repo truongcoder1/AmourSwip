@@ -28,7 +28,7 @@
         android:theme="@style/Theme.AmourSwip"
         tools:targetApi="31">
         <activity
-            android:name=".activity.WelcomeActivity"
+            android:name=".view.activity.WelcomeActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -36,18 +36,18 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".activity.MainActivity" />
-        <activity android:name=".activity.SignInActivity" />
-        <activity android:name=".activity.SignUpActivity" />
-        <activity android:name=".activity.SelectGenderActivity" />
-        <activity android:name=".activity.PreferGenderActivity" />
-        <activity android:name=".activity.DateOfBirthActivity" />
-        <activity android:name=".activity.MyimageActivity" />
-        <activity android:name=".activity.MapActivity" />
-        <activity android:name=".activity.SettingActivity" />
-        <activity android:name=".activity.EditProfileActivity" />
-        <activity android:name=".activity.ProfileMyFriendActivity"/>
-        <activity android:name=".activity.EditPhotosActivity" />
+        <activity android:name=".view.activity.MainActivity" />
+        <activity android:name=".view.activity.SignInActivity" />
+        <activity android:name=".view.activity.SignUpActivity" />
+        <activity android:name=".view.activity.SelectGenderActivity" />
+        <activity android:name=".view.activity.PreferGenderActivity" />
+        <activity android:name=".view.activity.DateOfBirthActivity" />
+        <activity android:name=".view.activity.MyimageActivity" />
+        <activity android:name=".view.activity.MapActivity" />
+        <activity android:name=".view.activity.SettingActivity" />
+        <activity android:name=".view.activity.EditProfileActivity" />
+        <activity android:name=".view.activity.ProfileMyFriendActivity"/>
+        <activity android:name=".view.activity.EditPhotosActivity" />
 
         <provider
             android:name="androidx.core.content.FileProvider"
