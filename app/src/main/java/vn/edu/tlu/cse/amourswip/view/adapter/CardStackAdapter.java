@@ -1,5 +1,6 @@
 package vn.edu.tlu.cse.amourswip.view.adapter;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,17 +18,21 @@ import vn.edu.tlu.cse.amourswip.R;
 import vn.edu.tlu.cse.amourswip.model.data.User;
 
 public class CardStackAdapter extends RecyclerView.Adapter<CardStackAdapter.ViewHolder> {
+    private static final String TAG = "CardStackAdapter";
+
     private List<User> userList;
     private double currentLat;
     private double currentLon;
 
     public CardStackAdapter(List<User> userList) {
         this.userList = userList;
+        Log.d(TAG, "CardStackAdapter initialized with userList size: " + userList.size());
     }
 
     public void setCurrentUserLocation(double lat, double lon) {
         this.currentLat = lat;
         this.currentLon = lon;
+        Log.d(TAG, "Current user location set: lat=" + lat + ", lon=" + lon);
     }
 
     @NonNull
@@ -40,6 +45,7 @@ public class CardStackAdapter extends RecyclerView.Adapter<CardStackAdapter.View
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         User user = userList.get(position);
+        Log.d(TAG, "Binding user at position " + position + ": " + user.getName());
 
         // Tính tuổi từ ngày sinh
         String age = "22"; // Giá trị mặc định
@@ -53,39 +59,57 @@ public class CardStackAdapter extends RecyclerView.Adapter<CardStackAdapter.View
                     age = String.valueOf(diff);
                 }
             } catch (ParseException e) {
-                e.printStackTrace();
+                Log.e(TAG, "Error parsing date of birth: " + e.getMessage());
             }
         }
 
         // Hiển thị tên và tuổi
-        holder.userNameAge.setText(user.getName() != null ? user.getName() + ", " + age : "N/A, " + age);
+        if (holder.userNameAge != null) {
+            holder.userNameAge.setText(user.getName() != null ? user.getName() + ", " + age : "N/A, " + age);
+        } else {
+            Log.e(TAG, "userNameAge TextView is null");
+        }
 
         // Tính và hiển thị khoảng cách
-        if (user.isLocationEnabled()) {
-            double distance = calculateDistance(currentLat, currentLon, user.getLatitude(), user.getLongitude());
-            holder.userDistance.setText(String.format("%.1f KM", distance));
+        if (holder.userDistance != null) {
+            if (user.isLocationEnabled()) {
+                double distance = calculateDistance(currentLat, currentLon, user.getLatitude(), user.getLongitude());
+                holder.userDistance.setText(String.format("%.1f KM", distance));
+            } else {
+                holder.userDistance.setText("Không xác định");
+            }
         } else {
-            holder.userDistance.setText("Không xác định");
+            Log.e(TAG, "userDistance TextView is null");
         }
 
         // Hiển thị trạng thái online/offline
-        holder.userStatus.setText(user.isOnline() ? "Active Now" : "Offline");
+        if (holder.userStatus != null) {
+            holder.userStatus.setText(user.isOnline() ? "Active Now" : "Offline");
+        } else {
+            Log.e(TAG, "userStatus TextView is null");
+        }
 
         // Tải ảnh từ URL bằng Glide
-        if (user.getPhotos() != null && !user.getPhotos().isEmpty()) {
-            Glide.with(holder.itemView.getContext())
-                    .load(user.getPhotos().get(0))
-                    .placeholder(R.drawable.gai1)
-                    .error(R.drawable.gai2)
-                    .into(holder.userImage);
+        if (holder.userImage != null) {
+            if (user.getPhotos() != null && !user.getPhotos().isEmpty()) {
+                Glide.with(holder.itemView.getContext())
+                        .load(user.getPhotos().get(0))
+                        .placeholder(R.drawable.gai1)
+                        .error(R.drawable.gai2)
+                        .into(holder.userImage);
+            } else {
+                holder.userImage.setImageResource(R.drawable.gai2);
+            }
         } else {
-            holder.userImage.setImageResource(R.drawable.gai2);
+            Log.e(TAG, "userImage ImageView is null");
         }
     }
 
     @Override
     public int getItemCount() {
-        return userList.size();
+        int count = userList.size();
+        Log.d(TAG, "getItemCount: " + count);
+        return count;
     }
 
     private double calculateDistance(double lat1, double lon1, double lat2, double lon2) {
