@@ -277,6 +277,60 @@ public class SwipeFragment extends Fragment {
         }
     }
 
+    // Thêm animation "LIKE" cho nút Like
+    public void showLikeAnimationOnButton(View button) {
+        button.animate()
+                .scaleX(1.2f)
+                .scaleY(1.2f)
+                .setDuration(200)
+                .start();
+
+        TextView likeText = new TextView(getContext());
+        likeText.setText("LIKE");
+        likeText.setTextColor(ContextCompat.getColor(getContext(), android.R.color.white));
+        likeText.setTextSize(48);
+        likeText.setTypeface(null, android.graphics.Typeface.BOLD);
+        likeText.setBackgroundResource(R.drawable.like_background);
+        likeText.setPadding(24, 12, 24, 12);
+        likeText.setLayoutParams(new ViewGroup.LayoutParams(
+                ViewGroup.LayoutParams.WRAP_CONTENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT
+        ));
+
+        ((ViewGroup) button.getParent()).addView(likeText);
+
+        likeText.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
+        int textWidth = likeText.getMeasuredWidth();
+        int textHeight = likeText.getMeasuredHeight();
+
+        likeText.setX(button.getX() + 16);
+        likeText.setY(button.getY() + 16);
+        likeText.setRotation(45f);
+
+        likeText.setScaleX(0f);
+        likeText.setScaleY(0f);
+        likeText.setAlpha(1f);
+        likeText.animate()
+                .scaleX(1.5f)
+                .scaleY(1.5f)
+                .alpha(0f)
+                .rotationBy(10f)
+                .setDuration(500)
+                .setListener(new AnimatorListenerAdapter() {
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        ((ViewGroup) button.getParent()).removeView(likeText);
+                    }
+                })
+                .start();
+
+        MediaPlayer mediaPlayer = MediaPlayer.create(getContext(), R.raw.swipe_sound2);
+        if (mediaPlayer != null) {
+            mediaPlayer.start();
+            mediaPlayer.setOnCompletionListener(mp -> mp.release());
+        }
+    }
+
     public void showError(String error) {
         Toast.makeText(getContext(), error, Toast.LENGTH_LONG).show();
     }

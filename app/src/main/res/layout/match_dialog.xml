@@ -36,7 +36,6 @@
             android:background="@drawable/circle_background"
             android:clipToOutline="true"
             android:outlineProvider="background"
-            android:padding="4dp"
             android:scaleType="centerCrop"
             android:src="@drawable/gai1" />
 
@@ -49,7 +48,6 @@
             android:background="@drawable/circle_background"
             android:clipToOutline="true"
             android:outlineProvider="background"
-            android:padding="4dp"
             android:scaleType="centerCrop"
             android:src="@drawable/gai2" />
     </LinearLayout>
@@ -62,9 +60,11 @@
         android:layout_below="@id/images_layout"
         android:layout_marginBottom="8dp"
         android:backgroundTint="#FF2196F3"
+        android:padding="12dp"
         android:text="Nhắn tin"
         android:textColor="@android:color/white"
-        android:textSize="16sp" />
+        android:textSize="18sp"
+        android:textStyle="bold" />
 
     <!-- Nút "Tiếp tục vuốt" -->
     <Button
@@ -73,8 +73,10 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/send_message_button"
         android:backgroundTint="#FFE91E63"
+        android:padding="12dp"
         android:text="Tiếp tục vuốt"
         android:textColor="@android:color/white"
-        android:textSize="16sp" />
+        android:textSize="18sp"
+        android:textStyle="bold" />
 
 </RelativeLayout>
