@@ -347,6 +347,8 @@ public class SwipeController {
                 adapter.notifyDataSetChanged();
                 cardStackView.scheduleLayoutAnimation();
                 matchDialog.dismiss();
+                // Làm mới danh sách người dùng để kiểm tra match mới
+                loadUsers();
             });
 
             // Hiển thị dialog
