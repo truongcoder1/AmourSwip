@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="#FF2D2D2D"
+    android:padding="16dp">
+
+    <!-- Tiêu đề "Bạn và [Tên] đã match thành công!" -->
+    <TextView
+        android:id="@+id/match_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="16dp"
+        android:text="Bạn và [Tên] đã match thành công!"
+        android:textColor="@android:color/white"
+        android:textSize="28sp"
+        android:textStyle="bold" />
+
+    <!-- Hình ảnh của hai người dùng -->
+    <LinearLayout
+        android:id="@+id/images_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/match_title"
+        android:layout_marginBottom="16dp"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <!-- Hình ảnh người dùng hiện tại -->
+        <ImageView
+            android:id="@+id/current_user_image"
+            android:layout_width="120dp"
+            android:layout_height="120dp"
+            android:layout_marginEnd="16dp"
+            android:background="@drawable/circle_background"
+            android:clipToOutline="true"
+            android:outlineProvider="background"
+            android:padding="4dp"
+            android:scaleType="centerCrop"
+            android:src="@drawable/gai1" />
+
+        <!-- Hình ảnh người dùng được match -->
+        <ImageView
+            android:id="@+id/other_user_image"
+            android:layout_width="120dp"
+            android:layout_height="120dp"
+            android:layout_marginStart="16dp"
+            android:background="@drawable/circle_background"
+            android:clipToOutline="true"
+            android:outlineProvider="background"
+            android:padding="4dp"
+            android:scaleType="centerCrop"
+            android:src="@drawable/gai2" />
+    </LinearLayout>
+
+    <!-- Nút "Nhắn tin" -->
+    <Button
+        android:id="@+id/send_message_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/images_layout"
+        android:layout_marginBottom="8dp"
+        android:backgroundTint="#FF2196F3"
+        android:text="Nhắn tin"
+        android:textColor="@android:color/white"
+        android:textSize="16sp" />
+
+    <!-- Nút "Tiếp tục vuốt" -->
+    <Button
+        android:id="@+id/keep_swiping_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/send_message_button"
+        android:backgroundTint="#FFE91E63"
+        android:text="Tiếp tục vuốt"
+        android:textColor="@android:color/white"
+        android:textSize="16sp" />
+
+</RelativeLayout>

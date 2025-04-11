@@ -3,6 +3,7 @@ package vn.edu.tlu.cse.amourswip.view.fragment;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -37,13 +38,13 @@ import java.util.List;
 
 public class SwipeFragment extends Fragment {
 
+    private static final String TAG = "SwipeFragment";
+
     private CardStackView cardStackView;
     private ImageButton skipButton;
     private ImageButton likeButton;
     private View skipCircle;
     private View likeCircle;
-    private View matchNotificationLayout;
-    private TextView matchNotificationText;
     private NavController navController;
     private SwipeController controller;
     private FirebaseAuth auth;
@@ -57,6 +58,7 @@ public class SwipeFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        Log.d(TAG, "onCreateView: Inflating activity_swipe layout");
         return inflater.inflate(R.layout.activity_swipe, container, false);
     }
 
@@ -64,40 +66,27 @@ public class SwipeFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        Log.d(TAG, "onViewCreated: Initializing SwipeFragment");
+
         navController = Navigation.findNavController(view);
 
         auth = FirebaseAuth.getInstance();
         database = FirebaseDatabase.getInstance().getReference();
 
         if (auth.getCurrentUser() == null) {
+            Log.w(TAG, "onViewCreated: User not logged in");
             Toast.makeText(getActivity(), "Vui lòng đăng nhập", Toast.LENGTH_SHORT).show();
             return;
         }
 
         currentUserId = auth.getCurrentUser().getUid();
+        Log.d(TAG, "onViewCreated: Current user ID: " + currentUserId);
 
         cardStackView = view.findViewById(R.id.card_stack_view);
         skipButton = view.findViewById(R.id.skip_button);
         likeButton = view.findViewById(R.id.like_button);
         skipCircle = view.findViewById(R.id.skip_circle);
         likeCircle = view.findViewById(R.id.like_circle);
-
-        // Tìm view gốc của <include> (match_notification)
-        View matchNotificationView = view.findViewById(R.id.match_notification);
-        if (matchNotificationView == null) {
-            Toast.makeText(getActivity(), "Không tìm thấy view match_notification trong layout activity_swipe.xml", Toast.LENGTH_LONG).show();
-        } else {
-            // Tìm các view con bên trong layout_match_notification.xml
-            matchNotificationLayout = matchNotificationView.findViewById(R.id.match_notification_layout);
-            matchNotificationText = matchNotificationView.findViewById(R.id.match_notification_text);
-
-            if (matchNotificationLayout == null || matchNotificationText == null) {
-                String errorMessage = "Không tìm thấy: " +
-                        (matchNotificationLayout == null ? "match_notification_layout " : "") +
-                        (matchNotificationText == null ? "match_notification_text" : "");
-                Toast.makeText(getActivity(), errorMessage, Toast.LENGTH_LONG).show();
-            }
-        }
 
         userList = new ArrayList<>();
         adapter = new CardStackAdapter(userList);
@@ -161,18 +150,15 @@ public class SwipeFragment extends Fragment {
         cardStackView.setLayoutManager(layoutManager);
         cardStackView.setAdapter(adapter);
 
-        // Khởi tạo Controller, truyền userList và adapter
+        // Khởi tạo Controller, không cần truyền matchNotificationText và matchNotificationLayout nữa
         controller = new SwipeController(this, cardStackView, skipCircle, likeCircle, skipButton, likeButton,
-                matchNotificationText, matchNotificationLayout, navController, userList, adapter);
+                null, null, navController, userList, adapter);
     }
 
     public void showLikeAnimation() {
-        // Lấy CardStackLayoutManager từ CardStackView
         CardStackLayoutManager layoutManager = (CardStackLayoutManager) cardStackView.getLayoutManager();
         if (layoutManager != null) {
-            // Lấy vị trí của thẻ trên cùng
             int topPosition = layoutManager.getTopPosition();
-            // Lấy view của thẻ trên cùng
             CardStackView.ViewHolder viewHolder = cardStackView.findViewHolderForAdapterPosition(topPosition);
             View topView = viewHolder != null ? viewHolder.itemView : null;
 
@@ -231,12 +217,9 @@ public class SwipeFragment extends Fragment {
     }
 
     public void showSkipAnimation() {
-        // Lấy CardStackLayoutManager từ CardStackView
         CardStackLayoutManager layoutManager = (CardStackLayoutManager) cardStackView.getLayoutManager();
         if (layoutManager != null) {
-            // Lấy vị trí của thẻ trên cùng
             int topPosition = layoutManager.getTopPosition();
-            // Lấy view của thẻ trên cùng
             CardStackView.ViewHolder viewHolder = cardStackView.findViewHolderForAdapterPosition(topPosition);
             View topView = viewHolder != null ? viewHolder.itemView : null;
 

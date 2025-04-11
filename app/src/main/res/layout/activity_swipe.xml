@@ -79,13 +79,4 @@
         </FrameLayout>
     </LinearLayout>
 
-    <!-- Layout thông báo match thành công -->
-    <include
-        android:id="@+id/match_notification"
-        layout="@layout/layout_match_notification"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_marginTop="16dp" />
-
 </RelativeLayout>

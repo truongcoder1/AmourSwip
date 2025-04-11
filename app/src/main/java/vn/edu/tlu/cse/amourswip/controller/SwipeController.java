@@ -1,13 +1,17 @@
 package vn.edu.tlu.cse.amourswip.controller;
 
+import android.app.Dialog;
+import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
+import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
+import com.bumptech.glide.Glide;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -128,7 +132,7 @@ public class SwipeController {
                 } else {
                     Log.d(TAG, "User list loaded with " + userList.size() + " users");
                     adapter.notifyDataSetChanged();
-                    cardStackView.scheduleLayoutAnimation(); // Làm mới CardStackView
+                    cardStackView.scheduleLayoutAnimation();
                 }
             }
 
@@ -147,11 +151,10 @@ public class SwipeController {
                 currentUser = snapshot.getValue(User.class);
                 if (currentUser != null) {
                     Log.d(TAG, "Current user loaded: " + currentUser.getName() + ", Preferred Gender: " + currentUser.getPreferredGender());
-                    // Truyền vị trí của người dùng hiện tại vào adapter
                     if (currentUser.isLocationEnabled()) {
                         adapter.setCurrentUserLocation(currentUser.getLatitude(), currentUser.getLongitude());
                     } else {
-                        adapter.setCurrentUserLocation(0.0, 0.0); // Vị trí mặc định nếu không bật định vị
+                        adapter.setCurrentUserLocation(0.0, 0.0);
                     }
                     loadUsers();
                 } else {
@@ -175,9 +178,15 @@ public class SwipeController {
         }
 
         int topPosition = layoutManager.getTopPosition();
-        int index = topPosition - 1;
+        int index = topPosition;
         if (index < 0 || index >= userList.size()) {
             Log.e(TAG, "Invalid index: " + index + ", topPosition: " + topPosition + ", userList size: " + userList.size());
+            if (topPosition <= 0 && !userList.isEmpty()) {
+                Log.d(TAG, "handleCardSwiped: topPosition is " + topPosition + ", resetting CardStackView");
+                adapter.notifyDataSetChanged();
+                cardStackView.scheduleLayoutAnimation();
+                return;
+            }
             return;
         }
 
@@ -191,15 +200,13 @@ public class SwipeController {
     }
 
     private void likeUser(User otherUser) {
+        Log.d(TAG, "Liking user: " + otherUser.getName() + " (uid: " + otherUser.getUid() + ")");
         database.child("likes").child(currentUserId).child(otherUser.getUid()).setValue(true)
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
-                        if (checkMatchCondition(currentUser, otherUser)) {
-                            checkForMatch(otherUser);
-                        } else {
-                            Log.d(TAG, "Like recorded but condition for match not met");
-                            fragment.showError("Lượt thích đã được ghi lại, nhưng không thỏa mãn điều kiện để match!");
-                        }
+                        Log.d(TAG, "Successfully liked user: " + otherUser.getName());
+                        Log.d(TAG, "Checking for mutual like...");
+                        checkForMatch(otherUser);
                     } else {
                         Log.e(TAG, "Error liking user: " + task.getException().getMessage());
                         fragment.showError("Lỗi khi thích: " + task.getException().getMessage());
@@ -207,32 +214,14 @@ public class SwipeController {
                 });
     }
 
-    private boolean checkMatchCondition(User currentUser, User otherUser) {
-        double distance = calculateDistance(
-                currentUser.getLatitude(), currentUser.getLongitude(),
-                otherUser.getLatitude(), otherUser.getLongitude()
-        );
-        Log.d(TAG, "Distance between users: " + distance + " km");
-        return distance < 5.0;
-    }
-
-    private double calculateDistance(double lat1, double lon1, double lat2, double lon2) {
-        final int R = 6371;
-        double latDistance = Math.toRadians(lat2 - lat1);
-        double lonDistance = Math.toRadians(lon2 - lon1);
-        double a = Math.sin(latDistance / 2) * Math.sin(latDistance / 2)
-                + Math.cos(Math.toRadians(lat1)) * Math.cos(Math.toRadians(lat2))
-                * Math.sin(lonDistance / 2) * Math.sin(lonDistance / 2);
-        double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-        return R * c;
-    }
-
     private void checkForMatch(User otherUser) {
+        Log.d(TAG, "Checking for match with user: " + otherUser.getName() + " (uid: " + otherUser.getUid() + ")");
         database.child("likes").child(otherUser.getUid()).child(currentUserId)
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
                         if (snapshot.exists()) {
+                            Log.d(TAG, "Mutual like detected, match successful!");
                             String chatId = currentUserId.compareTo(otherUser.getUid()) < 0
                                     ? currentUserId + "_" + otherUser.getUid()
                                     : otherUser.getUid() + "_" + currentUserId;
@@ -243,10 +232,11 @@ public class SwipeController {
                             database.child("chats").child(chatId).child("participants").child(currentUserId).setValue(true);
                             database.child("chats").child(chatId).child("participants").child(otherUser.getUid()).setValue(true);
 
-                            // Hiển thị thông báo match thành công bằng animation
                             String matchedUserName = otherUser.getName() != null ? otherUser.getName() : "người dùng này";
                             Log.d(TAG, "Match successful with user: " + matchedUserName);
-                            onMatchSuccess(matchedUserName, chatId);
+                            showMatchDialog(matchedUserName, chatId, otherUser);
+                        } else {
+                            Log.d(TAG, "No mutual like found with user: " + otherUser.getName());
                         }
                     }
 
@@ -258,54 +248,61 @@ public class SwipeController {
                 });
     }
 
-    private void onMatchSuccess(String matchedUserName, String chatId) {
-        if (matchNotificationText == null || matchNotificationLayout == null) {
-            fragment.showError("Lỗi: Không tìm thấy view thông báo match. matchNotificationText: " +
-                    (matchNotificationText == null ? "null" : "not null") +
-                    ", matchNotificationLayout: " +
-                    (matchNotificationLayout == null ? "null" : "not null"));
-            return;
+    private void showMatchDialog(String matchedUserName, String chatId, User otherUser) {
+        Log.d(TAG, "showMatchDialog: Showing match dialog for user: " + matchedUserName);
+        Dialog matchDialog = new Dialog(fragment.getContext());
+        matchDialog.setContentView(R.layout.match_dialog);
+
+        // Tìm các view trong dialog
+        TextView matchTitle = matchDialog.findViewById(R.id.match_title);
+        ImageView currentUserImage = matchDialog.findViewById(R.id.current_user_image);
+        ImageView otherUserImage = matchDialog.findViewById(R.id.other_user_image);
+        Button sendMessageButton = matchDialog.findViewById(R.id.send_message_button);
+        Button keepSwipingButton = matchDialog.findViewById(R.id.keep_swiping_button);
+
+        // Cập nhật tiêu đề
+        String message = "Bạn và " + matchedUserName + " đã match thành công!";
+        matchTitle.setText(message);
+
+        // Tải hình ảnh của người dùng hiện tại (nếu có)
+        if (currentUser.getPhotos() != null && !currentUser.getPhotos().isEmpty()) {
+            Glide.with(fragment.getContext())
+                    .load(currentUser.getPhotos().get(0))
+                    .placeholder(R.drawable.gai1)
+                    .error(R.drawable.gai1)
+                    .into(currentUserImage);
+        } else {
+            currentUserImage.setImageResource(R.drawable.gai1);
         }
 
-        // Cập nhật nội dung thông báo
-        String message = "Bạn đã match với " + matchedUserName + "!";
-        matchNotificationText.setText(message);
-
-        // Hiển thị thông báo với animation trượt xuống
-        Animation slideDown;
-        try {
-            slideDown = AnimationUtils.loadAnimation(fragment.getContext(), R.anim.slide_down);
-        } catch (Exception e) {
-            Log.e(TAG, "Error loading slide down animation: " + e.getMessage());
-            fragment.showError("Lỗi tải animation trượt xuống: " + e.getMessage());
-            return;
+        // Tải hình ảnh của người dùng được match (nếu có)
+        if (otherUser.getPhotos() != null && !otherUser.getPhotos().isEmpty()) {
+            Glide.with(fragment.getContext())
+                    .load(otherUser.getPhotos().get(0))
+                    .placeholder(R.drawable.gai2)
+                    .error(R.drawable.gai2)
+                    .into(otherUserImage);
+        } else {
+            otherUserImage.setImageResource(R.drawable.gai2);
         }
-        matchNotificationLayout.setVisibility(View.VISIBLE);
-        matchNotificationLayout.startAnimation(slideDown);
 
-        // Ẩn thông báo sau 3 giây với animation trượt lên
-        matchNotificationLayout.postDelayed(() -> {
-            Animation slideUp;
+        // Xử lý sự kiện nút "Nhắn tin"
+        sendMessageButton.setOnClickListener(v -> {
+            matchDialog.dismiss();
+            Bundle bundle = new Bundle();
+            bundle.putString("chatId", chatId);
             try {
-                slideUp = AnimationUtils.loadAnimation(fragment.getContext(), R.anim.slide_up);
+                navController.navigate(R.id.action_swipeFragment_to_listChatFragment, bundle);
             } catch (Exception e) {
-                Log.e(TAG, "Error loading slide up animation: " + e.getMessage());
-                fragment.showError("Lỗi tải animation trượt lên: " + e.getMessage());
-                return;
+                Log.e(TAG, "Error navigating to chat: " + e.getMessage());
+                fragment.showError("Lỗi điều hướng: " + e.getMessage());
             }
-            slideUp.setAnimationListener(new Animation.AnimationListener() {
-                @Override
-                public void onAnimationStart(Animation animation) {}
+        });
 
-                @Override
-                public void onAnimationEnd(Animation animation) {
-                    matchNotificationLayout.setVisibility(View.GONE);
-                }
+        // Xử lý sự kiện nút "Tiếp tục vuốt"
+        keepSwipingButton.setOnClickListener(v -> matchDialog.dismiss());
 
-                @Override
-                public void onAnimationRepeat(Animation animation) {}
-            });
-            matchNotificationLayout.startAnimation(slideUp);
-        }, 3000); // 3 giây
+        // Hiển thị dialog
+        matchDialog.show();
     }
 }
