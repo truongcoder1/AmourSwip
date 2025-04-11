@@ -183,6 +183,12 @@ public class SwipeFragment extends Fragment {
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 currentUser = snapshot.getValue(User.class);
                 if (currentUser != null && currentUser.getPreferredGender() != null) {
+                    // Truyền vị trí của người dùng hiện tại vào adapter
+                    if (currentUser.isLocationEnabled()) {
+                        adapter.setCurrentUserLocation(currentUser.getLatitude(), currentUser.getLongitude());
+                    } else {
+                        adapter.setCurrentUserLocation(0.0, 0.0); // Vị trí mặc định nếu không bật định vị
+                    }
                     loadUsers();
                 } else {
                     Toast.makeText(getActivity(), "Không tìm thấy thông tin người dùng hiện tại hoặc thiếu dữ liệu giới tính ưa thích", Toast.LENGTH_SHORT).show();
@@ -209,8 +215,6 @@ public class SwipeFragment extends Fragment {
                         String preferredGender = currentUser.getPreferredGender();
                         String userGender = user.getGender();
                         if (preferredGender != null && userGender != null && preferredGender.equals(userGender)) {
-                            userList.add(user);
-                        } else {
                             userList.add(user);
                         }
                     }
@@ -299,21 +303,18 @@ public class SwipeFragment extends Fragment {
         MaterialButton chatButton = matchDialog.findViewById(R.id.chat_button);
         MaterialButton continueButton = matchDialog.findViewById(R.id.continue_button);
 
-        // Cập nhật thông điệp động
         String matchMessage = otherUser.getName() != null && !otherUser.getName().isEmpty()
                 ? "Chúc mừng! Bạn và " + otherUser.getName() + " đã kết nối thành công!"
                 : "Chúc mừng! Bạn đã kết nối thành công!";
         matchTitle.setText(matchMessage);
 
-        // Xử lý sự kiện nút đóng
         closeButton.setOnClickListener(v -> matchDialog.dismiss());
 
-        // Xử lý sự kiện nút "Chat ngay!"
         chatButton.setOnClickListener(v -> {
             try {
-                matchDialog.dismiss(); // Đóng hộp thoại trước khi điều hướng
+                matchDialog.dismiss();
                 Bundle bundle = new Bundle();
-                bundle.putString("chatId", chatId); // Truyền chatId
+                bundle.putString("chatId", chatId);
                 if (navController == null) {
                     Toast.makeText(getContext(), "Lỗi: NavController chưa được khởi tạo", Toast.LENGTH_LONG).show();
                     return;
@@ -325,10 +326,8 @@ public class SwipeFragment extends Fragment {
             }
         });
 
-        // Xử lý sự kiện nút "Tiếp tục vuốt"
         continueButton.setOnClickListener(v -> matchDialog.dismiss());
 
-        // Hiển thị hộp thoại
         matchDialog.show();
     }
 

@@ -7,6 +7,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+import com.bumptech.glide.Glide;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -57,19 +58,29 @@ public class CardStackAdapter extends RecyclerView.Adapter<CardStackAdapter.View
         }
 
         // Hiển thị tên và tuổi
-        holder.userNameAge.setText(user.getName() + ", " + age);
+        holder.userNameAge.setText(user.getName() != null ? user.getName() + ", " + age : "N/A, " + age);
 
-        // Tính khoảng cách
-        double distance = calculateDistance(currentLat, currentLon, user.getLatitude(), user.getLongitude());
-        holder.userDistance.setText(distance + " KM");
+        // Tính và hiển thị khoảng cách
+        if (user.isLocationEnabled()) {
+            double distance = calculateDistance(currentLat, currentLon, user.getLatitude(), user.getLongitude());
+            holder.userDistance.setText(String.format("%.1f KM", distance));
+        } else {
+            holder.userDistance.setText("Không xác định");
+        }
 
-        // Hiển thị trạng thái online/offline (giả định, vì class User không có thuộc tính isOnline)
-        holder.userStatus.setText("Active Now"); // Thay bằng logic thực tế nếu có
+        // Hiển thị trạng thái online/offline
+        holder.userStatus.setText(user.isOnline() ? "Active Now" : "Offline");
 
-        // TODO: Sử dụng Glide để tải ảnh từ URL
-        // if (user.getPhotos() != null && !user.getPhotos().isEmpty()) {
-        //     Glide.with(holder.itemView.getContext()).load(user.getPhotos().get(0)).into(holder.userImage);
-        // }
+        // Tải ảnh từ URL bằng Glide
+        if (user.getPhotos() != null && !user.getPhotos().isEmpty()) {
+            Glide.with(holder.itemView.getContext())
+                    .load(user.getPhotos().get(0))
+                    .placeholder(R.drawable.gai1)
+                    .error(R.drawable.gai2)
+                    .into(holder.userImage);
+        } else {
+            holder.userImage.setImageResource(R.drawable.gai2);
+        }
     }
 
     @Override

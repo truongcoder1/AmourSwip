@@ -44,7 +44,7 @@
             android:layout_height="wrap_content"
             android:background="@null"
             android:fontFamily="@font/poppins_bold"
-            android:hint="@string/username"
+            android:hint="@string/gmail"
             android:inputType="text"
             android:paddingHorizontal="16dp"
             android:paddingVertical="12dp"

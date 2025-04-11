@@ -59,4 +59,5 @@ dependencies {
     implementation (libs.material)
     implementation (libs.glide)
     implementation (libs.annotation)
+    implementation (libs.play.services.location)
 }

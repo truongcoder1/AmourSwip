@@ -17,6 +17,7 @@ materialVersion = "1.11.0"
 navigationFragment = "2.8.9"
 navigationFragmentVersion = "2.7.7"
 navigationUi = "2.8.9"
+playServicesLocation = "21.3.0"
 
 [libraries]
 annotation = { module = "androidx.annotation:annotation", version.ref = "annotation" }
@@ -40,6 +41,7 @@ material-v1110 = { module = "com.google.android.material:material", version.ref 
 navigation-fragment = { group = "androidx.navigation", name = "navigation-fragment", version.ref = "navigationFragment" }
 navigation-fragment-v277 = { module = "androidx.navigation:navigation-fragment", version.ref = "navigationFragmentVersion" }
 navigation-ui = { module = "androidx.navigation:navigation-ui", version.ref = "navigationUi" }
+play-services-location = { module = "com.google.android.gms:play-services-location", version.ref = "playServicesLocation" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
