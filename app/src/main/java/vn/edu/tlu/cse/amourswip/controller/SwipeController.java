@@ -52,6 +52,7 @@ public class SwipeController {
     private final CardStackLayoutManager layoutManager;
     private User currentUser;
     private Set<String> matchedUserIds;
+    private Set<String> skippedUserIds; // Thêm Set để lưu danh sách người dùng đã bị NOPE
 
     public SwipeController(SwipeFragment fragment, CardStackView cardStackView, View skipCircle, View likeCircle,
                            ImageButton skipButton, ImageButton likeButton, TextView matchNotificationText,
@@ -72,6 +73,7 @@ public class SwipeController {
         this.adapter = adapter;
         this.layoutManager = new CardStackLayoutManager(fragment.getContext());
         this.matchedUserIds = new HashSet<>();
+        this.skippedUserIds = new HashSet<>(); // Khởi tạo Set cho người dùng bị NOPE
         initializeCardStack();
     }
 
@@ -122,7 +124,7 @@ public class SwipeController {
                 }
                 Log.d(TAG, "Matched users: " + matchedUserIds);
 
-                // Tải danh sách người dùng và loại bỏ những người đã match
+                // Tải danh sách người dùng và loại bỏ những người đã match hoặc đã bị NOPE
                 database.child("users").addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -130,7 +132,9 @@ public class SwipeController {
                         Log.d(TAG, "Loading users from Firebase...");
                         for (DataSnapshot userSnapshot : snapshot.getChildren()) {
                             User user = userSnapshot.getValue(User.class);
-                            if (user != null && !user.getUid().equals(currentUserId) && !matchedUserIds.contains(user.getUid())) {
+                            if (user != null && !user.getUid().equals(currentUserId)
+                                    && !matchedUserIds.contains(user.getUid())
+                                    && !skippedUserIds.contains(user.getUid())) { // Loại bỏ người dùng đã bị NOPE
                                 String preferredGender = currentUser.getPreferredGender();
                                 String userGender = user.getGender();
                                 Log.d(TAG, "User: " + user.getName() + ", Gender: " + userGender + ", Preferred Gender: " + preferredGender);
@@ -142,7 +146,9 @@ public class SwipeController {
                                     Log.d(TAG, "User added (no preferred gender match): " + user.getName());
                                 }
                             } else {
-                                Log.d(TAG, "User skipped: " + (user == null ? "null user" : (matchedUserIds.contains(user.getUid()) ? "already matched" : "current user")));
+                                Log.d(TAG, "User skipped: " + (user == null ? "null user" :
+                                        (matchedUserIds.contains(user.getUid()) ? "already matched" :
+                                                (skippedUserIds.contains(user.getUid()) ? "already skipped" : "current user"))));
                             }
                         }
                         if (userList.isEmpty()) {
@@ -225,6 +231,11 @@ public class SwipeController {
             likeUser(otherUser);
             fragment.showLikeAnimation();
         } else if (direction == Direction.Left) {
+            // Khi vuốt sang trái (NOPE), thêm người dùng vào danh sách skippedUserIds và loại bỏ khỏi userList
+            skippedUserIds.add(otherUser.getUid());
+            userList.remove(otherUser);
+            adapter.notifyDataSetChanged();
+            cardStackView.scheduleLayoutAnimation();
             fragment.showSkipAnimation();
         }
 
