@@ -89,7 +89,7 @@ public class SwipeController {
                     .build();
             layoutManager.setSwipeAnimationSetting(setting);
             cardStackView.swipe();
-            fragment.showSkipAnimation(); // Thay đổi để gọi showSkipAnimation
+            fragment.showSkipAnimation();
         });
 
         likeButton.setOnClickListener(v -> {
@@ -199,6 +199,7 @@ public class SwipeController {
     }
 
     public void handleCardSwiped(Direction direction) {
+        Log.d(TAG, "handleCardSwiped: Direction = " + direction);
         if (userList.isEmpty()) {
             Log.w(TAG, "User list is empty during swipe");
             return;
@@ -206,6 +207,7 @@ public class SwipeController {
 
         int topPosition = layoutManager.getTopPosition();
         int index = topPosition;
+        Log.d(TAG, "handleCardSwiped: topPosition = " + topPosition + ", userList size = " + userList.size());
         if (index < 0 || index >= userList.size()) {
             Log.e(TAG, "Invalid index: " + index + ", topPosition: " + topPosition + ", userList size: " + userList.size());
             if (topPosition <= 0 && !userList.isEmpty()) {
@@ -218,6 +220,7 @@ public class SwipeController {
         }
 
         User otherUser = userList.get(index);
+        Log.d(TAG, "handleCardSwiped: Swiped user: " + otherUser.getName() + " (uid: " + otherUser.getUid() + ")");
         if (direction == Direction.Right) {
             likeUser(otherUser);
             fragment.showLikeAnimation();
@@ -230,24 +233,25 @@ public class SwipeController {
     }
 
     private void likeUser(User otherUser) {
-        Log.d(TAG, "Liking user: " + otherUser.getName() + " (uid: " + otherUser.getUid() + ")");
+        Log.d(TAG, "likeUser: Liking user: " + otherUser.getName() + " (uid: " + otherUser.getUid() + ")");
         database.child("likes").child(currentUserId).child(otherUser.getUid()).setValue(true)
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
-                        Log.d(TAG, "Successfully liked user: " + otherUser.getName());
+                        Log.d(TAG, "likeUser: Successfully liked user: " + otherUser.getName());
                     } else {
-                        Log.e(TAG, "Error liking user: " + task.getException().getMessage());
+                        Log.e(TAG, "likeUser: Error liking user: " + task.getException().getMessage());
                         fragment.showError("Lỗi khi thích: " + task.getException().getMessage());
                     }
                 });
     }
 
     private void checkForMatch(User otherUser) {
-        Log.d(TAG, "Checking for match with user: " + otherUser.getName() + " (uid: " + otherUser.getUid() + ")");
+        Log.d(TAG, "checkForMatch: Checking for match with user: " + otherUser.getName() + " (uid: " + otherUser.getUid() + ")");
         database.child("likes").child(otherUser.getUid()).child(currentUserId)
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        Log.d(TAG, "checkForMatch: Snapshot exists: " + snapshot.exists());
                         if (snapshot.exists()) {
                             Log.d(TAG, "Mutual like detected, match successful!");
                             String chatId = currentUserId.compareTo(otherUser.getUid()) < 0
