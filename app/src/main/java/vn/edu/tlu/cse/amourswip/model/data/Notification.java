@@ -3,21 +3,21 @@ package vn.edu.tlu.cse.amourswip.model.data;
 public class Notification {
     private String userId; // ID của người dùng gửi thông báo
     private String userName; // Tên của người dùng
-    private String status; // Trạng thái thông báo (ví dụ: "đã match với bạn")
+    private String userImage; // URL hình ảnh của người dùng
+    private String lastMessage; // Tin nhắn cuối cùng
     private String time; // Thời gian thông báo
     private boolean isUnread; // Trạng thái chưa xem
-    private boolean isOnline; // Trạng thái online/offline
 
     public Notification() {
     }
 
-    public Notification(String userId, String userName, String status, String time, boolean isUnread, boolean isOnline) {
+    public Notification(String userId, String userName, String userImage, String lastMessage, String time, boolean isUnread) {
         this.userId = userId;
         this.userName = userName;
-        this.status = status;
+        this.userImage = userImage;
+        this.lastMessage = lastMessage;
         this.time = time;
         this.isUnread = isUnread;
-        this.isOnline = isOnline;
     }
 
     public String getUserId() {
@@ -36,12 +36,20 @@ public class Notification {
         this.userName = userName;
     }
 
-    public String getStatus() {
-        return status;
+    public String getUserImage() {
+        return userImage;
     }
 
-    public void setStatus(String status) {
-        this.status = status;
+    public void setUserImage(String userImage) {
+        this.userImage = userImage;
+    }
+
+    public String getLastMessage() {
+        return lastMessage;
+    }
+
+    public void setLastMessage(String lastMessage) {
+        this.lastMessage = lastMessage;
     }
 
     public String getTime() {
@@ -58,13 +66,5 @@ public class Notification {
 
     public void setUnread(boolean unread) {
         isUnread = unread;
-    }
-
-    public boolean isOnline() {
-        return isOnline;
-    }
-
-    public void setOnline(boolean online) {
-        isOnline = online;
     }
 }

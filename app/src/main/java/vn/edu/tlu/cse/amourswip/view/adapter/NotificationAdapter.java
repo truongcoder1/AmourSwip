@@ -7,6 +7,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+import com.bumptech.glide.Glide;
 import java.util.List;
 import vn.edu.tlu.cse.amourswip.R;
 import vn.edu.tlu.cse.amourswip.model.data.Notification;
@@ -32,27 +33,25 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Notification notification = notificationList.get(position);
 
+        // Gán dữ liệu
         holder.userName.setText(notification.getUserName());
-        holder.notificationStatus.setText(notification.getStatus());
+        holder.lastMessage.setText(notification.getLastMessage());
         holder.notificationTime.setText(notification.getTime());
 
-        // Cập nhật trạng thái online/offline
-        if (notification.isOnline()) {
-            holder.onlineStatus.setBackgroundResource(R.drawable.custom_online);
-            holder.notificationStatus.setText("Online");
-        } else {
-            holder.onlineStatus.setBackgroundResource(R.drawable.custom_offline);
-            holder.notificationStatus.setText("Offline");
-        }
-
-        // Cập nhật trạng thái xem (chấm đỏ hoặc "Đã xem")
+        // Cập nhật trạng thái xem (chỉ hiển thị icon đỏ nếu chưa đọc)
         if (notification.isUnread()) {
             holder.unreadIcon.setVisibility(View.VISIBLE);
-            holder.readStatus.setVisibility(View.GONE);
         } else {
             holder.unreadIcon.setVisibility(View.GONE);
-            holder.readStatus.setVisibility(View.VISIBLE);
         }
+
+        // Tải hình ảnh người dùng với Glide
+        Glide.with(holder.itemView.getContext())
+                .load(notification.getUserImage())
+                .circleCrop()
+                .placeholder(R.drawable.gai1)
+                .error(R.drawable.gai1)
+                .into(holder.userImage);
 
         holder.itemView.setOnClickListener(v -> {
             if (listener != null) {
@@ -73,21 +72,17 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
     static class ViewHolder extends RecyclerView.ViewHolder {
         ImageView userImage;
         TextView userName;
-        TextView notificationStatus;
+        TextView lastMessage;
         TextView notificationTime;
         ImageView unreadIcon;
-        TextView readStatus; // Thêm TextView cho "Đã xem"
-        View onlineStatus;
 
         ViewHolder(View itemView) {
             super(itemView);
             userImage = itemView.findViewById(R.id.user_image);
             userName = itemView.findViewById(R.id.user_name);
-            notificationStatus = itemView.findViewById(R.id.notification_status);
+            lastMessage = itemView.findViewById(R.id.last_message);
             notificationTime = itemView.findViewById(R.id.notification_time);
             unreadIcon = itemView.findViewById(R.id.unread_icon);
-            readStatus = itemView.findViewById(R.id.read_status); // Khởi tạo TextView
-            onlineStatus = itemView.findViewById(R.id.online_status);
         }
     }
 }

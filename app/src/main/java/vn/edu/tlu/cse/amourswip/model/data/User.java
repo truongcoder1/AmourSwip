@@ -1,8 +1,16 @@
 package vn.edu.tlu.cse.amourswip.model.data;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
-public class User {
+public class User implements Parcelable {
     private String uid;
     private String email;
     private String name;
@@ -17,16 +25,13 @@ public class User {
     private String residence;
     private String educationLevel;
     private String occupation;
-    private boolean online; // Thêm thuộc tính này
+    private String description;
 
-    // Constructor rỗng (yêu cầu bởi Firebase)
-    public User() {
-    }
+    public User() {}
 
-    // Constructor đầy đủ
     public User(String uid, String email, String name, String gender, String preferredGender, String dateOfBirth,
                 List<String> photos, boolean locationEnabled, double latitude, double longitude,
-                String religion, String residence, String educationLevel, String occupation, boolean online) {
+                String religion, String residence, String educationLevel, String occupation, String description) {
         this.uid = uid;
         this.email = email;
         this.name = name;
@@ -41,10 +46,65 @@ public class User {
         this.residence = residence;
         this.educationLevel = educationLevel;
         this.occupation = occupation;
-        this.online = online;
+        this.description = description;
     }
 
-    // Getters và Setters
+    // Constructor cho Parcelable
+    protected User(Parcel in) {
+        uid = in.readString();
+        email = in.readString();
+        name = in.readString();
+        gender = in.readString();
+        preferredGender = in.readString();
+        dateOfBirth = in.readString();
+        photos = in.createStringArrayList();
+        locationEnabled = in.readByte() != 0;
+        latitude = in.readDouble();
+        longitude = in.readDouble();
+        religion = in.readString();
+        residence = in.readString();
+        educationLevel = in.readString();
+        occupation = in.readString();
+        description = in.readString();
+    }
+
+    public static final Creator<User> CREATOR = new Creator<User>() {
+        @Override
+        public User createFromParcel(Parcel in) {
+            return new User(in);
+        }
+
+        @Override
+        public User[] newArray(int size) {
+            return new User[size];
+        }
+    };
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(uid);
+        dest.writeString(email);
+        dest.writeString(name);
+        dest.writeString(gender);
+        dest.writeString(preferredGender);
+        dest.writeString(dateOfBirth);
+        dest.writeStringList(photos);
+        dest.writeByte((byte) (locationEnabled ? 1 : 0));
+        dest.writeDouble(latitude);
+        dest.writeDouble(longitude);
+        dest.writeString(religion);
+        dest.writeString(residence);
+        dest.writeString(educationLevel);
+        dest.writeString(occupation);
+        dest.writeString(description);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    // Các getter và setter hiện có
     public String getUid() {
         return uid;
     }
@@ -91,6 +151,27 @@ public class User {
 
     public void setDateOfBirth(String dateOfBirth) {
         this.dateOfBirth = dateOfBirth;
+    }
+
+    public int getAge() {
+        if (dateOfBirth == null || dateOfBirth.isEmpty()) {
+            return 0;
+        }
+        try {
+            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+            Date birthDate = sdf.parse(dateOfBirth);
+            Calendar birthCal = Calendar.getInstance();
+            birthCal.setTime(birthDate);
+            Calendar today = Calendar.getInstance();
+            int age = today.get(Calendar.YEAR) - birthCal.get(Calendar.YEAR);
+            if (today.get(Calendar.DAY_OF_YEAR) < birthCal.get(Calendar.DAY_OF_YEAR)) {
+                age--;
+            }
+            return age;
+        } catch (ParseException e) {
+            e.printStackTrace();
+            return 0;
+        }
     }
 
     public List<String> getPhotos() {
@@ -157,11 +238,11 @@ public class User {
         this.occupation = occupation;
     }
 
-    public boolean isOnline() {
-        return online;
+    public String getDescription() {
+        return description;
     }
 
-    public void setOnline(boolean online) {
-        this.online = online;
+    public void setDescription(String description) {
+        this.description = description;
     }
 }

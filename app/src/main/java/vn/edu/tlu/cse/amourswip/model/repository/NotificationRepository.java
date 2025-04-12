@@ -33,17 +33,62 @@ public class NotificationRepository {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 notificationList.clear();
+                if (!snapshot.exists()) {
+                    listener.onEmpty();
+                    return;
+                }
+
                 for (DataSnapshot matchSnapshot : snapshot.getChildren()) {
                     String matchedUserId = matchSnapshot.getKey();
+                    // Tạo chatId
+                    String chatId = currentUserId.compareTo(matchedUserId) < 0 ? currentUserId + "_" + matchedUserId : matchedUserId + "_" + currentUserId;
+
+                    // Lấy thông tin người dùng đã match
                     database.child("users").child(matchedUserId).addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
-                        public void onDataChange(@NonNull DataSnapshot snapshot) {
-                            User user = snapshot.getValue(User.class);
+                        public void onDataChange(@NonNull DataSnapshot userSnapshot) {
+                            User user = userSnapshot.getValue(User.class);
                             if (user != null) {
-                                String time = new SimpleDateFormat("hh:mm a", Locale.getDefault()).format(new Date());
-                                Notification notification = new Notification(matchedUserId, user.getName(), "đã match với bạn", time, true, user.isOnline());
-                                notificationList.add(0, notification);
-                                listener.onSuccess(notificationList);
+                                // Lấy tin nhắn cuối cùng từ node chats/{chatId}/lastMessage
+                                database.child("chats").child(chatId).child("lastMessage").addListenerForSingleValueEvent(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(@NonNull DataSnapshot lastMessageSnapshot) {
+                                        String lastMessage = "đã match với bạn"; // Giá trị mặc định
+                                        String time = new SimpleDateFormat("hh:mm a", Locale.getDefault()).format(new Date());
+                                        boolean isUnread = true;
+
+                                        if (lastMessageSnapshot.exists()) {
+                                            lastMessage = lastMessageSnapshot.child("message").getValue(String.class) != null
+                                                    ? lastMessageSnapshot.child("message").getValue(String.class)
+                                                    : "đã match với bạn";
+                                            Long timestamp = lastMessageSnapshot.child("timestamp").getValue(Long.class);
+                                            if (timestamp != null) {
+                                                time = new SimpleDateFormat("hh:mm a", Locale.getDefault()).format(new Date(timestamp));
+                                            }
+                                            isUnread = lastMessageSnapshot.child("isUnread").getValue(Boolean.class) != null
+                                                    ? lastMessageSnapshot.child("isUnread").getValue(Boolean.class)
+                                                    : true;
+                                        }
+
+                                        // Lấy URL hình ảnh từ user
+                                        String userImage = user.getPhotos() != null && !user.getPhotos().isEmpty() ? user.getPhotos().get(0) : "";
+                                        Notification notification = new Notification(
+                                                matchedUserId,
+                                                user.getName(),
+                                                userImage,
+                                                lastMessage,
+                                                time,
+                                                isUnread
+                                        );
+                                        notificationList.add(0, notification);
+                                        listener.onSuccess(notificationList);
+                                    }
+
+                                    @Override
+                                    public void onCancelled(@NonNull DatabaseError error) {
+                                        listener.onError(error.getMessage());
+                                    }
+                                });
                             }
                         }
 
@@ -52,9 +97,6 @@ public class NotificationRepository {
                             listener.onError(error.getMessage());
                         }
                     });
-                }
-                if (notificationList.isEmpty()) {
-                    listener.onEmpty();
                 }
             }
 

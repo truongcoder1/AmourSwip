@@ -1,6 +1,5 @@
 package vn.edu.tlu.cse.amourswip.view.adapter;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,30 +8,18 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 import vn.edu.tlu.cse.amourswip.R;
 import vn.edu.tlu.cse.amourswip.model.data.User;
 
 public class CardStackAdapter extends RecyclerView.Adapter<CardStackAdapter.ViewHolder> {
-    private static final String TAG = "CardStackAdapter";
 
     private List<User> userList;
-    private double currentLat;
-    private double currentLon;
+    private double currentLatitude;
+    private double currentLongitude;
 
     public CardStackAdapter(List<User> userList) {
         this.userList = userList;
-        Log.d(TAG, "CardStackAdapter initialized with userList size: " + userList.size());
-    }
-
-    public void setCurrentUserLocation(double lat, double lon) {
-        this.currentLat = lat;
-        this.currentLon = lon;
-        Log.d(TAG, "Current user location set: lat=" + lat + ", lon=" + lon);
     }
 
     @NonNull
@@ -45,97 +32,66 @@ public class CardStackAdapter extends RecyclerView.Adapter<CardStackAdapter.View
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         User user = userList.get(position);
-        Log.d(TAG, "Binding user at position " + position + ": " + user.getName());
 
-        // Tính tuổi từ ngày sinh
-        String age = "22"; // Giá trị mặc định
-        if (user.getDateOfBirth() != null && !user.getDateOfBirth().isEmpty()) {
-            try {
-                SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
-                Date birthDate = sdf.parse(user.getDateOfBirth());
-                if (birthDate != null) {
-                    long diffInMillies = Math.abs(new Date().getTime() - birthDate.getTime());
-                    long diff = diffInMillies / (1000L * 60 * 60 * 24 * 365);
-                    age = String.valueOf(diff);
-                }
-            } catch (ParseException e) {
-                Log.e(TAG, "Error parsing date of birth: " + e.getMessage());
-            }
-        }
+        holder.userNameAge.setText(user.getName() + ", " + user.getAge());
+        String residence = user.getResidence() != null ? user.getResidence() : "Không xác định";
+        String distance = calculateDistance(user.getLatitude(), user.getLongitude());
+        holder.userDistance.setText(distance);
+        holder.userDescription.setText(user.getDescription() != null ? user.getDescription() : "");
 
-        // Hiển thị tên và tuổi
-        if (holder.userNameAge != null) {
-            holder.userNameAge.setText(user.getName() != null ? user.getName() + ", " + age : "N/A, " + age);
+        // Tải hình ảnh theo nhu cầu (lazy loading)
+        if (user.getPhotos() != null && !user.getPhotos().isEmpty()) {
+            Glide.with(holder.itemView.getContext())
+                    .load(user.getPhotos().get(0))
+                    .placeholder(R.drawable.gai1)
+                    .error(R.drawable.gai1)
+                    .into(holder.userImage);
         } else {
-            Log.e(TAG, "userNameAge TextView is null");
-        }
-
-        // Tính và hiển thị khoảng cách
-        if (holder.userDistance != null) {
-            if (user.isLocationEnabled()) {
-                double distance = calculateDistance(currentLat, currentLon, user.getLatitude(), user.getLongitude());
-                holder.userDistance.setText(String.format("%.1f KM", distance));
-            } else {
-                holder.userDistance.setText("Không xác định");
-            }
-        } else {
-            Log.e(TAG, "userDistance TextView is null");
-        }
-
-        // Hiển thị trạng thái online/offline
-        if (holder.userStatus != null) {
-            holder.userStatus.setText(user.isOnline() ? "Active Now" : "Offline");
-        } else {
-            Log.e(TAG, "userStatus TextView is null");
-        }
-
-        // Tải ảnh từ URL bằng Glide
-        if (holder.userImage != null) {
-            if (user.getPhotos() != null && !user.getPhotos().isEmpty()) {
-                Glide.with(holder.itemView.getContext())
-                        .load(user.getPhotos().get(0))
-                        .placeholder(R.drawable.gai1)
-                        .error(R.drawable.gai2)
-                        .into(holder.userImage);
-            } else {
-                holder.userImage.setImageResource(R.drawable.gai2);
-            }
-        } else {
-            Log.e(TAG, "userImage ImageView is null");
+            holder.userImage.setImageResource(R.drawable.gai1);
         }
     }
 
     @Override
     public int getItemCount() {
-        int count = userList.size();
-        Log.d(TAG, "getItemCount: " + count);
-        return count;
+        return userList.size();
     }
 
-    private double calculateDistance(double lat1, double lon1, double lat2, double lon2) {
-        final int R = 6371; // Bán kính Trái Đất (km)
-        double latDistance = Math.toRadians(lat2 - lat1);
-        double lonDistance = Math.toRadians(lon2 - lon1);
-        double a = Math.sin(latDistance / 2) * Math.sin(latDistance / 2)
-                + Math.cos(Math.toRadians(lat1)) * Math.cos(Math.toRadians(lat2))
-                * Math.sin(lonDistance / 2) * Math.sin(lonDistance / 2);
-        double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-        double distance = R * c; // Khoảng cách tính bằng km
-        return Math.round(distance * 10.0) / 10.0; // Làm tròn đến 1 chữ số thập phân
+    private String calculateDistance(double latitude, double longitude) {
+        if (currentLatitude == 0 || currentLongitude == 0) {
+            return "N/A";
+        }
+
+        android.location.Location currentLocation = new android.location.Location("");
+        currentLocation.setLatitude(currentLatitude);
+        currentLocation.setLongitude(currentLongitude);
+
+        android.location.Location userLocation = new android.location.Location("");
+        userLocation.setLatitude(latitude);
+        userLocation.setLongitude(longitude);
+
+        float distanceInMeters = currentLocation.distanceTo(userLocation);
+        float distanceInKm = distanceInMeters / 1000;
+        return String.format("%.1f KM", distanceInKm);
+    }
+
+    public void setCurrentUserLocation(double latitude, double longitude) {
+        this.currentLatitude = latitude;
+        this.currentLongitude = longitude;
+        notifyDataSetChanged();
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder {
         ImageView userImage;
         TextView userNameAge;
         TextView userDistance;
-        TextView userStatus;
+        TextView userDescription;
 
-        public ViewHolder(@NonNull View itemView) {
+        ViewHolder(@NonNull View itemView) {
             super(itemView);
             userImage = itemView.findViewById(R.id.user_image);
             userNameAge = itemView.findViewById(R.id.user_name_age);
             userDistance = itemView.findViewById(R.id.user_distance);
-            userStatus = itemView.findViewById(R.id.user_status);
+            userDescription = itemView.findViewById(R.id.user_description);
         }
     }
 }

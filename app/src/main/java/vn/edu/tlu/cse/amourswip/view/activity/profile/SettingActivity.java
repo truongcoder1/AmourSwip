@@ -1,4 +1,4 @@
-package vn.edu.tlu.cse.amourswip.view.activity;
+package vn.edu.tlu.cse.amourswip.view.activity.profile;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
@@ -9,6 +9,8 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import com.google.firebase.auth.FirebaseAuth;
 import vn.edu.tlu.cse.amourswip.R;
+import vn.edu.tlu.cse.amourswip.view.activity.signup.MapActivity;
+import vn.edu.tlu.cse.amourswip.view.activity.signup.SignInActivity;
 
 public class SettingActivity extends AppCompatActivity {
 

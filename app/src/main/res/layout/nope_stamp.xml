@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/nope_stamp"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:text="NOPE"
+    android:textColor="@android:color/white"
+    android:textSize="48sp"
+    android:textStyle="bold"
+    android:background="@drawable/nope_background"
+    android:padding="12dp"
+    android:rotation="-45"
+    android:gravity="center" />

@@ -23,8 +23,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import vn.edu.tlu.cse.amourswip.R;
-import vn.edu.tlu.cse.amourswip.view.activity.EditProfileActivity;
-import vn.edu.tlu.cse.amourswip.view.activity.SettingActivity;
+import vn.edu.tlu.cse.amourswip.view.activity.profile.EditProfileActivity;
+import vn.edu.tlu.cse.amourswip.view.activity.profile.SettingActivity;
 import vn.edu.tlu.cse.amourswip.view.adapter.PhotoAdapter;
 
 import java.util.ArrayList;

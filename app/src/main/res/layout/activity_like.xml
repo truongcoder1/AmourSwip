@@ -5,77 +5,93 @@
     android:layout_height="match_parent"
     android:background="@drawable/background_profile">
 
-    <!-- Tab Buttons -->
-    <ImageButton
-        android:id="@+id/likes_tab"
+    <!-- Thanh tiêu đề -->
+    <LinearLayout
+        android:id="@+id/header_layout"
         android:layout_width="0dp"
-        android:layout_height="48dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="60dp"
-        android:layout_marginEnd="8dp"
-        android:background="@drawable/tab_background_unselected"
-        android:contentDescription="Lượt thích"
-        android:scaleType="centerInside"
-        app:layout_constraintEnd_toStartOf="@id/liked_tab"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:padding="16dp"
+        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintWidth_percent="0.45" />
+        app:layout_constraintEnd_toEndOf="parent">
 
-    <ImageButton
-        android:id="@+id/liked_tab"
-        android:layout_width="0dp"
-        android:layout_height="48dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="60dp"
-        android:layout_marginEnd="16dp"
-        android:background="@drawable/tab_background_unselected"
-        android:contentDescription="Đã thích"
-        android:scaleType="centerInside"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/likes_tab"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintWidth_percent="0.45" />
+        <!-- Nút "Lượt thích" -->
+        <ImageButton
+            android:id="@+id/likes_tab"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_marginEnd="8dp"
+            android:background="@android:color/transparent"
+            android:src="@drawable/custom_iconheart"
+            android:scaleType="centerInside"
+            android:contentDescription="Lượt thích" />
 
-    <!-- Tab Labels -->
-    <TextView
-        android:id="@+id/likes_label"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Lượt thích"
-        android:textColor="@android:color/black"
-        android:textSize="16sp"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="@id/likes_tab"
-        app:layout_constraintEnd_toEndOf="@id/likes_tab"
-        app:layout_constraintStart_toStartOf="@id/likes_tab"
-        app:layout_constraintTop_toTopOf="@id/likes_tab" />
+        <TextView
+            android:id="@+id/likes_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Lượt thích"
+            android:textSize="16sp"
+            android:textColor="@android:color/white" />
 
-    <TextView
-        android:id="@+id/liked_label"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Đã thích"
-        android:textColor="@android:color/black"
-        android:textSize="16sp"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="@id/liked_tab"
-        app:layout_constraintEnd_toEndOf="@id/liked_tab"
-        app:layout_constraintStart_toStartOf="@id/liked_tab"
-        app:layout_constraintTop_toTopOf="@id/liked_tab" />
+        <!-- Nút "Đã thích" -->
+        <ImageButton
+            android:id="@+id/liked_tab"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="8dp"
+            android:background="@android:color/transparent"
+            android:src="@drawable/custom_iconheart"
+            android:scaleType="centerInside"
+            android:contentDescription="Đã thích" />
 
-    <!-- RecyclerView for user list -->
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/user_recycler_view"
+        <TextView
+            android:id="@+id/liked_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Đã thích"
+            android:textSize="16sp"
+            android:textColor="@android:color/black" />
+
+        <!-- Spacer để đẩy các nút sang bên phải -->
+        <View
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
+
+        <!-- Nút lọc -->
+        <ImageButton
+            android:id="@+id/filter_button"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_marginEnd="8dp"
+            android:background="@android:color/transparent"
+            android:contentDescription="Lọc"
+            android:src="@drawable/ic_filter"
+            android:scaleType="centerInside" />
+    </LinearLayout>
+
+    <!-- SwipeRefreshLayout để làm mới danh sách -->
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/swipe_refresh_layout"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginBottom="60dp"
-        android:padding="8dp"
-        app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+        app:layout_constraintTop_toBottomOf="@id/header_layout"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/likes_tab"
-        app:spanCount="2" />
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <!-- RecyclerView để hiển thị danh sách người dùng -->
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/user_recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="8dp"
+            app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+            app:spanCount="2" />
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

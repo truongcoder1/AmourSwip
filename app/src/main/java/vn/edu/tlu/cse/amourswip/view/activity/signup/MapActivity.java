@@ -1,9 +1,8 @@
-package vn.edu.tlu.cse.amourswip.view.activity;
+package vn.edu.tlu.cse.amourswip.view.activity.signup;
 
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.location.Location;
 import android.os.Bundle;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
@@ -15,6 +14,7 @@ import com.google.android.material.button.MaterialButton;
 import com.google.firebase.auth.FirebaseAuth;
 import vn.edu.tlu.cse.amourswip.R;
 import vn.edu.tlu.cse.amourswip.model.repository.UserRepository;
+import vn.edu.tlu.cse.amourswip.view.activity.main.MainActivity;
 
 public class MapActivity extends AppCompatActivity {
 

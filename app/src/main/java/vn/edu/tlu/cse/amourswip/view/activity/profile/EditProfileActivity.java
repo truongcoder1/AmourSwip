@@ -1,4 +1,4 @@
-package vn.edu.tlu.cse.amourswip.view.activity;
+package vn.edu.tlu.cse.amourswip.view.activity.profile;
 
 import android.content.Intent;
 import android.os.Bundle;

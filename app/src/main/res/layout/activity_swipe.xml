@@ -5,14 +5,57 @@
     android:layout_height="match_parent"
     android:background="@drawable/background_gradient">
 
-    <!-- CardStackView để hiển thị các thẻ người dùng -->
-    <com.yuyakaido.android.cardstackview.CardStackView
-        android:id="@+id/card_stack_view"
+    <!-- SwipeRefreshLayout để làm mới danh sách -->
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/swipe_refresh_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_margin="16dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginBottom="100dp" />
+        android:layout_above="@id/action_buttons">
+
+        <!-- CardStackView để hiển thị các thẻ người dùng -->
+        <com.yuyakaido.android.cardstackview.CardStackView
+            android:id="@+id/card_stack_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
+    <!-- ProgressBar để hiển thị khi đang tải -->
+    <ProgressBar
+        android:id="@+id/loading_indicator"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:visibility="gone" />
+
+    <!-- Layout hiển thị khi có lỗi -->
+    <LinearLayout
+        android:id="@+id/error_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@id/action_buttons"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:visibility="gone"
+        android:background="#80FFFFFF">
+
+        <TextView
+            android:id="@+id/error_message"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Đã xảy ra lỗi, vui lòng thử lại"
+            android:textColor="@android:color/black"
+            android:textSize="16sp"
+            android:layout_marginBottom="16dp" />
+
+        <Button
+            android:id="@+id/retry_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Thử lại"
+            android:backgroundTint="#FF69B4"
+            android:textColor="@android:color/white"
+            android:paddingHorizontal="24dp" />
+    </LinearLayout>
 
     <!-- LinearLayout chứa các nút hành động (chồng lên CardStackView) -->
     <LinearLayout
@@ -23,6 +66,23 @@
         android:layout_marginBottom="16dp"
         android:gravity="center_horizontal"
         android:orientation="horizontal">
+
+        <!-- Nút "Hoàn tác" -->
+        <FrameLayout
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:layout_marginEnd="32dp">
+
+            <ImageButton
+                android:id="@+id/undo_button"
+                android:layout_width="64dp"
+                android:layout_height="64dp"
+                android:layout_gravity="center"
+                android:background="@null"
+                android:scaleType="centerInside"
+                android:src="@android:drawable/ic_menu_revert"
+                android:stateListAnimator="@drawable/button_scale_animator" />
+        </FrameLayout>
 
         <!-- FrameLayout cho nút "Không thích" (X) -->
         <FrameLayout
@@ -78,5 +138,4 @@
                 android:stateListAnimator="@drawable/button_scale_animator" />
         </FrameLayout>
     </LinearLayout>
-
 </RelativeLayout>

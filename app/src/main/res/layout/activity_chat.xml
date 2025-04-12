@@ -38,7 +38,7 @@
             android:scaleType="centerCrop"
             android:src="@drawable/gai1" />
 
-        <!-- LinearLayout chứa tên và trạng thái -->
+        <!-- LinearLayout chứa tên -->
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -56,33 +56,6 @@
                 android:textColor="@android:color/black"
                 android:textSize="16sp"
                 android:textStyle="bold" />
-
-            <!-- LinearLayout chứa trạng thái và icon -->
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity="center_vertical"
-                android:orientation="horizontal">
-
-                <!-- Icon bên trái "Online" -->
-                <ImageView
-                    android:id="@+id/status_icon"
-                    android:layout_width="12dp"
-                    android:layout_height="12dp"
-                    android:layout_marginEnd="4dp"
-                    android:scaleType="fitCenter"
-                    android:src="@drawable/ic_online" />
-
-                <!-- Trạng thái -->
-                <TextView
-                    android:id="@+id/user_status"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/poppins_regular"
-                    android:text="Online"
-                    android:textColor="@android:color/black"
-                    android:textSize="12sp" />
-            </LinearLayout>
         </LinearLayout>
 
         <!-- Nút video call -->

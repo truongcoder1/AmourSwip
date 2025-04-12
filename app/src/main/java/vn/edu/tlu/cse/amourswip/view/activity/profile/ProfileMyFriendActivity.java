@@ -1,4 +1,4 @@
-package vn.edu.tlu.cse.amourswip.view.activity;
+package vn.edu.tlu.cse.amourswip.view.activity.profile;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -17,6 +17,8 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+
+import vn.edu.tlu.cse.amourswip.view.activity.main.MainActivity;
 import vn.edu.tlu.cse.amourswip.view.adapter.PhotoAdapter;
 import vn.edu.tlu.cse.amourswip.R;
 import java.util.ArrayList;

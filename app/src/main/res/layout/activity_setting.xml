@@ -35,7 +35,7 @@
         android:id="@+id/location_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Phần vị tìm kiếm"
+        android:text="Phạm vị tìm kiếm"
         android:fontFamily="@font/poppins_bold"
         android:textSize="16sp"
         android:background="@drawable/button_background"

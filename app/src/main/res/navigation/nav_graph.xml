@@ -13,7 +13,11 @@
             android:id="@+id/action_swipeFragment_to_listChatFragment"
             app:destination="@id/listChatFragment"
             app:popUpTo="@id/swipeFragment"
-            app:popUpToInclusive="false" />
+            app:popUpToInclusive="false"
+            app:enterAnim="@anim/fade_in"
+            app:exitAnim="@anim/fade_out"
+            app:popEnterAnim="@anim/fade_in"
+            app:popExitAnim="@anim/fade_out" />
     </fragment>
 
     <!-- ListChatFragment -->
@@ -25,7 +29,11 @@
             android:id="@+id/action_listChatFragment_to_chatFragment"
             app:destination="@id/chatFragment"
             app:popUpTo="@id/listChatFragment"
-            app:popUpToInclusive="false" />
+            app:popUpToInclusive="false"
+            app:enterAnim="@anim/fade_in"
+            app:exitAnim="@anim/fade_out"
+            app:popEnterAnim="@anim/fade_in"
+            app:popExitAnim="@anim/fade_out" />
     </fragment>
 
     <!-- ProfileFragment -->
@@ -34,18 +42,28 @@
         android:name="vn.edu.tlu.cse.amourswip.view.fragment.ProfileFragment"
         android:label="ProfileFragment" />
 
-    <!-- LikeFragment (Đã bị comment, giữ nguyên) -->
-    <!--
+    <!-- LikeFragment -->
     <fragment
         android:id="@+id/likeFragment"
-        android:name="vn.edu.tlu.cse.amourswip.fragment.LikeFragment"
-        android:label="LikeFragment" />
-    -->
+        android:name="vn.edu.tlu.cse.amourswip.view.fragment.LikeFragment"
+        android:label="LikeFragment">
+        <action
+            android:id="@+id/action_likeFragment_to_profileMyFriendActivity"
+            app:destination="@id/profileMyFriendActivity"
+            app:popUpTo="@id/likeFragment"
+            app:popUpToInclusive="false" />
+    </fragment>
 
     <!-- ChatFragment -->
     <fragment
         android:id="@+id/chatFragment"
         android:name="vn.edu.tlu.cse.amourswip.view.fragment.ChatFragment"
         android:label="ChatFragment" />
+
+    <!-- ProfileMyFriendActivity -->
+    <activity
+        android:id="@+id/profileMyFriendActivity"
+        android:name="vn.edu.tlu.cse.amourswip.view.activity.profile.ProfileMyFriendActivity"
+        android:label="ProfileMyFriendActivity" />
 
 </navigation>

@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <shape xmlns:android="http://schemas.android.com/apk/res/android"
     android:shape="rectangle">
-    <solid android:color="#00C853" /> <!-- Màu nền xanh lá -->
+    <solid android:color="#00FF00" /> <!-- Màu xanh lá -->
     <stroke
         android:width="2dp"
-        android:color="@android:color/white" /> <!-- Viền trắng -->
+        android:color="#FFFFFF" /> <!-- Viền trắng -->
     <corners android:radius="8dp" />
 </shape>

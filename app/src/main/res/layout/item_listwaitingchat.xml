@@ -13,8 +13,11 @@
         android:layout_width="60dp"
         android:layout_height="60dp"
         android:layout_marginEnd="16dp"
-        android:background="@drawable/gai1"
-        android:scaleType="centerCrop" />
+        android:background="@drawable/circle_background"
+        android:clipToOutline="true"
+        android:clipToPadding="true"
+        android:scaleType="centerCrop"
+        android:src="@drawable/gai1" />
 
     <!-- LinearLayout chứa thông tin người dùng -->
     <LinearLayout
@@ -35,29 +38,17 @@
             android:textSize="16sp"
             android:textStyle="bold" />
 
-        <!-- Trạng thái -->
-        <LinearLayout
+        <!-- Tin nhắn cuối cùng -->
+        <TextView
+            android:id="@+id/last_message"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center_vertical">
-
-            <View
-                android:id="@+id/online_status"
-                android:layout_width="8dp"
-                android:layout_height="8dp"
-                android:layout_marginEnd="4dp"
-                android:background="@drawable/circle_green" />
-
-            <TextView
-                android:id="@+id/notification_status"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/poppins_regular"
-                android:text="Trạng thái"
-                android:textColor="@android:color/white"
-                android:textSize="14sp" />
-        </LinearLayout>
+            android:fontFamily="@font/poppins_regular"
+            android:text="Tin nhắn cuối cùng"
+            android:textColor="@android:color/white"
+            android:textSize="14sp"
+            android:maxLines="1"
+            android:ellipsize="end" />
     </LinearLayout>
 
     <!-- LinearLayout chứa thời gian và trạng thái xem -->
@@ -85,18 +76,6 @@
             android:layout_marginTop="4dp"
             android:scaleType="fitCenter"
             android:src="@drawable/ic_rednote"
-            android:visibility="gone" />
-
-        <!-- TextView hiển thị "Đã xem" -->
-        <TextView
-            android:id="@+id/read_status"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
-            android:fontFamily="@font/poppins_regular"
-            android:text="Đã xem"
-            android:textColor="@android:color/white"
-            android:textSize="12sp"
             android:visibility="gone" />
     </LinearLayout>
 </LinearLayout>

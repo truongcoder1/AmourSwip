@@ -24,23 +24,22 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import vn.edu.tlu.cse.amourswip.R;
 import vn.edu.tlu.cse.amourswip.controller.ChatController;
 import vn.edu.tlu.cse.amourswip.model.data.Message;
 import vn.edu.tlu.cse.amourswip.model.data.User;
-import vn.edu.tlu.cse.amourswip.view.activity.ProfileMyFriendActivity;
+import vn.edu.tlu.cse.amourswip.view.activity.profile.ProfileMyFriendActivity;
 import vn.edu.tlu.cse.amourswip.view.adapter.MessageAdapter;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class ChatFragment extends Fragment {
 
     private ImageButton backButton;
     private ImageView userImage;
     private TextView userName;
-    private TextView userStatus;
-    private ImageView statusIcon;
     private ImageButton videoCallButton;
     private ImageButton menuButton;
     private RecyclerView messagesRecyclerView;
@@ -71,8 +70,6 @@ public class ChatFragment extends Fragment {
         backButton = view.findViewById(R.id.back_button);
         userImage = view.findViewById(R.id.user_image);
         userName = view.findViewById(R.id.user_name);
-        userStatus = view.findViewById(R.id.user_status);
-        statusIcon = view.findViewById(R.id.status_icon);
         videoCallButton = view.findViewById(R.id.video_call_button);
         menuButton = view.findViewById(R.id.menu_button);
         messagesRecyclerView = view.findViewById(R.id.messages_recycler_view);
@@ -84,11 +81,7 @@ public class ChatFragment extends Fragment {
         if (getArguments() != null) {
             friendId = getArguments().getString("userId");
             String name = getArguments().getString("userName");
-            boolean isOnline = getArguments().getBoolean("isOnline");
-
             userName.setText(name != null ? name : "N/A");
-            userStatus.setText(isOnline ? "Online" : "Offline");
-            statusIcon.setVisibility(isOnline ? View.VISIBLE : View.GONE);
         }
 
         if (friendId == null) {
@@ -138,13 +131,35 @@ public class ChatFragment extends Fragment {
                 Message message = snapshot.getValue(Message.class);
                 if (message != null) {
                     messageAdapter.addMessage(message);
-                    messagesRecyclerView.scrollToPosition(messageList.size() - 1); // Cuộn xuống tin nhắn mới nhất
+                    messagesRecyclerView.scrollToPosition(messageList.size() - 1);
+
+                    // Lưu tin nhắn cuối cùng vào lastMessage
+                    DatabaseReference lastMessageRef = FirebaseDatabase.getInstance().getReference("chats").child(chatId).child("lastMessage");
+                    Map<String, Object> lastMessageValues = new HashMap<>();
+                    lastMessageValues.put("message", message.getMessage());
+                    lastMessageValues.put("timestamp", message.getTimestamp());
+                    lastMessageValues.put("senderId", message.getSenderId());
+                    boolean isUnread = !message.getSenderId().equals(currentUserId);
+                    lastMessageValues.put("isUnread", isUnread);
+                    lastMessageRef.setValue(lastMessageValues)
+                            .addOnFailureListener(e -> {
+                                Toast.makeText(getContext(), "Lỗi khi lưu tin nhắn cuối cùng: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                            });
                 }
             }
 
             @Override
             public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-                // Xử lý nếu tin nhắn bị chỉnh sửa (nếu cần)
+                Message updatedMessage = snapshot.getValue(Message.class);
+                if (updatedMessage != null) {
+                    for (int i = 0; i < messageList.size(); i++) {
+                        if (messageList.get(i).getMessageId().equals(updatedMessage.getMessageId())) {
+                            messageList.set(i, updatedMessage);
+                            messageAdapter.notifyItemChanged(i);
+                            break;
+                        }
+                    }
+                }
             }
 
             @Override
@@ -168,8 +183,6 @@ public class ChatFragment extends Fragment {
     public void updateUserInfo(User user) {
         if (user != null) {
             userName.setText(user.getName() != null ? user.getName() : "N/A");
-            userStatus.setText(user.isOnline() ? "Online" : "Offline");
-            statusIcon.setVisibility(user.isOnline() ? View.VISIBLE : View.GONE);
 
             if (user.getPhotos() != null && !user.getPhotos().isEmpty()) {
                 String avatarUrl = user.getPhotos().get(0);

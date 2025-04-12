@@ -1,25 +1,24 @@
 package vn.edu.tlu.cse.amourswip.model.data;
 
 public class Message {
-    private String messageId; // Thêm thuộc tính messageId
+    private String messageId;
     private String senderId;
     private String message;
     private long timestamp;
     private String senderImage;
+    private String status; // Trạng thái: "sent" hoặc "seen"
 
-    // Constructor mặc định (yêu cầu bởi Firebase)
     public Message() {}
 
-    // Constructor đầy đủ, bao gồm messageId
-    public Message(String messageId, String senderId, String message, long timestamp, String senderImage) {
+    public Message(String messageId, String senderId, String message, long timestamp, String senderImage, String status) {
         this.messageId = messageId;
         this.senderId = senderId;
         this.message = message;
         this.timestamp = timestamp;
         this.senderImage = senderImage;
+        this.status = status;
     }
 
-    // Getters và Setters cho messageId
     public String getMessageId() {
         return messageId;
     }
@@ -28,7 +27,6 @@ public class Message {
         this.messageId = messageId;
     }
 
-    // Getters và Setters cho senderId
     public String getSenderId() {
         return senderId;
     }
@@ -37,7 +35,6 @@ public class Message {
         this.senderId = senderId;
     }
 
-    // Getters và Setters cho message
     public String getMessage() {
         return message;
     }
@@ -46,7 +43,6 @@ public class Message {
         this.message = message;
     }
 
-    // Getters và Setters cho timestamp
     public long getTimestamp() {
         return timestamp;
     }
@@ -55,12 +51,19 @@ public class Message {
         this.timestamp = timestamp;
     }
 
-    // Getters và Setters cho senderImage
     public String getSenderImage() {
         return senderImage;
     }
 
     public void setSenderImage(String senderImage) {
         this.senderImage = senderImage;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 }

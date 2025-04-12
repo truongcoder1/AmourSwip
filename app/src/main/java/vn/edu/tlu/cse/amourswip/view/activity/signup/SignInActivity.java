@@ -1,4 +1,4 @@
-package vn.edu.tlu.cse.amourswip.view.activity;
+package vn.edu.tlu.cse.amourswip.view.activity.signup;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -13,6 +13,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.google.firebase.auth.FirebaseAuth;
 
 import vn.edu.tlu.cse.amourswip.R;
+import vn.edu.tlu.cse.amourswip.view.activity.main.MainActivity;
 
 public class SignInActivity extends AppCompatActivity {
 

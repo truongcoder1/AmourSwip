@@ -1,10 +1,9 @@
-package vn.edu.tlu.cse.amourswip.view.activity;
+package vn.edu.tlu.cse.amourswip.view.activity.main;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Toast;
-
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
@@ -14,6 +13,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import vn.edu.tlu.cse.amourswip.R;
+import vn.edu.tlu.cse.amourswip.view.activity.signup.SignInActivity;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -59,26 +59,6 @@ public class MainActivity extends AppCompatActivity {
                             // Hiện BottomNavigationView trong các fragment khác
                             bottomNavigationView.setVisibility(View.VISIBLE);
                         }
-                    });
-
-                    // Xử lý sự kiện nhấn vào các mục trong BottomNavigationView
-                    bottomNavigationView.setOnItemSelectedListener(item -> {
-                        int itemId = item.getItemId();
-                        if (itemId == R.id.swipeFragment) {
-                            navController.navigate(R.id.swipeFragment);
-                            return true;
-                        } else if (itemId == R.id.listChatFragment) {
-                            navController.navigate(R.id.listChatFragment);
-                            return true;
-                        } else if (itemId == R.id.profileFragment) {
-                            navController.navigate(R.id.profileFragment);
-                            return true;
-                        } else if (itemId == R.id.likeFragment) {
-                            navController.navigate(R.id.likeFragment);
-                            Toast.makeText(MainActivity.this, "Like button clicked - Chưa triển khai", Toast.LENGTH_SHORT).show();
-                            return true;
-                        }
-                        return false;
                     });
 
                     // Xử lý điều hướng từ Intent (ví dụ: từ ProfileMyFriendActivity)

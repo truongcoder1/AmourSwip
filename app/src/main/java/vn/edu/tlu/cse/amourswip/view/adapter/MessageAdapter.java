@@ -1,17 +1,17 @@
 package vn.edu.tlu.cse.amourswip.view.adapter;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
-
+import java.util.Locale;
 import vn.edu.tlu.cse.amourswip.R;
 import vn.edu.tlu.cse.amourswip.model.data.Message;
 
@@ -60,12 +60,51 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
         if (message.getSenderImage() != null && !message.getSenderImage().isEmpty()) {
             Glide.with(holder.itemView.getContext())
                     .load(message.getSenderImage())
+                    .circleCrop()
                     .placeholder(R.drawable.gai1)
                     .error(R.drawable.gai2)
                     .into(holder.senderImage);
         } else {
             holder.senderImage.setImageResource(R.drawable.gai2);
         }
+
+        // Hiển thị ngày và thời gian
+        if (shouldShowDateTime(position)) {
+            SimpleDateFormat dateFormat = new SimpleDateFormat("EEE, dd MMM yyyy, HH:mm", Locale.getDefault());
+            String dateTime = dateFormat.format(new Date(message.getTimestamp()));
+            holder.dateTime.setText(dateTime);
+            holder.dateTime.setVisibility(View.VISIBLE);
+        } else {
+            holder.dateTime.setVisibility(View.GONE);
+        }
+
+        // Hiển thị trạng thái "Đã gửi"/"Đã xem" cho tin nhắn gửi
+        if (getItemViewType(position) == VIEW_TYPE_SENT) {
+            if (message.getStatus() != null) {
+                if (message.getStatus().equals("sent")) {
+                    holder.messageStatus.setText("Đã gửi");
+                } else if (message.getStatus().equals("seen")) {
+                    holder.messageStatus.setText("Đã xem");
+                }
+                holder.messageStatus.setVisibility(View.VISIBLE);
+            } else {
+                holder.messageStatus.setVisibility(View.GONE);
+            }
+        }
+    }
+
+    private boolean shouldShowDateTime(int position) {
+        if (position == 0) {
+            return true; // Luôn hiển thị ngày cho tin nhắn đầu tiên
+        }
+        Message currentMessage = messageList.get(position);
+        Message previousMessage = messageList.get(position - 1);
+
+        // So sánh ngày của tin nhắn hiện tại và tin nhắn trước đó
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd", Locale.getDefault());
+        String currentDate = dateFormat.format(new Date(currentMessage.getTimestamp()));
+        String previousDate = dateFormat.format(new Date(previousMessage.getTimestamp()));
+        return !currentDate.equals(previousDate);
     }
 
     @Override
@@ -76,11 +115,15 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
     static class MessageViewHolder extends RecyclerView.ViewHolder {
         TextView messageText;
         ImageView senderImage;
+        TextView dateTime;
+        TextView messageStatus;
 
         MessageViewHolder(@NonNull View itemView) {
             super(itemView);
             messageText = itemView.findViewById(R.id.message_text);
             senderImage = itemView.findViewById(R.id.message_image);
+            dateTime = itemView.findViewById(R.id.date_time);
+            messageStatus = itemView.findViewById(R.id.message_status);
         }
     }
 }

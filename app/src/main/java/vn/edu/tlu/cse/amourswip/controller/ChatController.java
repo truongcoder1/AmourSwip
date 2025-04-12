@@ -1,20 +1,18 @@
 package vn.edu.tlu.cse.amourswip.controller;
 
 import androidx.annotation.NonNull;
-
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import java.util.HashMap;
+import java.util.Map;
 import vn.edu.tlu.cse.amourswip.model.data.Message;
 import vn.edu.tlu.cse.amourswip.model.data.User;
 import vn.edu.tlu.cse.amourswip.model.repository.ChatRepository;
 import vn.edu.tlu.cse.amourswip.view.fragment.ChatFragment;
-
-import java.util.HashMap;
-import java.util.Map;
 
 public class ChatController {
 
@@ -27,7 +25,7 @@ public class ChatController {
         this.fragment = fragment;
         this.friendId = friendId;
         this.chatRepository = new ChatRepository(friendId);
-        loadCurrentUserImage(); // Tải ảnh của người dùng hiện tại
+        loadCurrentUserImage();
     }
 
     private void loadCurrentUserImage() {
@@ -103,8 +101,7 @@ public class ChatController {
         }
 
         long timestamp = System.currentTimeMillis();
-        // Sử dụng currentUserImage làm senderImage
-        Message message = new Message(messageId, currentUserId, messageText, timestamp, currentUserImage);
+        Message message = new Message(messageId, currentUserId, messageText, timestamp, currentUserImage, "sent");
 
         Map<String, Object> messageValues = new HashMap<>();
         messageValues.put("messageId", message.getMessageId());
@@ -112,11 +109,21 @@ public class ChatController {
         messageValues.put("message", message.getMessage());
         messageValues.put("timestamp", message.getTimestamp());
         messageValues.put("senderImage", message.getSenderImage());
+        messageValues.put("status", message.getStatus());
 
         messagesRef.child(messageId).setValue(messageValues)
                 .addOnSuccessListener(aVoid -> {
-                    // Tin nhắn đã được gửi thành công
-                    // Giao diện sẽ tự động cập nhật qua ChildEventListener trong ChatFragment
+                    // Lưu tin nhắn cuối cùng vào node chats/{chatId}/lastMessage
+                    DatabaseReference lastMessageRef = FirebaseDatabase.getInstance().getReference("chats").child(chatId).child("lastMessage");
+                    Map<String, Object> lastMessageValues = new HashMap<>();
+                    lastMessageValues.put("message", messageText);
+                    lastMessageValues.put("timestamp", timestamp);
+                    lastMessageValues.put("isUnread", false); // Đặt isUnread = false vì bạn đã gửi tin nhắn
+                    lastMessageValues.put("senderId", currentUserId);
+                    lastMessageRef.setValue(lastMessageValues)
+                            .addOnFailureListener(e -> {
+                                fragment.showError("Lỗi khi lưu tin nhắn cuối cùng: " + e.getMessage());
+                            });
                 })
                 .addOnFailureListener(e -> {
                     fragment.showError("Lỗi khi gửi tin nhắn: " + e.getMessage());

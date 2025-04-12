@@ -1,4 +1,4 @@
-package vn.edu.tlu.cse.amourswip.view.activity;
+package vn.edu.tlu.cse.amourswip.view.activity.signup;
 
 import android.content.Intent;
 import android.content.res.ColorStateList;

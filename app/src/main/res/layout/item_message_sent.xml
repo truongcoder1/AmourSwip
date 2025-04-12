@@ -2,40 +2,66 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:gravity="end"
-    android:orientation="horizontal"
+    android:orientation="vertical"
     android:padding="8dp">
 
-    <LinearLayout
+    <!-- Ngày và thời gian -->
+    <TextView
+        android:id="@+id/date_time"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:gravity="center_vertical"
+        android:layout_gravity="center"
+        android:layout_marginBottom="8dp"
+        android:text="Thứ 6, 19 thg 5, 2023, 21:10"
+        android:textColor="@android:color/white"
+        android:textSize="12sp"
+        android:visibility="gone" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="end"
         android:orientation="horizontal">
 
-        <!-- Hình ảnh tin nhắn -->
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
 
-        <!-- Tin nhắn gửi (bên phải) -->
+            <!-- Tin nhắn gửi (bên phải) -->
+            <TextView
+                android:id="@+id/message_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/sent_message_background"
+                android:padding="12dp"
+                android:text="Xin lỗi =(("
+                android:textColor="@android:color/white"
+                android:textSize="16sp" />
+
+            <!-- Trạng thái "Đã gửi"/"Đã xem" -->
+            <TextView
+                android:id="@+id/message_status"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:layout_marginTop="4dp"
+                android:text="Đã gửi"
+                android:textColor="@android:color/white"
+                android:textSize="12sp"
+                android:visibility="gone" />
+        </LinearLayout>
+
+        <ImageView
+            android:id="@+id/message_image"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_marginStart="8dp"
+            android:background="@drawable/circle_background"
+            android:clipToOutline="true"
+            android:outlineProvider="background"
+            android:scaleType="centerCrop"
+            android:src="@drawable/gai2"
+            android:visibility="visible" />
     </LinearLayout>
-
-    <TextView
-        android:id="@+id/message_text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="@drawable/sent_message_background"
-        android:padding="12dp"
-        android:text="Xin lỗi =(("
-        android:textColor="@android:color/white"
-        android:textSize="16sp" />
-
-    <ImageView
-        android:id="@+id/message_image"
-        android:layout_width="60dp"
-        android:layout_height="60dp"
-        android:layout_marginEnd="8dp"
-        android:background="@drawable/circle_background"
-        android:clipToOutline="true"
-        android:outlineProvider="background"
-        android:scaleType="centerCrop"
-        android:src="@drawable/gai2"
-        android:visibility="visible" />
 </LinearLayout>
