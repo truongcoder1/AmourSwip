@@ -252,7 +252,7 @@ public class LikeController {
                 });
     }
 
-    public void onLikeUser(User user) { // Đổi từ private thành public
+    public void onLikeUser(User user) {
         Log.d(TAG, "onLikeUser: Liking user: " + user.getName() + " (uid: " + user.getUid() + ")");
         database.child("likes").child(currentUserId).child(user.getUid()).setValue(true)
                 .addOnCompleteListener(task -> {
@@ -300,7 +300,7 @@ public class LikeController {
                 });
     }
 
-    public void onDislikeUser(User user) { // Đổi từ private thành public
+    public void onDislikeUser(User user) {
         Log.d(TAG, "onDislikeUser: Disliking user: " + user.getName() + " (uid: " + user.getUid() + ")");
         database.child("likes").child(user.getUid()).child(currentUserId).removeValue();
         usersWhoLikedMe.remove(user);

@@ -12,4 +12,6 @@
     <color name="black">#FF000000</color>
     <color name="selected_button_stroke_color">#C87DD7</color>
     <color name="next_button_color">#C87DD7</color> <!-- Màu nút Tiếp -->
+    <color name="custom_red">#FF0000</color> <!-- Màu đỏ đậm -->
+    <color name="custom_green">#00FF00</color> <!-- Màu xanh lá sáng -->
 </resources>

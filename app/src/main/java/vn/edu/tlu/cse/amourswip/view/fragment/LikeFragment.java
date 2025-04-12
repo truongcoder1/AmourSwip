@@ -240,6 +240,9 @@ public class LikeFragment extends Fragment {
         userList.addAll(users);
         userAdapter.updateList(users);
         isLoading = false;
+        if (users.isEmpty() && controller.isLikesTabSelected()) {
+            Toast.makeText(getContext(), "Không có người dùng nào để hiển thị", Toast.LENGTH_SHORT).show();
+        }
     }
 
     public void setActionButtons(boolean show, Consumer<User> onLikeClicked, Consumer<User> onDislikeClicked) {
@@ -254,14 +257,12 @@ public class LikeFragment extends Fragment {
             likedTab.animate().alpha(0.5f).setDuration(200).start();
             likesLabel.setTextColor(ContextCompat.getColor(getContext(), android.R.color.white));
             likedLabel.setTextColor(ContextCompat.getColor(getContext(), android.R.color.black));
-            // Đảm bảo hiển thị nút khi ở tab "Lượt thích"
             setActionButtons(true, controller::onLikeUser, controller::onDislikeUser);
         } else {
             likesTab.animate().alpha(0.5f).setDuration(200).start();
             likedTab.animate().alpha(1f).setDuration(200).start();
             likesLabel.setTextColor(ContextCompat.getColor(getContext(), android.R.color.black));
             likedLabel.setTextColor(ContextCompat.getColor(getContext(), android.R.color.white));
-            // Ẩn nút khi ở tab "Đã thích"
             setActionButtons(false, null, null);
         }
     }
