@@ -52,6 +52,15 @@
             app:destination="@id/profileMyFriendActivity"
             app:popUpTo="@id/likeFragment"
             app:popUpToInclusive="false" />
+        <action
+            android:id="@+id/action_likeFragment_to_listChatFragment"
+            app:destination="@id/listChatFragment"
+            app:popUpTo="@id/likeFragment"
+            app:popUpToInclusive="false"
+            app:enterAnim="@anim/fade_in"
+            app:exitAnim="@anim/fade_out"
+            app:popEnterAnim="@anim/fade_in"
+            app:popExitAnim="@anim/fade_out" />
     </fragment>
 
     <!-- ChatFragment -->

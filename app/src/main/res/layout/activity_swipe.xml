@@ -69,9 +69,9 @@
 
         <!-- Nút "Hoàn tác" -->
         <FrameLayout
-            android:layout_width="80dp"
+            android:layout_width="0dp"
             android:layout_height="80dp"
-            android:layout_marginEnd="32dp">
+            android:layout_weight="1">
 
             <ImageButton
                 android:id="@+id/undo_button"
@@ -86,9 +86,9 @@
 
         <!-- FrameLayout cho nút "Không thích" (X) -->
         <FrameLayout
-            android:layout_width="80dp"
+            android:layout_width="0dp"
             android:layout_height="80dp"
-            android:layout_marginEnd="32dp">
+            android:layout_weight="1">
 
             <!-- Vòng tròn xanh (ẩn mặc định) -->
             <View
@@ -113,9 +113,9 @@
 
         <!-- FrameLayout cho nút "Thích" (Trái tim) -->
         <FrameLayout
-            android:layout_width="80dp"
+            android:layout_width="0dp"
             android:layout_height="80dp"
-            android:layout_marginStart="32dp">
+            android:layout_weight="1">
 
             <!-- Vòng tròn xanh (ẩn mặc định) -->
             <View

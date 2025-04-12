@@ -56,7 +56,6 @@ public class SwipeController {
     private final CardStackLayoutManager layoutManager;
     private Set<String> matchedUserIds;
     private Set<String> skippedUserIds;
-    private Set<String> pendingLikes; // Lưu trữ các lượt "thích" trong phiên hiện tại
     private boolean isSkipButtonPressed;
     private String lastUserId;
     private boolean isLoading;
@@ -93,7 +92,6 @@ public class SwipeController {
         this.layoutManager = new CardStackLayoutManager(fragment.getContext());
         this.matchedUserIds = new HashSet<>();
         this.skippedUserIds = new HashSet<>();
-        this.pendingLikes = new HashSet<>(); // Khởi tạo pendingLikes
         this.isSkipButtonPressed = false;
         this.lastUserId = null;
         this.isLoading = false;
@@ -139,7 +137,6 @@ public class SwipeController {
         lastUserId = null;
         userList.clear();
         swipeHistory.clear();
-        pendingLikes.clear(); // Xóa các lượt "thích" trong phiên hiện tại
         adapter.notifyDataSetChanged();
     }
 
@@ -180,28 +177,27 @@ public class SwipeController {
                             if (user != null && !user.getUid().equals(currentUserId)
                                     && !matchedUserIds.contains(user.getUid())
                                     && !skippedUserIds.contains(user.getUid())) {
-                                String currentUserGender = currentUser != null ? currentUser.getGender() : "Khác";
-                                String userGender = user.getGender() != null ? user.getGender() : "Khác";
+                                String currentUserGender = currentUser.getGender();
+                                String userGender = user.getGender();
                                 Log.d(TAG, "Current user gender: " + currentUserGender + ", User: " + user.getName() + ", Gender: " + userGender);
 
-                                boolean genderMatch = false;
-                                if (currentUserGender.equals("Khác")) {
-                                    if (userGender.equals("Nam") || userGender.equals("Nữ") || userGender.equals("Khác")) {
-                                        genderMatch = true;
-                                        Log.d(TAG, "User added (current user is Khác, showing all genders): " + user.getName());
+                                if (currentUserGender != null && userGender != null) {
+                                    if (currentUserGender.equals("Khác")) {
+                                        if (userGender.equals("Nam") || userGender.equals("Nữ") || userGender.equals("Khác")) {
+                                            newUsers.add(user);
+                                            Log.d(TAG, "User added (current user is Khác, showing all genders): " + user.getName());
+                                        }
+                                    } else if (currentUserGender.equals("Nam") && (userGender.equals("Nữ") || userGender.equals("Khác"))) {
+                                        newUsers.add(user);
+                                        Log.d(TAG, "User added (gender match): " + user.getName());
+                                    } else if (currentUserGender.equals("Nữ") && (userGender.equals("Nam") || userGender.equals("Khác"))) {
+                                        newUsers.add(user);
+                                        Log.d(TAG, "User added (gender match): " + user.getName());
+                                    } else {
+                                        Log.d(TAG, "User skipped (gender mismatch): " + user.getName());
                                     }
-                                } else if (currentUserGender.equals("Nam") && (userGender.equals("Nữ") || userGender.equals("Khác"))) {
-                                    genderMatch = true;
-                                    Log.d(TAG, "User added (gender match): " + user.getName());
-                                } else if (currentUserGender.equals("Nữ") && (userGender.equals("Nam") || userGender.equals("Khác"))) {
-                                    genderMatch = true;
-                                    Log.d(TAG, "User added (gender match): " + user.getName());
                                 } else {
-                                    Log.d(TAG, "User skipped (gender mismatch): " + user.getName());
-                                }
-
-                                if (genderMatch) {
-                                    newUsers.add(user);
+                                    Log.d(TAG, "User skipped (gender null): " + user.getName());
                                 }
                             } else {
                                 Log.d(TAG, "User skipped: " + (user == null ? "null user" :
@@ -306,15 +302,12 @@ public class SwipeController {
 
         if (direction == Direction.Right) {
             fragment.showLikeAnimation();
-            pendingLikes.add(otherUser.getUid()); // Lưu lượt "thích" vào pendingLikes
             likeUser(otherUser);
             checkForMatch(otherUser);
         } else if (direction == Direction.Left) {
             fragment.showSkipAnimation();
             skippedUserIds.add(otherUser.getUid());
             userList.remove(otherUser);
-            pendingLikes.remove(otherUser.getUid()); // Xóa lượt "thích" nếu có
-            // Xóa lượt "thích" của đối phương khỏi Firebase
             database.child("likes").child(otherUser.getUid()).child(currentUserId).removeValue();
             adapter.notifyDataSetChanged();
             cardStackView.scheduleLayoutAnimation();
@@ -335,7 +328,6 @@ public class SwipeController {
         if (direction == Direction.Right) {
             database.child("likes").child(currentUserId).child(user.getUid()).removeValue();
             matchedUserIds.remove(user.getUid());
-            pendingLikes.remove(user.getUid());
         } else if (direction == Direction.Left) {
             skippedUserIds.remove(user.getUid());
         }
@@ -366,8 +358,8 @@ public class SwipeController {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
                         Log.d(TAG, "checkForMatch: Snapshot exists: " + snapshot.exists());
-                        if (snapshot.exists() && pendingLikes.contains(otherUser.getUid())) {
-                            Log.d(TAG, "Mutual like detected in current session, match successful!");
+                        if (snapshot.exists()) {
+                            Log.d(TAG, "Mutual like detected, match successful!");
                             String chatId = currentUserId.compareTo(otherUser.getUid()) < 0
                                     ? currentUserId + "_" + otherUser.getUid()
                                     : otherUser.getUid() + "_" + currentUserId;
@@ -382,10 +374,11 @@ public class SwipeController {
                             Log.d(TAG, "Match successful with user: " + matchedUserName);
                             showMatchDialog(matchedUserName, chatId, otherUser);
 
-                            // Xóa khỏi pendingLikes sau khi match
-                            pendingLikes.remove(otherUser.getUid());
+                            matchedUserIds.add(otherUser.getUid());
+                            userList.remove(otherUser);
+                            adapter.notifyDataSetChanged();
                         } else {
-                            Log.d(TAG, "No mutual like in current session with user: " + otherUser.getName());
+                            Log.d(TAG, "No mutual like found with user: " + otherUser.getName());
                         }
                     }
 
@@ -453,9 +446,6 @@ public class SwipeController {
 
             keepSwipingButton.setOnClickListener(v -> {
                 Log.d(TAG, "Keep swiping button clicked, dismissing dialog");
-                matchedUserIds.add(otherUser.getUid());
-                userList.remove(otherUser);
-                adapter.notifyDataSetChanged();
                 matchDialog.dismiss();
                 loadUsers();
             });

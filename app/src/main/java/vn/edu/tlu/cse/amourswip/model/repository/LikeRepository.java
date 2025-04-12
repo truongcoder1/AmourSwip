@@ -13,18 +13,25 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import vn.edu.tlu.cse.amourswip.model.data.User;
+import android.util.Log;
 
 public class LikeRepository {
 
+    private static final String TAG = "LikeRepository";
     private final DatabaseReference database;
     private final String currentUserId;
+    private long processedUsers;
+    private long totalUsers;
 
     public LikeRepository() {
         database = FirebaseDatabase.getInstance().getReference();
         currentUserId = FirebaseAuth.getInstance().getCurrentUser().getUid();
     }
 
-    // Lấy tọa độ của người dùng hiện tại
+    public String getCurrentUserId() {
+        return currentUserId;
+    }
+
     public void getCurrentUserLocation(OnLocationListener locationListener) {
         database.child("users").child(currentUserId).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -49,11 +56,10 @@ public class LikeRepository {
         });
     }
 
-    // Lấy danh sách người đã thích bạn (hỗ trợ pagination)
     public void getUsersWhoLikedMe(OnResultListener listener, String lastUserId, int pageSize) {
         listener.onLoading();
         List<User> usersWhoLikedMe = new ArrayList<>();
-        Set<String> userIds = new HashSet<>(); // Để tránh trùng lặp
+        Set<String> userIds = new HashSet<>();
 
         Query query = database.child("likes").orderByKey();
         if (lastUserId != null) {
@@ -62,10 +68,18 @@ public class LikeRepository {
         query.limitToFirst(pageSize).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (!snapshot.exists()) {
+                    Log.d(TAG, "getUsersWhoLikedMe: No likes found");
+                    listener.onEmpty();
+                    return;
+                }
+
+                totalUsers = snapshot.getChildrenCount();
+                processedUsers = 0;
+
                 for (DataSnapshot userSnapshot : snapshot.getChildren()) {
                     String userId = userSnapshot.getKey();
                     if (userId != null && userSnapshot.hasChild(currentUserId) && !userIds.contains(userId)) {
-                        // Người dùng này đã thích bạn
                         database.child("users").child(userId).addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
                             public void onDataChange(@NonNull DataSnapshot userDataSnapshot) {
@@ -73,13 +87,19 @@ public class LikeRepository {
                                 if (user != null) {
                                     user.setUid(userId);
                                     usersWhoLikedMe.add(user);
-                                    userIds.add(userId); // Thêm userId vào Set để tránh trùng lặp
+                                    userIds.add(userId);
+                                    Log.d(TAG, "getUsersWhoLikedMe: Added user " + user.getName() + " (uid: " + userId + ")");
+                                } else {
+                                    Log.d(TAG, "getUsersWhoLikedMe: User data not found for uid: " + userId);
                                 }
-                                // Kiểm tra nếu đã lấy hết dữ liệu trong trang
-                                if (usersWhoLikedMe.size() == snapshot.getChildrenCount()) {
+
+                                processedUsers++;
+                                if (processedUsers == totalUsers) {
                                     if (usersWhoLikedMe.isEmpty()) {
+                                        Log.d(TAG, "getUsersWhoLikedMe: No users found after processing");
                                         listener.onEmpty();
                                     } else {
+                                        Log.d(TAG, "getUsersWhoLikedMe: Found " + usersWhoLikedMe.size() + " users");
                                         listener.onSuccess(usersWhoLikedMe);
                                     }
                                 }
@@ -87,28 +107,37 @@ public class LikeRepository {
 
                             @Override
                             public void onCancelled(@NonNull DatabaseError error) {
+                                Log.e(TAG, "getUsersWhoLikedMe: Error fetching user data: " + error.getMessage());
                                 listener.onError(error.getMessage());
                             }
                         });
+                    } else {
+                        processedUsers++;
+                        if (processedUsers == totalUsers) {
+                            if (usersWhoLikedMe.isEmpty()) {
+                                Log.d(TAG, "getUsersWhoLikedMe: No users found after processing");
+                                listener.onEmpty();
+                            } else {
+                                Log.d(TAG, "getUsersWhoLikedMe: Found " + usersWhoLikedMe.size() + " users");
+                                listener.onSuccess(usersWhoLikedMe);
+                            }
+                        }
                     }
-                }
-                if (usersWhoLikedMe.isEmpty()) {
-                    listener.onEmpty();
                 }
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
+                Log.e(TAG, "getUsersWhoLikedMe: Error: " + error.getMessage());
                 listener.onError(error.getMessage());
             }
         });
     }
 
-    // Lấy danh sách người bạn đã thích (hỗ trợ pagination)
     public void getUsersILiked(OnResultListener listener, String lastUserId, int pageSize) {
         listener.onLoading();
         List<User> usersILiked = new ArrayList<>();
-        Set<String> userIds = new HashSet<>(); // Để tránh trùng lặp
+        Set<String> userIds = new HashSet<>();
 
         Query query = database.child("likes").child(currentUserId).orderByKey();
         if (lastUserId != null) {
@@ -132,9 +161,8 @@ public class LikeRepository {
                                 if (user != null) {
                                     user.setUid(likedUserId);
                                     usersILiked.add(user);
-                                    userIds.add(likedUserId); // Thêm userId vào Set để tránh trùng lặp
+                                    userIds.add(likedUserId);
                                 }
-                                // Kiểm tra nếu đã lấy hết dữ liệu trong trang
                                 if (usersILiked.size() == snapshot.getChildrenCount()) {
                                     if (usersILiked.isEmpty()) {
                                         listener.onEmpty();

@@ -14,6 +14,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
@@ -22,6 +23,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
 import vn.edu.tlu.cse.amourswip.R;
 import vn.edu.tlu.cse.amourswip.controller.LikeController;
 import vn.edu.tlu.cse.amourswip.model.data.User;
@@ -79,7 +81,6 @@ public class LikeFragment extends Fragment {
         userRecyclerView.setAdapter(userAdapter);
         userRecyclerView.setLayoutManager(new GridLayoutManager(getContext(), 2));
 
-        // Thêm listener để tải thêm dữ liệu khi cuộn đến cuối
         userRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
@@ -96,20 +97,17 @@ public class LikeFragment extends Fragment {
             }
         });
 
-        // Thêm listener để làm mới danh sách và hủy bộ lọc
         swipeRefreshLayout.setOnRefreshListener(() -> {
-            clearFilter(); // Hủy bộ lọc khi làm mới
+            clearFilter();
             controller.onLikesTabClicked();
             controller.onLikedTabClicked();
             swipeRefreshLayout.setRefreshing(false);
         });
 
-        // Thêm listener cho nút lọc
         filterButton.setOnClickListener(v -> showFilterDialog());
 
         controller = new LikeController(this);
 
-        // Khôi phục trạng thái nếu có
         if (savedInstanceState != null) {
             userList = savedInstanceState.getParcelableArrayList(KEY_USERS_WHO_LIKED_ME);
             if (userList == null) {
@@ -133,11 +131,9 @@ public class LikeFragment extends Fragment {
             }
         }
 
-        // Xử lý sự kiện click trên các tab
         likesTab.setOnClickListener(v -> controller.onLikesTabClicked());
         likedTab.setOnClickListener(v -> controller.onLikedTabClicked());
 
-        // Đặt tab "Lượt thích" được chọn mặc định
         updateTabSelection(true);
     }
 
@@ -158,7 +154,6 @@ public class LikeFragment extends Fragment {
         Dialog dialog = new Dialog(getContext());
         dialog.setContentView(R.layout.dialog_filter);
 
-        // Tăng kích thước dialog
         WindowManager.LayoutParams params = new WindowManager.LayoutParams();
         params.copyFrom(dialog.getWindow().getAttributes());
         params.width = WindowManager.LayoutParams.MATCH_PARENT;
@@ -240,23 +235,34 @@ public class LikeFragment extends Fragment {
     }
 
     public void updateUserList(List<User> users) {
+        Log.d("LikeFragment", "updateUserList: Updating with " + users.size() + " users");
         userList.clear();
         userList.addAll(users);
         userAdapter.updateList(users);
         isLoading = false;
     }
 
+    public void setActionButtons(boolean show, Consumer<User> onLikeClicked, Consumer<User> onDislikeClicked) {
+        Log.d("LikeFragment", "setActionButtons: show=" + show);
+        userAdapter.setShowActionButtons(show, onLikeClicked, onDislikeClicked);
+    }
+
     public void updateTabSelection(boolean isLikesTab) {
+        Log.d("LikeFragment", "updateTabSelection: isLikesTab=" + isLikesTab);
         if (isLikesTab) {
             likesTab.animate().alpha(1f).setDuration(200).start();
             likedTab.animate().alpha(0.5f).setDuration(200).start();
-            likesLabel.setTextColor(getResources().getColor(android.R.color.white));
-            likedLabel.setTextColor(getResources().getColor(android.R.color.black));
+            likesLabel.setTextColor(ContextCompat.getColor(getContext(), android.R.color.white));
+            likedLabel.setTextColor(ContextCompat.getColor(getContext(), android.R.color.black));
+            // Đảm bảo hiển thị nút khi ở tab "Lượt thích"
+            setActionButtons(true, controller::onLikeUser, controller::onDislikeUser);
         } else {
             likesTab.animate().alpha(0.5f).setDuration(200).start();
             likedTab.animate().alpha(1f).setDuration(200).start();
-            likesLabel.setTextColor(getResources().getColor(android.R.color.black));
-            likedLabel.setTextColor(getResources().getColor(android.R.color.white));
+            likesLabel.setTextColor(ContextCompat.getColor(getContext(), android.R.color.black));
+            likedLabel.setTextColor(ContextCompat.getColor(getContext(), android.R.color.white));
+            // Ẩn nút khi ở tab "Đã thích"
+            setActionButtons(false, null, null);
         }
     }
 
