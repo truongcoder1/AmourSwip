@@ -12,6 +12,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.navigation.NavController;
+
 import com.bumptech.glide.Glide;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -25,11 +26,13 @@ import com.yuyakaido.android.cardstackview.CardStackView;
 import com.yuyakaido.android.cardstackview.Direction;
 import com.yuyakaido.android.cardstackview.Duration;
 import com.yuyakaido.android.cardstackview.SwipeAnimationSetting;
+
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.Stack;
+
 import vn.edu.tlu.cse.amourswip.R;
 import vn.edu.tlu.cse.amourswip.model.data.User;
 import vn.edu.tlu.cse.amourswip.view.adapter.CardStackAdapter;
@@ -308,9 +311,33 @@ public class SwipeController {
             fragment.showSkipAnimation();
             skippedUserIds.add(otherUser.getUid());
             userList.remove(otherUser);
-            database.child("likes").child(otherUser.getUid()).child(currentUserId).removeValue();
-            adapter.notifyDataSetChanged();
-            cardStackView.scheduleLayoutAnimation();
+            // Kiểm tra xem otherUser có thích bạn không
+            database.child("likes").child(otherUser.getUid()).child(currentUserId)
+                    .addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                            if (snapshot.exists()) {
+                                // Nếu otherUser đã thích bạn, lưu vào likedBy
+                                database.child("likedBy").child(currentUserId).child(otherUser.getUid()).setValue(true)
+                                        .addOnCompleteListener(task -> {
+                                            if (task.isSuccessful()) {
+                                                Log.d(TAG, "handleCardSwiped: Updated likedBy for user: " + otherUser.getUid());
+                                            } else {
+                                                Log.e(TAG, "handleCardSwiped: Error updating likedBy: " + task.getException().getMessage());
+                                            }
+                                        });
+                            }
+                            // Xóa likes nếu có
+                            database.child("likes").child(otherUser.getUid()).child(currentUserId).removeValue();
+                            adapter.notifyDataSetChanged();
+                            cardStackView.scheduleLayoutAnimation();
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError error) {
+                            Log.e(TAG, "Error checking likes: " + error.getMessage());
+                        }
+                    });
         }
     }
 
@@ -344,6 +371,15 @@ public class SwipeController {
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
                         Log.d(TAG, "likeUser: Successfully liked user: " + otherUser.getName());
+                        // Lưu vào node likedBy của người được thích
+                        database.child("likedBy").child(otherUser.getUid()).child(currentUserId).setValue(true)
+                                .addOnCompleteListener(likedByTask -> {
+                                    if (likedByTask.isSuccessful()) {
+                                        Log.d(TAG, "likeUser: Successfully updated likedBy for user: " + otherUser.getUid());
+                                    } else {
+                                        Log.e(TAG, "likeUser: Error updating likedBy: " + likedByTask.getException().getMessage());
+                                    }
+                                });
                     } else {
                         Log.e(TAG, "likeUser: Error liking user: " + task.getException().getMessage());
                         fragment.showError("Lỗi khi thích: " + task.getException().getMessage());

@@ -129,7 +129,7 @@ public class LikeController {
                     Log.d(TAG, "loadUsersWhoLikedMe: userIdsWhoLikedMe: " + userIdsWhoLikedMe.contains(user.getUid()));
                     Log.d(TAG, "loadUsersWhoLikedMe: matchedUserIds: " + matchedUserIds.contains(user.getUid()));
                     Log.d(TAG, "loadUsersWhoLikedMe: userIdsILiked: " + userIdsILiked.contains(user.getUid()));
-                    if (!userIdsWhoLikedMe.contains(user.getUid()) && !matchedUserIds.contains(user.getUid()) && !userIdsILiked.contains(user.getUid())) {
+                    if (!userIdsWhoLikedMe.contains(user.getUid()) && !matchedUserIds.contains(user.getUid())) {
                         usersWhoLikedMe.add(user);
                         userIdsWhoLikedMe.add(user.getUid());
                         Log.d(TAG, "loadUsersWhoLikedMe: Added user " + (user.getName() != null ? user.getName() : "Unknown") + " (uid: " + user.getUid() + ")");
@@ -140,9 +140,6 @@ public class LikeController {
                         }
                         if (matchedUserIds.contains(user.getUid())) {
                             Log.d(TAG, "loadUsersWhoLikedMe: Skipped because user is already matched");
-                        }
-                        if (userIdsILiked.contains(user.getUid())) {
-                            Log.d(TAG, "loadUsersWhoLikedMe: Skipped because user is already in userIdsILiked");
                         }
                     }
                 }
@@ -182,7 +179,6 @@ public class LikeController {
             }
         }, lastUserIdWhoLikedMe, PAGE_SIZE);
     }
-
     public void loadUsersILiked() {
         likeRepository.getUsersILiked(new LikeRepository.OnResultListener() {
             @Override
