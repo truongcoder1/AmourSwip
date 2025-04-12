@@ -6,11 +6,17 @@
     android:background="@drawable/background_chat">
 
     <!-- Thanh tiêu đề -->
+
+    <!-- RecyclerView để hiển thị danh sách tin nhắn -->
+
+    <!-- Thanh nhập tin nhắn -->
+
     <LinearLayout
         android:id="@+id/header_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
+        android:layout_marginTop="11dp"
         android:background="#E6D5F2"
         android:gravity="center_vertical"
         android:orientation="horizontal"
@@ -79,25 +85,25 @@
             android:src="@drawable/ic_dot" />
     </LinearLayout>
 
-    <!-- RecyclerView để hiển thị danh sách tin nhắn -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/messages_recycler_view"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_above="@+id/input_layout"
-        android:layout_below="@+id/header_layout"
+        android:layout_height="match_parent"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginTop="94dp"
+        android:layout_marginBottom="60dp"
         android:paddingHorizontal="16dp"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 
-    <!-- Thanh nhập tin nhắn -->
     <LinearLayout
         android:id="@+id/input_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_marginHorizontal="16dp"
-        android:layout_marginBottom="16dp"
-        android:background="@android:color/white"
+        android:layout_marginBottom="0dp"
+        android:background="#ededed"
         android:orientation="horizontal"
         android:padding="8dp">
 

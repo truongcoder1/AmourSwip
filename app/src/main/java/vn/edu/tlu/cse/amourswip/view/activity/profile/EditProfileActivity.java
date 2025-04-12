@@ -42,7 +42,6 @@ public class EditProfileActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_profile);
 
-        // Khởi tạo các view bằng findViewById
         backArrow = findViewById(R.id.back_arrow);
         settingsIcon = findViewById(R.id.settings_icon);
         avatarImage = findViewById(R.id.avatar_image);
@@ -58,46 +57,24 @@ public class EditProfileActivity extends AppCompatActivity {
         editOccupation = findViewById(R.id.edit_occupation);
         confirmButton = findViewById(R.id.confirm_button);
 
-        // Khởi tạo Firebase
         String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
         userRef = FirebaseDatabase.getInstance().getReference().child("users").child(userId);
 
-        // Lấy và hiển thị thông tin người dùng
         loadUserProfile();
 
-        // Xử lý nút quay lại
-        backArrow.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish(); // Đóng activity và quay lại màn hình trước
-            }
+        backArrow.setOnClickListener(v -> finish());
+
+        settingsIcon.setOnClickListener(v -> {
+            Intent intent = new Intent(EditProfileActivity.this, SettingActivity.class);
+            startActivity(intent);
         });
 
-        // Xử lý nút cài đặt
-        settingsIcon.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(EditProfileActivity.this, SettingActivity.class);
-                startActivity(intent);
-            }
+        editPhotoButton.setOnClickListener(v -> {
+            Intent intent = new Intent(EditProfileActivity.this, EditPhotosActivity.class);
+            startActivity(intent);
         });
 
-        // Xử lý nút sửa ảnh
-        editPhotoButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(EditProfileActivity.this, EditPhotosActivity.class);
-                startActivity(intent);
-            }
-        });
-
-        // Xử lý nút xác nhận
-        confirmButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                saveUserProfile();
-            }
-        });
+        confirmButton.setOnClickListener(v -> saveUserProfile());
     }
 
     private void loadUserProfile() {
@@ -105,7 +82,6 @@ public class EditProfileActivity extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if (snapshot.exists()) {
-                    // Lấy thông tin người dùng
                     String name = snapshot.child("name").getValue(String.class);
                     String dob = snapshot.child("dob").getValue(String.class);
                     String interests = snapshot.child("interests").getValue(String.class);
@@ -115,14 +91,11 @@ public class EditProfileActivity extends AppCompatActivity {
                     String education = snapshot.child("education").getValue(String.class);
                     String occupation = snapshot.child("occupation").getValue(String.class);
                     String description = snapshot.child("description").getValue(String.class);
-                    String avatarUrl = snapshot.child("avatarUrl").getValue(String.class);
 
-                    // Hiển thị thông tin lên TextView
                     String userInfoText = "Tên: " + (name != null ? name : "N/A") + "\n" +
                             "Mô tả: " + (description != null ? description : "N/A");
                     userInfo.setText(userInfoText);
 
-                    // Hiển thị thông tin lên các EditText
                     editFullName.setText(name != null ? name : "");
                     editDob.setText(dob != null ? dob : "");
                     editInterests.setText(interests != null ? interests : "");
@@ -132,6 +105,19 @@ public class EditProfileActivity extends AppCompatActivity {
                     editEducation.setText(education != null ? education : "");
                     editOccupation.setText(occupation != null ? occupation : "");
 
+                    // Lấy danh sách ảnh từ trường "photos"
+                    DataSnapshot photosSnapshot = snapshot.child("photos");
+                    String avatarUrl = null;
+                    if (photosSnapshot.exists()) {
+                        for (DataSnapshot photo : photosSnapshot.getChildren()) {
+                            String photoUrl = photo.getValue(String.class);
+                            if (photoUrl != null && avatarUrl == null) { // Lấy ảnh đầu tiên làm avatar
+                                avatarUrl = photoUrl;
+                                break;
+                            }
+                        }
+                    }
+
                     // Hiển thị ảnh đại diện
                     if (avatarUrl != null) {
                         Glide.with(EditProfileActivity.this)
@@ -139,6 +125,8 @@ public class EditProfileActivity extends AppCompatActivity {
                                 .placeholder(R.drawable.gai1)
                                 .error(R.drawable.gai1)
                                 .into(avatarImage);
+                    } else {
+                        avatarImage.setImageResource(R.drawable.gai1);
                     }
                 } else {
                     Toast.makeText(EditProfileActivity.this, "Không tìm thấy thông tin người dùng", Toast.LENGTH_SHORT).show();
@@ -162,7 +150,6 @@ public class EditProfileActivity extends AppCompatActivity {
         String education = editEducation.getText().toString().trim();
         String occupation = editOccupation.getText().toString().trim();
 
-        // Cập nhật thông tin lên Firebase
         userRef.child("name").setValue(name);
         userRef.child("dob").setValue(dob);
         userRef.child("interests").setValue(interests);
@@ -174,8 +161,6 @@ public class EditProfileActivity extends AppCompatActivity {
         userRef.child("description").setValue("Đang " + (relationship.isEmpty() ? "yêu" : relationship) + ", thích " + (interests.isEmpty() ? "đi du lịch..." : interests));
 
         Toast.makeText(EditProfileActivity.this, "Cập nhật hồ sơ thành công", Toast.LENGTH_SHORT).show();
-
-        // Đóng activity và quay lại màn hình trước
         finish();
     }
 }

@@ -39,10 +39,10 @@ public class PhotoAdapter extends BaseAdapter {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         if (convertView == null) {
-            convertView = LayoutInflater.from(context).inflate(R.layout.item_grid_photo, parent, false);
+            convertView = LayoutInflater.from(context).inflate(R.layout.item_not_infor_photo, parent, false);
         }
 
-        ImageView imageView = convertView.findViewById(R.id.grid_photo);
+        ImageView imageView = convertView.findViewById(R.id.photo_image);
         String photoUrl = photoUrls.get(position);
 
         // Sử dụng Glide để tải ảnh từ URL

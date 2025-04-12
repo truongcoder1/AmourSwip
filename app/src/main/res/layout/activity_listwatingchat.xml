@@ -3,27 +3,31 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/background_notification1">
+    android:background="@drawable/background_notification2">
 
     <!-- RecyclerView để hiển thị danh sách thông báo -->
+
+    <!-- ImageButton cho chatbot (nằm ở góc dưới bên phải, ngay trên BottomNavigationView) -->
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/notifications_recycler_view"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginTop="100dp"
-        android:layout_marginBottom="60dp"
+        android:layout_height="630dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginTop="102dp"
+        android:layout_marginBottom="0dp"
         android:paddingHorizontal="16dp"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 
-    <!-- ImageButton cho chatbot (nằm ở góc dưới bên phải, ngay trên BottomNavigationView) -->
     <ImageButton
         android:id="@+id/chatbot_button"
         android:layout_width="60dp"
         android:layout_height="60dp"
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
-        android:layout_marginEnd="16dp"
-        android:layout_marginBottom="64dp"
+        android:layout_marginEnd="15dp"
+        android:layout_marginBottom="27dp"
         android:background="@android:color/transparent"
         android:contentDescription="Chatbot"
         android:scaleType="fitCenter"
