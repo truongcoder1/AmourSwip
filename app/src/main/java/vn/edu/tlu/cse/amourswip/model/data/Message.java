@@ -1,46 +1,34 @@
 package vn.edu.tlu.cse.amourswip.model.data;
 
 public class Message {
-    private String messageId;
-    private String senderId;
-    private String message;
+    private String text;
+    private boolean isUserMessage;
     private long timestamp;
-    private String senderImage;
-    private String status; // Trạng thái: "sent" hoặc "seen"
 
-    public Message() {}
+    public Message() {
+        // Constructor mặc định cho Firebase (nếu cần)
+    }
 
-    public Message(String messageId, String senderId, String message, long timestamp, String senderImage, String status) {
-        this.messageId = messageId;
-        this.senderId = senderId;
-        this.message = message;
+    public Message(String text, boolean isUserMessage, long timestamp) {
+        this.text = text;
+        this.isUserMessage = isUserMessage;
         this.timestamp = timestamp;
-        this.senderImage = senderImage;
-        this.status = status;
     }
 
-    public String getMessageId() {
-        return messageId;
+    public String getText() {
+        return text;
     }
 
-    public void setMessageId(String messageId) {
-        this.messageId = messageId;
+    public void setText(String text) {
+        this.text = text;
     }
 
-    public String getSenderId() {
-        return senderId;
+    public boolean isUserMessage() {
+        return isUserMessage;
     }
 
-    public void setSenderId(String senderId) {
-        this.senderId = senderId;
-    }
-
-    public String getMessage() {
-        return message;
-    }
-
-    public void setMessage(String message) {
-        this.message = message;
+    public void setUserMessage(boolean userMessage) {
+        isUserMessage = userMessage;
     }
 
     public long getTimestamp() {
@@ -49,21 +37,5 @@ public class Message {
 
     public void setTimestamp(long timestamp) {
         this.timestamp = timestamp;
-    }
-
-    public String getSenderImage() {
-        return senderImage;
-    }
-
-    public void setSenderImage(String senderImage) {
-        this.senderImage = senderImage;
-    }
-
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
     }
 }

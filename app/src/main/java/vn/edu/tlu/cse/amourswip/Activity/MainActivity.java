@@ -1,9 +1,10 @@
-package vn.edu.tlu.cse.amourswip.view.activity.main;
+package vn.edu.tlu.cse.amourswip.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Toast;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
@@ -13,7 +14,6 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import vn.edu.tlu.cse.amourswip.R;
-import vn.edu.tlu.cse.amourswip.view.activity.signup.SignInActivity;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -50,29 +50,35 @@ public class MainActivity extends AppCompatActivity {
                     // Liên kết BottomNavigationView với NavController
                     NavigationUI.setupWithNavController(bottomNavigationView, navController);
 
-                    // Lắng nghe sự thay đổi của fragment để ẩn/hiện BottomNavigationView
-                    navController.addOnDestinationChangedListener((controller, destination, arguments) -> {
-                        int destinationId = destination.getId();
-                        if (destinationId == R.id.chatUserFragment || destinationId == R.id.chatAIFragment) {
-                            // Ẩn BottomNavigationView trong ChatUserFragment và ChatAIFragment
-                            bottomNavigationView.setVisibility(View.GONE);
-                        } else {
-                            // Hiện BottomNavigationView trong các fragment khác
-                            bottomNavigationView.setVisibility(View.VISIBLE);
+                    // Xử lý sự kiện nhấn vào các mục trong BottomNavigationView
+                    bottomNavigationView.setOnItemSelectedListener(item -> {
+                        int itemId = item.getItemId();
+                        if (itemId == R.id.swipeFragment) {
+                            navController.navigate(R.id.swipeFragment);
+                            return true;
+                        } else if (itemId == R.id.listChatFragment) {
+                            navController.navigate(R.id.listChatFragment);
+                            return true;
+                        } else if (itemId == R.id.profileFragment) {
+                            navController.navigate(R.id.profileFragment);
+                            return true;
+                        } else if (itemId == R.id.likeFragment) {
+                            navController.navigate(R.id.likeFragment);
+                            Toast.makeText(MainActivity.this, "Like button clicked - Chưa triển khai", Toast.LENGTH_SHORT).show();
+                            return true;
                         }
+                        return false;
                     });
 
                     // Xử lý điều hướng từ Intent (ví dụ: từ ProfileMyFriendActivity)
                     Intent intent = getIntent();
                     if (intent != null && intent.hasExtra("navigateTo")) {
                         String navigateTo = intent.getStringExtra("navigateTo");
-                        if ("chatUserFragment".equals(navigateTo)) {
+                        if ("chatFragment".equals(navigateTo)) {
                             String friendId = intent.getStringExtra("friendId");
                             Bundle bundle = new Bundle();
-                            bundle.putString("userId", friendId);
-                            // Có thể lấy userName từ Firebase nếu cần
-                            bundle.putString("userName", ""); // Cập nhật sau nếu cần userName
-                            navController.navigate(R.id.chatUserFragment, bundle);
+                            bundle.putString("friendId", friendId);
+                            navController.navigate(R.id.chatFragment, bundle);
                         }
                     }
                 } catch (IllegalStateException e) {

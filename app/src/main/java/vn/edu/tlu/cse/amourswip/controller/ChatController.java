@@ -9,19 +9,19 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import java.util.HashMap;
 import java.util.Map;
-import vn.edu.tlu.cse.amourswip.model.data.Message;
+import vn.edu.tlu.cse.amourswip.model.data.MessageUser;
 import vn.edu.tlu.cse.amourswip.model.data.User;
 import vn.edu.tlu.cse.amourswip.model.repository.ChatRepository;
-import vn.edu.tlu.cse.amourswip.view.fragment.ChatFragment;
+import vn.edu.tlu.cse.amourswip.view.fragment.ChatUserFragment;
 
 public class ChatController {
 
-    private final ChatFragment fragment;
+    private final ChatUserFragment fragment;
     private final ChatRepository chatRepository;
     private final String friendId;
     private String currentUserImage;
 
-    public ChatController(ChatFragment fragment, String friendId) {
+    public ChatController(ChatUserFragment fragment, String friendId) {
         this.fragment = fragment;
         this.friendId = friendId;
         this.chatRepository = new ChatRepository(friendId);
@@ -101,7 +101,7 @@ public class ChatController {
         }
 
         long timestamp = System.currentTimeMillis();
-        Message message = new Message(messageId, currentUserId, messageText, timestamp, currentUserImage, "sent");
+        MessageUser message = new MessageUser(messageId, currentUserId, messageText, timestamp, currentUserImage, "sent");
 
         Map<String, Object> messageValues = new HashMap<>();
         messageValues.put("messageId", message.getMessageId());

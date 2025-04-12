@@ -26,8 +26,17 @@
         android:name="vn.edu.tlu.cse.amourswip.view.fragment.ListChatFragment"
         android:label="ListChatFragment">
         <action
-            android:id="@+id/action_listChatFragment_to_chatFragment"
-            app:destination="@id/chatFragment"
+            android:id="@+id/action_listChatFragment_to_chatUserFragment"
+            app:destination="@id/chatUserFragment"
+            app:popUpTo="@id/listChatFragment"
+            app:popUpToInclusive="false"
+            app:enterAnim="@anim/fade_in"
+            app:exitAnim="@anim/fade_out"
+            app:popEnterAnim="@anim/fade_in"
+            app:popExitAnim="@anim/fade_out" />
+        <action
+            android:id="@+id/action_listChatFragment_to_chatAIFragment"
+            app:destination="@id/chatAIFragment"
             app:popUpTo="@id/listChatFragment"
             app:popUpToInclusive="false"
             app:enterAnim="@anim/fade_in"
@@ -63,11 +72,43 @@
             app:popExitAnim="@anim/fade_out" />
     </fragment>
 
-    <!-- ChatFragment -->
+    <!-- ChatUserFragment -->
     <fragment
-        android:id="@+id/chatFragment"
+        android:id="@+id/chatUserFragment"
+        android:name="vn.edu.tlu.cse.amourswip.view.fragment.ChatUserFragment"
+        android:label="ChatUserFragment">
+        <action
+            android:id="@+id/action_chatUserFragment_to_listChatFragment"
+            app:destination="@id/listChatFragment"
+            app:popUpTo="@id/chatUserFragment"
+            app:popUpToInclusive="false"
+            app:enterAnim="@anim/fade_in"
+            app:exitAnim="@anim/fade_out"
+            app:popEnterAnim="@anim/fade_in"
+            app:popExitAnim="@anim/fade_out" />
+        <argument
+            android:name="userId"
+            app:argType="string" />
+        <argument
+            android:name="userName"
+            app:argType="string" />
+    </fragment>
+
+    <!-- ChatAIFragment -->
+    <fragment
+        android:id="@+id/chatAIFragment"
         android:name="vn.edu.tlu.cse.amourswip.view.fragment.ChatFragment"
-        android:label="ChatFragment" />
+        android:label="ChatAIFragment">
+        <action
+            android:id="@+id/action_chatAIFragment_to_listChatFragment"
+            app:destination="@id/listChatFragment"
+            app:popUpTo="@id/chatAIFragment"
+            app:popUpToInclusive="false"
+            app:enterAnim="@anim/fade_in"
+            app:exitAnim="@anim/fade_out"
+            app:popEnterAnim="@anim/fade_in"
+            app:popExitAnim="@anim/fade_out" />
+    </fragment>
 
     <!-- ProfileMyFriendActivity -->
     <activity

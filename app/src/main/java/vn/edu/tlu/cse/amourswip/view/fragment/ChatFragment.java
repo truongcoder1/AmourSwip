@@ -1,7 +1,7 @@
 package vn.edu.tlu.cse.amourswip.view.fragment;
 
-import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,201 +17,230 @@ import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import com.bumptech.glide.Glide;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.ChildEventListener;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
+import org.json.JSONArray;
+import org.json.JSONObject;
+import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.MediaType;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 import vn.edu.tlu.cse.amourswip.R;
-import vn.edu.tlu.cse.amourswip.controller.ChatController;
 import vn.edu.tlu.cse.amourswip.model.data.Message;
-import vn.edu.tlu.cse.amourswip.model.data.User;
-import vn.edu.tlu.cse.amourswip.view.activity.profile.ProfileMyFriendActivity;
-import vn.edu.tlu.cse.amourswip.view.adapter.MessageAdapter;
+import vn.edu.tlu.cse.amourswip.view.adapter.ChatAdapter;
 
 public class ChatFragment extends Fragment {
 
-    private ImageButton backButton;
-    private ImageView userImage;
-    private TextView userName;
-    private ImageButton videoCallButton;
-    private ImageButton menuButton;
-    private RecyclerView messagesRecyclerView;
+    private static final String TAG = "ChatAIFragment";
+    private static final String HUGGINGFACE_API_URL = "https://api-inference.huggingface.co/models/meta-llama/Llama-3.2-3B-Instruct";
+    private static final String HUGGINGFACE_API_TOKEN = "";
+    private static final int MAX_MESSAGES = 100; // Giới hạn số lượng tin nhắn
+
+    private TextView title;
     private EditText messageInput;
-    private ImageButton gifButton;
     private ImageButton sendButton;
-    private ChatController controller;
-    private String friendId;
-    private String chatId;
-    private String currentUserId;
-    private NavController navController;
-    private MessageAdapter messageAdapter;
+    private ImageView backArrow;
+    private RecyclerView recyclerView;
     private List<Message> messageList;
-    private DatabaseReference messagesRef;
+    private ChatAdapter chatAdapter;
+    private NavController navController;
+    private OkHttpClient client;
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        messageList = new ArrayList<>();
+        client = new OkHttpClient();
+    }
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.activity_chat, container, false);
-    }
+        View view = inflater.inflate(R.layout.activity_chat_ai, container, false);
 
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
+        initializeViews(view);
+        setupRecyclerView();
+        setupNavigation();
 
-        navController = Navigation.findNavController(view);
-
-        backButton = view.findViewById(R.id.back_button);
-        userImage = view.findViewById(R.id.user_image);
-        userName = view.findViewById(R.id.user_name);
-        videoCallButton = view.findViewById(R.id.video_call_button);
-        menuButton = view.findViewById(R.id.menu_button);
-        messagesRecyclerView = view.findViewById(R.id.messages_recycler_view);
-        messageInput = view.findViewById(R.id.message_input);
-        gifButton = view.findViewById(R.id.gif_button);
-        sendButton = view.findViewById(R.id.send_button);
-
-        currentUserId = FirebaseAuth.getInstance().getCurrentUser().getUid();
-        if (getArguments() != null) {
-            friendId = getArguments().getString("userId");
-            String name = getArguments().getString("userName");
-            userName.setText(name != null ? name : "N/A");
+        if (FirebaseAuth.getInstance().getCurrentUser() == null) {
+            Toast.makeText(getActivity(), "Vui lòng đăng nhập để trò chuyện", Toast.LENGTH_SHORT).show();
+            navController.navigate(R.id.action_chatAIFragment_to_listChatFragment);
+            return view;
         }
 
-        if (friendId == null) {
-            Toast.makeText(getContext(), "Không tìm thấy thông tin người dùng", Toast.LENGTH_SHORT).show();
-            navController.popBackStack();
+        displayWelcomeMessage();
+        setupListeners();
+
+        return view;
+    }
+
+    private void initializeViews(View view) {
+        backArrow = view.findViewById(R.id.back_arrow);
+        title = view.findViewById(R.id.title);
+        recyclerView = view.findViewById(R.id.chat_recycler_view);
+        messageInput = view.findViewById(R.id.message_input);
+        sendButton = view.findViewById(R.id.send_button);
+        title.setText("LOVE AI");
+    }
+
+    private void setupRecyclerView() {
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        chatAdapter = new ChatAdapter(messageList);
+        recyclerView.setAdapter(chatAdapter);
+    }
+
+    private void setupNavigation() {
+        try {
+            navController = Navigation.findNavController(requireActivity(), R.id.nav_host_fragment);
+        } catch (IllegalStateException e) {
+            Log.e(TAG, "Navigation controller initialization failed", e);
+            Toast.makeText(getActivity(), "Lỗi khởi tạo điều hướng", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void displayWelcomeMessage() {
+        if (messageList.isEmpty()) {
+            Log.d(TAG, "Hiển thị tin nhắn chào mừng");
+            Message welcomeMessage = new Message("Xin chào! Tôi là LOVE AI, tôi có thể giúp gì cho bạn hôm nay?", false, System.currentTimeMillis());
+            addMessage(welcomeMessage);
+        }
+    }
+
+    private void setupListeners() {
+        sendButton.setOnClickListener(v -> sendMessage(messageInput.getText().toString()));
+        backArrow.setOnClickListener(v -> {
+            if (navController != null) navController.navigateUp();
+        });
+    }
+
+    private void sendMessage(String messageText) {
+        if (messageText.trim().isEmpty()) {
+            Toast.makeText(getActivity(), "Vui lòng nhập tin nhắn", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        // Tạo chatId dựa trên userId và friendId
-        chatId = currentUserId.compareTo(friendId) < 0 ? currentUserId + "_" + friendId : friendId + "_" + currentUserId;
-        messagesRef = FirebaseDatabase.getInstance().getReference("chats").child(chatId).child("messages");
-
-        // Khởi tạo RecyclerView và MessageAdapter
-        messageList = new ArrayList<>();
-        messageAdapter = new MessageAdapter(messageList, currentUserId);
-        messagesRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        messagesRecyclerView.setAdapter(messageAdapter);
-
-        // Lắng nghe tin nhắn theo thời gian thực
-        listenForMessages();
-
-        // Khởi tạo Controller
-        controller = new ChatController(this, friendId);
-        controller.loadFriendInfo();
-
-        // Xử lý các sự kiện click
-        backButton.setOnClickListener(v -> controller.onBackClicked());
-        userImage.setOnClickListener(v -> controller.onUserImageClicked());
-        videoCallButton.setOnClickListener(v -> controller.onVideoCallClicked());
-        menuButton.setOnClickListener(v -> controller.onMenuClicked());
-        gifButton.setOnClickListener(v -> controller.onGifClicked());
-        sendButton.setOnClickListener(v -> {
-            String message = messageInput.getText().toString().trim();
-            if (!message.isEmpty()) {
-                controller.onSendMessage(message);
-                messageInput.setText("");
-            } else {
-                Toast.makeText(getContext(), "Vui lòng nhập tin nhắn", Toast.LENGTH_SHORT).show();
-            }
-        });
+        Message message = new Message(messageText, true, System.currentTimeMillis());
+        addMessage(message);
+        fetchAIResponse(messageText);
+        messageInput.setText("");
     }
 
-    private void listenForMessages() {
-        messagesRef.addChildEventListener(new ChildEventListener() {
-            @Override
-            public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-                Message message = snapshot.getValue(Message.class);
-                if (message != null) {
-                    messageAdapter.addMessage(message);
-                    messagesRecyclerView.scrollToPosition(messageList.size() - 1);
-
-                    // Lưu tin nhắn cuối cùng vào lastMessage
-                    DatabaseReference lastMessageRef = FirebaseDatabase.getInstance().getReference("chats").child(chatId).child("lastMessage");
-                    Map<String, Object> lastMessageValues = new HashMap<>();
-                    lastMessageValues.put("message", message.getMessage());
-                    lastMessageValues.put("timestamp", message.getTimestamp());
-                    lastMessageValues.put("senderId", message.getSenderId());
-                    boolean isUnread = !message.getSenderId().equals(currentUserId);
-                    lastMessageValues.put("isUnread", isUnread);
-                    lastMessageRef.setValue(lastMessageValues)
-                            .addOnFailureListener(e -> {
-                                Toast.makeText(getContext(), "Lỗi khi lưu tin nhắn cuối cùng: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-                            });
-                }
-            }
-
-            @Override
-            public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-                Message updatedMessage = snapshot.getValue(Message.class);
-                if (updatedMessage != null) {
-                    for (int i = 0; i < messageList.size(); i++) {
-                        if (messageList.get(i).getMessageId().equals(updatedMessage.getMessageId())) {
-                            messageList.set(i, updatedMessage);
-                            messageAdapter.notifyItemChanged(i);
-                            break;
-                        }
-                    }
-                }
-            }
-
-            @Override
-            public void onChildRemoved(@NonNull DataSnapshot snapshot) {
-                // Xử lý nếu tin nhắn bị xóa (nếu cần)
-            }
-
-            @Override
-            public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-                // Xử lý nếu tin nhắn thay đổi vị trí (nếu cần)
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                Toast.makeText(getContext(), "Lỗi khi tải tin nhắn: " + error.getMessage(), Toast.LENGTH_SHORT).show();
-            }
-        });
-    }
-
-    // Phương thức để Controller gọi để cập nhật giao diện
-    public void updateUserInfo(User user) {
-        if (user != null) {
-            userName.setText(user.getName() != null ? user.getName() : "N/A");
-
-            if (user.getPhotos() != null && !user.getPhotos().isEmpty()) {
-                String avatarUrl = user.getPhotos().get(0);
-                if (avatarUrl != null) {
-                    Glide.with(getContext())
-                            .load(avatarUrl)
-                            .placeholder(R.drawable.gai1)
-                            .error(R.drawable.gai1)
-                            .into(userImage);
-                }
-            } else {
-                Glide.with(getContext())
-                        .load(R.drawable.gai1)
-                        .into(userImage);
-            }
+    private void addMessage(Message message) {
+        if (messageList.size() >= MAX_MESSAGES) {
+            messageList.remove(0); // Xóa tin nhắn cũ nhất nếu vượt quá giới hạn
+            chatAdapter.notifyItemRemoved(0);
         }
+        messageList.add(message);
+        chatAdapter.notifyItemInserted(messageList.size() - 1);
+        recyclerView.scrollToPosition(messageList.size() - 1);
     }
 
-    public void showError(String error) {
-        Toast.makeText(getContext(), error, Toast.LENGTH_SHORT).show();
+    private void fetchAIResponse(String userMessage) {
+        if (!isAdded()) return;
+
+        // Xây dựng ngữ cảnh hội thoại
+        StringBuilder conversationContext = new StringBuilder();
+        conversationContext.append("<|begin_of_text|>"); // Prompt bắt đầu cho Llama
+        int maxContextMessages = 6;
+        int startIndex = Math.max(0, messageList.size() - maxContextMessages);
+        for (int i = startIndex; i < messageList.size(); i++) {
+            Message msg = messageList.get(i);
+            conversationContext.append(msg.isUserMessage() ? "<|user|> " : "<|assistant|> ")
+                    .append(msg.getText())
+                    .append(" <|end|> ");
+        }
+        conversationContext.append("<|user|> ").append(userMessage).append(" <|end|> ");
+        conversationContext.append("<|assistant|> ");
+
+        Log.d(TAG, "Conversation context: " + conversationContext.toString());
+
+        // Tạo payload cho API
+        JSONObject jsonPayload = new JSONObject();
+        try {
+            jsonPayload.put("inputs", conversationContext.toString());
+            jsonPayload.put("parameters", new JSONObject()
+                    .put("max_new_tokens", 200) // Tương đương max_length
+                    .put("top_p", 0.9)
+                    .put("temperature", 0.7)
+                    .put("return_full_text", false)); // Chỉ trả về phần mới
+        } catch (Exception e) {
+            Log.e(TAG, "Error creating API request", e);
+            showError("Lỗi khi tạo yêu cầu API");
+            return;
+        }
+
+        // Tạo yêu cầu API
+        RequestBody body = RequestBody.create(jsonPayload.toString(), MediaType.parse("application/json; charset=utf-8"));
+        Request request = new Request.Builder()
+                .url("https://api-inference.huggingface.co/models/meta-llama/Llama-3.2-3B-Instruct")
+                .addHeader("Authorization", "Bearer " + HUGGINGFACE_API_TOKEN)
+                .post(body)
+                .build();
+
+        // Gửi yêu cầu bất đồng bộ
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                if (isAdded()) {
+                    requireActivity().runOnUiThread(() -> showError("Lỗi kết nối API: " + e.getMessage()));
+                }
+            }
+
+            @Override
+            public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+                if (!isAdded()) return;
+
+                if (!response.isSuccessful()) {
+                    String errorDetail = response.body() != null ? response.body().string() : "Không có chi tiết";
+                    requireActivity().runOnUiThread(() -> showError("Lỗi API " + response.code() + ": " + errorDetail));
+                    return;
+                }
+
+                String responseBody = response.body() != null ? response.body().string() : null;
+                if (responseBody == null) {
+                    requireActivity().runOnUiThread(() -> showError("Không nhận được dữ liệu từ API"));
+                    return;
+                }
+
+                Log.d(TAG, "Raw API response: " + responseBody);
+
+                try {
+                    // Phản hồi từ Llama là một mảng JSON
+                    JSONArray jsonArray = new JSONArray(responseBody);
+                    if (jsonArray.length() > 0) {
+                        String aiResponse = jsonArray.getJSONObject(0).getString("generated_text").trim();
+                        Log.d(TAG, "Generated text: " + aiResponse);
+
+                        // Loại bỏ các token đặc biệt nếu cần
+                        String finalResponse = aiResponse.replaceAll("<\\|.*?\\|>", "").trim();
+
+                        if (!finalResponse.isEmpty()) {
+                            requireActivity().runOnUiThread(() -> {
+                                Message aiMessage = new Message(finalResponse, false, System.currentTimeMillis());
+                                addMessage(aiMessage);
+                            });
+                        } else {
+                            requireActivity().runOnUiThread(() -> showError("Phản hồi từ AI trống"));
+                        }
+                    } else {
+                        requireActivity().runOnUiThread(() -> showError("Không có phản hồi từ API"));
+                    }
+                } catch (Exception e) {
+                    Log.e(TAG, "Error parsing API response", e);
+                    requireActivity().runOnUiThread(() -> showError("Lỗi phân tích phản hồi: " + e.getMessage()));
+                }
+            }
+        });
     }
 
-    public NavController getNavController() {
-        return navController;
-    }
-
-    public void startProfileMyFriendActivity() {
-        Intent intent = new Intent(getActivity(), ProfileMyFriendActivity.class);
-        intent.putExtra("friendId", friendId);
-        startActivity(intent);
+    private void showError(String error) {
+        if (isAdded()) {
+            Toast.makeText(getActivity(), error, Toast.LENGTH_LONG).show();
+        }
     }
 }

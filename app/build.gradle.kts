@@ -62,4 +62,6 @@ dependencies {
     implementation (libs.annotation)
     implementation (libs.play.services.location)
     implementation(libs.cardview)
+    implementation (libs.okhttp)
+    implementation (libs.gson)
 }

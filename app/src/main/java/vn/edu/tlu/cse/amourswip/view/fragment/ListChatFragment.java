@@ -59,17 +59,16 @@ public class ListChatFragment extends Fragment {
         notificationsRecyclerView.setAdapter(adapter);
 
         chatbotButton.setOnClickListener(v -> {
-            Toast.makeText(getActivity(), "Mở chatbot", Toast.LENGTH_SHORT).show();
+            Bundle bundle = new Bundle();
+            bundle.putBoolean("isChatWithAI", true);
+            navController.navigate(R.id.action_listChatFragment_to_chatAIFragment, bundle);
         });
 
-        // Kiểm tra dữ liệu từ Bundle
         Bundle args = getArguments();
         if (args != null && args.containsKey("chatId")) {
             String chatId = args.getString("chatId");
-            // Không hiển thị Toast, có thể sử dụng chatId để làm nổi bật thông báo nếu cần
         }
 
-        // Khởi tạo Controller
         controller = new ListChatController(this);
         controller.loadNotifications();
     }
@@ -78,7 +77,6 @@ public class ListChatFragment extends Fragment {
         controller.onNotificationClicked(notification);
     }
 
-    // Phương thức để Controller gọi để cập nhật giao diện
     public void updateNotifications(List<Notification> notifications) {
         notificationList.clear();
         notificationList.addAll(notifications);

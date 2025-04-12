@@ -1,7 +1,6 @@
 package vn.edu.tlu.cse.amourswip.controller;
 
 import android.os.Bundle;
-
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -63,11 +62,11 @@ public class ListChatController {
                 .addOnSuccessListener(aVoid -> {
                     // Đánh dấu thông báo là đã xem trong giao diện
                     notification.setUnread(false);
-                    // Điều hướng đến ChatFragment
+                    // Điều hướng đến ChatUserFragment
                     Bundle bundle = new Bundle();
                     bundle.putString("userId", notification.getUserId());
                     bundle.putString("userName", notification.getUserName());
-                    fragment.getNavController().navigate(R.id.action_listChatFragment_to_chatFragment, bundle);
+                    fragment.getNavController().navigate(R.id.action_listChatFragment_to_chatUserFragment, bundle);
                 })
                 .addOnFailureListener(e -> {
                     fragment.showError("Lỗi khi cập nhật trạng thái đọc: " + e.getMessage());
