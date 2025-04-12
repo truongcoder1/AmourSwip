@@ -10,7 +10,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:layout_marginBottom="100dp"
+        android:layout_marginBottom="120dp"
         android:gravity="center_horizontal"
         android:orientation="vertical"
         android:paddingHorizontal="40dp">
@@ -36,7 +36,8 @@
             android:text=""
             android:textColor="#FF0000"
             android:textSize="12sp"
-            android:visibility="gone" />
+            android:visibility="gone"
+            android:gravity="center_horizontal"/>
 
         <!-- TextInputLayout cho "Email" -->
         <com.google.android.material.textfield.TextInputLayout

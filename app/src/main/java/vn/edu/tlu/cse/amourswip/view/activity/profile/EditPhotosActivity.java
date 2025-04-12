@@ -26,7 +26,7 @@ import vn.edu.tlu.cse.amourswip.R;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-
+import vn.edu.tlu.cse.amourswip.view.activity.profile.SettingActivity;
 public class EditPhotosActivity extends AppCompatActivity {
 
     private ImageView backArrow;

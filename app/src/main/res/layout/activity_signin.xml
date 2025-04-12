@@ -5,7 +5,6 @@
     android:layout_height="match_parent"
     android:background="@drawable/background_signin">
 
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -25,18 +24,32 @@
             android:textSize="32sp"
             android:textStyle="bold" />
 
-        <!-- TextInputLayout cho "Tài khoản" -->
+        <!-- Dòng chữ cảnh báo -->
+        <TextView
+            android:id="@+id/warning_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:fontFamily="@font/poppins_regular"
+            android:text=""
+            android:textColor="#FF0000"
+            android:textSize="12sp"
+            android:visibility="gone"
+            android:gravity="center_horizontal"/>
+
+
+        <!-- TextInputLayout cho "Tài khoản/Email" -->
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/username_input_layout"
             android:layout_width="280dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="40dp"
+            android:layout_marginTop="32dp"
             android:background="@drawable/edit_text_background"
             android:elevation="4dp"
-            app:hintEnabled="false"
             app:boxBackgroundMode="none"
+            app:endIconDrawable="@drawable/ic_person"
             app:endIconMode="custom"
-            app:endIconDrawable="@drawable/ic_person">
+            app:hintEnabled="false">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/username_input"
@@ -44,8 +57,8 @@
             android:layout_height="wrap_content"
             android:background="@null"
             android:fontFamily="@font/poppins_bold"
-            android:hint="@string/gmail"
-            android:inputType="text"
+            android:hint="Email"
+            android:inputType="textEmailAddress"
             android:paddingHorizontal="16dp"
             android:paddingVertical="12dp"
             android:textColorHint="#A0A0A0"
@@ -61,52 +74,52 @@
         android:layout_marginTop="16dp"
         android:background="@drawable/edit_text_background"
         android:elevation="4dp"
+        app:boxBackgroundMode="none"
         app:hintEnabled="false"
-        app:passwordToggleEnabled="true"
-        app:boxBackgroundMode="none">
+        app:passwordToggleEnabled="true">
 
-    <com.google.android.material.textfield.TextInputEditText
-        android:id="@+id/password_input"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@null"
-        android:fontFamily="@font/poppins_bold"
-        android:hint="@string/password"
-        android:inputType="textPassword"
-        android:paddingHorizontal="16dp"
-        android:paddingVertical="12dp"
-        android:textColorHint="#A0A0A0"
-        android:textSize="16sp" />
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/password_input"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@null"
+            android:fontFamily="@font/poppins_bold"
+            android:hint="@string/password"
+            android:inputType="textPassword"
+            android:paddingHorizontal="16dp"
+            android:paddingVertical="12dp"
+            android:textColorHint="#A0A0A0"
+            android:textSize="16sp" />
 
-</com.google.android.material.textfield.TextInputLayout>
+    </com.google.android.material.textfield.TextInputLayout>
 
     <!-- Nút "Đăng nhập" -->
-<com.google.android.material.button.MaterialButton
-    android:id="@+id/sign_in_button"
-    android:layout_width="280dp"
-    android:layout_height="56dp"
-    android:layout_marginTop="32dp"
-    android:backgroundTint="#C87DD7"
-    android:elevation="4dp"
-    android:fontFamily="@font/poppins_bold"
-    android:paddingHorizontal="35dp"
-    android:paddingVertical="12dp"
-    android:text="@string/sign_in"
-    android:textColor="@android:color/black"
-    android:textSize="16sp"
-    app:cornerRadius="50dp" />
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/sign_in_button"
+        android:layout_width="280dp"
+        android:layout_height="56dp"
+        android:layout_marginTop="32dp"
+        android:backgroundTint="#C87DD7"
+        android:elevation="4dp"
+        android:fontFamily="@font/poppins_bold"
+        android:paddingHorizontal="35dp"
+        android:paddingVertical="12dp"
+        android:text="@string/sign_in"
+        android:textColor="@android:color/black"
+        android:textSize="16sp"
+        app:cornerRadius="50dp" />
 
     <!-- Dòng chữ "Chưa có tài khoản? Đăng ký ngay" -->
-<TextView
-    android:id="@+id/sign_up_prompt"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:layout_marginTop="16dp"
-    android:fontFamily="@font/poppins_bold"
-    android:text="@string/no_account_sign_up"
-    android:textColor="@android:color/white"
-    android:textSize="12sp" />
+    <TextView
+        android:id="@+id/sign_up_prompt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:fontFamily="@font/poppins_bold"
+        android:text="@string/no_account_sign_up"
+        android:textColor="@android:color/white"
+        android:textSize="12sp" />
 
-    </LinearLayout>
+        </LinearLayout>
 
-    </RelativeLayout>
+</RelativeLayout>

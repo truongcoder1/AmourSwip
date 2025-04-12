@@ -50,7 +50,7 @@ public class SignUpActivity extends AppCompatActivity {
         String confirmPassword = etConfirmPassword.getText().toString().trim();
 
         if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-            showWarning("Định dạng Email không hợp lệ");
+            showWarning("Định dạng Email không hợp lệ (ví dụ: name@example.com)");
             etEmail.requestFocus();
             return;
         }

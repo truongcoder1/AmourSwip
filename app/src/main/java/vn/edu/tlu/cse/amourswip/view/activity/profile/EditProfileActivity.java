@@ -18,6 +18,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import vn.edu.tlu.cse.amourswip.R;
+import vn.edu.tlu.cse.amourswip.view.activity.profile.SettingActivity;
 
 public class EditProfileActivity extends AppCompatActivity {
 
