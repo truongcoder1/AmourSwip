@@ -61,7 +61,6 @@ public class LikeRepository {
         List<User> usersWhoLikedMe = new ArrayList<>();
         Set<String> userIds = new HashSet<>();
 
-        // Truy vấn node likedBy/currentUserId để lấy danh sách userId đã thích bạn
         Query query = database.child("likedBy").child(currentUserId).orderByKey();
         if (lastUserId != null) {
             query = query.startAfter(lastUserId);
@@ -81,13 +80,59 @@ public class LikeRepository {
                         database.child("users").child(userId).addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
                             public void onDataChange(@NonNull DataSnapshot userSnapshot) {
-                                User user = userSnapshot.getValue(User.class);
-                                if (user != null) {
-                                    user.setUid(userId);
-                                    usersWhoLikedMe.add(user);
+                                if (!userSnapshot.exists()) {
+                                    Log.e(TAG, "getUsersWhoLikedMe: User data not found for uid: " + userId);
                                     userIds.add(userId);
-                                    Log.d(TAG, "getUsersWhoLikedMe: Added user " + user.getName() + " (uid: " + userId + ")");
+                                    if (userIds.size() == snapshot.getChildrenCount()) {
+                                        if (usersWhoLikedMe.isEmpty()) {
+                                            Log.d(TAG, "getUsersWhoLikedMe: No users found after processing");
+                                            listener.onEmpty();
+                                        } else {
+                                            Log.d(TAG, "getUsersWhoLikedMe: Found " + usersWhoLikedMe.size() + " users");
+                                            listener.onSuccess(usersWhoLikedMe);
+                                        }
+                                    }
+                                    return;
                                 }
+
+                                // Ánh xạ thủ công để xử lý dữ liệu không đầy đủ
+                                User user = new User();
+                                user.setUid(userId);
+                                user.setName(userSnapshot.child("name").getValue(String.class));
+                                user.setEmail(userSnapshot.child("email").getValue(String.class));
+                                user.setGender(userSnapshot.child("gender").getValue(String.class));
+                                user.setPreferredGender(userSnapshot.child("preferredGender").getValue(String.class));
+                                user.setDateOfBirth(userSnapshot.child("dateOfBirth").getValue(String.class));
+                                user.setReligion(userSnapshot.child("religion").getValue(String.class));
+                                user.setResidence(userSnapshot.child("residence").getValue(String.class));
+                                user.setEducationLevel(userSnapshot.child("educationLevel").getValue(String.class));
+                                user.setOccupation(userSnapshot.child("occupation").getValue(String.class));
+                                user.setDescription(userSnapshot.child("description").getValue(String.class));
+
+                                // Ánh xạ danh sách photos
+                                List<String> photos = new ArrayList<>();
+                                DataSnapshot photosSnapshot = userSnapshot.child("photos");
+                                if (photosSnapshot.exists()) {
+                                    for (DataSnapshot photoSnapshot : photosSnapshot.getChildren()) {
+                                        String photo = photoSnapshot.getValue(String.class);
+                                        if (photo != null) {
+                                            photos.add(photo);
+                                        }
+                                    }
+                                }
+                                user.setPhotos(photos);
+
+                                // Ánh xạ locationEnabled, latitude, longitude
+                                user.setLocationEnabled(userSnapshot.child("locationEnabled").getValue(Boolean.class) != null ?
+                                        userSnapshot.child("locationEnabled").getValue(Boolean.class) : false);
+                                user.setLatitude(userSnapshot.child("latitude").getValue(Double.class) != null ?
+                                        userSnapshot.child("latitude").getValue(Double.class) : 0.0);
+                                user.setLongitude(userSnapshot.child("longitude").getValue(Double.class) != null ?
+                                        userSnapshot.child("longitude").getValue(Double.class) : 0.0);
+
+                                usersWhoLikedMe.add(user);
+                                userIds.add(userId);
+                                Log.d(TAG, "getUsersWhoLikedMe: Added user " + (user.getName() != null ? user.getName() : "Unknown") + " (uid: " + userId + ")");
 
                                 if (userIds.size() == snapshot.getChildrenCount()) {
                                     if (usersWhoLikedMe.isEmpty()) {

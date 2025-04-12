@@ -121,16 +121,35 @@ public class LikeController {
                     userIdsWhoLikedMe.clear();
                 }
                 for (User user : users) {
+                    if (user == null || user.getUid() == null) {
+                        Log.e(TAG, "loadUsersWhoLikedMe: Invalid user data - user or UID is null");
+                        continue;
+                    }
+                    Log.d(TAG, "loadUsersWhoLikedMe: Processing user " + (user.getName() != null ? user.getName() : "Unknown") + " (uid: " + user.getUid() + ")");
+                    Log.d(TAG, "loadUsersWhoLikedMe: userIdsWhoLikedMe: " + userIdsWhoLikedMe.contains(user.getUid()));
+                    Log.d(TAG, "loadUsersWhoLikedMe: matchedUserIds: " + matchedUserIds.contains(user.getUid()));
+                    Log.d(TAG, "loadUsersWhoLikedMe: userIdsILiked: " + userIdsILiked.contains(user.getUid()));
                     if (!userIdsWhoLikedMe.contains(user.getUid()) && !matchedUserIds.contains(user.getUid()) && !userIdsILiked.contains(user.getUid())) {
                         usersWhoLikedMe.add(user);
                         userIdsWhoLikedMe.add(user.getUid());
-                        Log.d(TAG, "loadUsersWhoLikedMe: Added user " + user.getName() + " (uid: " + user.getUid() + ")");
+                        Log.d(TAG, "loadUsersWhoLikedMe: Added user " + (user.getName() != null ? user.getName() : "Unknown") + " (uid: " + user.getUid() + ")");
                     } else {
-                        Log.d(TAG, "loadUsersWhoLikedMe: Skipped user " + user.getName() + " (uid: " + user.getUid() + ") due to already liked/matched");
+                        Log.d(TAG, "loadUsersWhoLikedMe: Skipped user " + (user.getName() != null ? user.getName() : "Unknown") + " (uid: " + user.getUid() + ") due to already liked/matched");
+                        if (userIdsWhoLikedMe.contains(user.getUid())) {
+                            Log.d(TAG, "loadUsersWhoLikedMe: Skipped because user is already in userIdsWhoLikedMe");
+                        }
+                        if (matchedUserIds.contains(user.getUid())) {
+                            Log.d(TAG, "loadUsersWhoLikedMe: Skipped because user is already matched");
+                        }
+                        if (userIdsILiked.contains(user.getUid())) {
+                            Log.d(TAG, "loadUsersWhoLikedMe: Skipped because user is already in userIdsILiked");
+                        }
                     }
                 }
                 if (!users.isEmpty()) {
                     lastUserIdWhoLikedMe = users.get(users.size() - 1).getUid();
+                } else {
+                    Log.d(TAG, "loadUsersWhoLikedMe: No users to add after filtering conditions");
                 }
                 applyFilters();
                 if (isLikesTabSelected) {
@@ -260,7 +279,6 @@ public class LikeController {
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
                         Log.d(TAG, "onLikeUser: Successfully liked user: " + user.getName());
-                        // Lưu vào node likedBy của người được thích (user)
                         database.child("likedBy").child(user.getUid()).child(currentUserId).setValue(true);
                         database.child("likes").child(user.getUid()).child(currentUserId)
                                 .addListenerForSingleValueEvent(new ValueEventListener() {
@@ -307,7 +325,6 @@ public class LikeController {
     public void onDislikeUser(User user) {
         Log.d(TAG, "onDislikeUser: Disliking user: " + user.getName() + " (uid: " + user.getUid() + ")");
         database.child("likes").child(user.getUid()).child(currentUserId).removeValue();
-        // Xóa khỏi node likedBy/currentUserId
         database.child("likedBy").child(currentUserId).child(user.getUid()).removeValue();
         usersWhoLikedMe.remove(user);
         userIdsWhoLikedMe.remove(user.getUid());

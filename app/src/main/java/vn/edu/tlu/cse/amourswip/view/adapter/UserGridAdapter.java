@@ -1,5 +1,6 @@
 package vn.edu.tlu.cse.amourswip.view.adapter;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,6 +19,7 @@ import vn.edu.tlu.cse.amourswip.model.data.User;
 
 public class UserGridAdapter extends RecyclerView.Adapter<UserGridAdapter.UserViewHolder> {
 
+    private static final String TAG = "UserGridAdapter";
     private List<User> userList;
     private final Consumer<User> onUserClicked;
     private double currentLatitude;
@@ -35,6 +37,7 @@ public class UserGridAdapter extends RecyclerView.Adapter<UserGridAdapter.UserVi
     }
 
     public void setShowActionButtons(boolean show, Consumer<User> onLikeClicked, Consumer<User> onDislikeClicked) {
+        Log.d(TAG, "setShowActionButtons: show=" + show);
         this.showActionButtons = show;
         this.onLikeClicked = onLikeClicked;
         this.onDislikeClicked = onDislikeClicked;
@@ -69,10 +72,18 @@ public class UserGridAdapter extends RecyclerView.Adapter<UserGridAdapter.UserVi
         holder.itemView.setOnClickListener(v -> onUserClicked.accept(user));
 
         if (showActionButtons) {
+            Log.d(TAG, "onBindViewHolder: Showing action buttons for user " + user.getName());
             holder.actionButtons.setVisibility(View.VISIBLE);
-            holder.likeButton.setOnClickListener(v -> onLikeClicked.accept(user));
-            holder.dislikeButton.setOnClickListener(v -> onDislikeClicked.accept(user));
+            holder.likeButton.setOnClickListener(v -> {
+                Log.d(TAG, "onBindViewHolder: Like button clicked for user " + user.getName());
+                onLikeClicked.accept(user);
+            });
+            holder.dislikeButton.setOnClickListener(v -> {
+                Log.d(TAG, "onBindViewHolder: Dislike button clicked for user " + user.getName());
+                onDislikeClicked.accept(user);
+            });
         } else {
+            Log.d(TAG, "onBindViewHolder: Hiding action buttons for user " + user.getName());
             holder.actionButtons.setVisibility(View.GONE);
         }
     }
