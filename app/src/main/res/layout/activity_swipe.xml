@@ -80,7 +80,7 @@
                 android:layout_gravity="center"
                 android:background="@null"
                 android:scaleType="centerInside"
-                android:src="@android:drawable/ic_menu_revert"
+                android:src="@drawable/ic_return"
                 android:stateListAnimator="@drawable/button_scale_animator" />
         </FrameLayout>
 
