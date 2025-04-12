@@ -49,7 +49,6 @@ public class User implements Parcelable {
         this.description = description;
     }
 
-    // Constructor cho Parcelable
     protected User(Parcel in) {
         uid = in.readString();
         email = in.readString();
@@ -104,7 +103,6 @@ public class User implements Parcelable {
         return 0;
     }
 
-    // Các getter và setter hiện có
     public String getUid() {
         return uid;
     }

@@ -69,6 +69,7 @@
                 android:clipToOutline="true"
                 android:contentDescription="Avatar"
                 android:outlineProvider="background"
+                android:scaleType="centerCrop"
                 android:src="@drawable/gai1"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.498"

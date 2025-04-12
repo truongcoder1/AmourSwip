@@ -179,6 +179,7 @@ public class LikeController {
             }
         }, lastUserIdWhoLikedMe, PAGE_SIZE);
     }
+
     public void loadUsersILiked() {
         likeRepository.getUsersILiked(new LikeRepository.OnResultListener() {
             @Override
