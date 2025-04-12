@@ -61,7 +61,8 @@ public class LikeRepository {
         List<User> usersWhoLikedMe = new ArrayList<>();
         Set<String> userIds = new HashSet<>();
 
-        Query query = database.child("likes").orderByKey();
+        // Truy vấn node likedBy/currentUserId để lấy danh sách userId đã thích bạn
+        Query query = database.child("likedBy").child(currentUserId).orderByKey();
         if (lastUserId != null) {
             query = query.startAfter(lastUserId);
         }
@@ -69,32 +70,26 @@ public class LikeRepository {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if (!snapshot.exists()) {
-                    Log.d(TAG, "getUsersWhoLikedMe: No likes found");
+                    Log.d(TAG, "getUsersWhoLikedMe: No users found in likedBy");
                     listener.onEmpty();
                     return;
                 }
 
-                totalUsers = snapshot.getChildrenCount();
-                processedUsers = 0;
-
-                for (DataSnapshot userSnapshot : snapshot.getChildren()) {
-                    String userId = userSnapshot.getKey();
-                    if (userId != null && userSnapshot.hasChild(currentUserId) && !userIds.contains(userId)) {
+                for (DataSnapshot likeSnapshot : snapshot.getChildren()) {
+                    String userId = likeSnapshot.getKey();
+                    if (userId != null && !userIds.contains(userId)) {
                         database.child("users").child(userId).addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
-                            public void onDataChange(@NonNull DataSnapshot userDataSnapshot) {
-                                User user = userDataSnapshot.getValue(User.class);
+                            public void onDataChange(@NonNull DataSnapshot userSnapshot) {
+                                User user = userSnapshot.getValue(User.class);
                                 if (user != null) {
                                     user.setUid(userId);
                                     usersWhoLikedMe.add(user);
                                     userIds.add(userId);
                                     Log.d(TAG, "getUsersWhoLikedMe: Added user " + user.getName() + " (uid: " + userId + ")");
-                                } else {
-                                    Log.d(TAG, "getUsersWhoLikedMe: User data not found for uid: " + userId);
                                 }
 
-                                processedUsers++;
-                                if (processedUsers == totalUsers) {
+                                if (userIds.size() == snapshot.getChildrenCount()) {
                                     if (usersWhoLikedMe.isEmpty()) {
                                         Log.d(TAG, "getUsersWhoLikedMe: No users found after processing");
                                         listener.onEmpty();
@@ -111,17 +106,6 @@ public class LikeRepository {
                                 listener.onError(error.getMessage());
                             }
                         });
-                    } else {
-                        processedUsers++;
-                        if (processedUsers == totalUsers) {
-                            if (usersWhoLikedMe.isEmpty()) {
-                                Log.d(TAG, "getUsersWhoLikedMe: No users found after processing");
-                                listener.onEmpty();
-                            } else {
-                                Log.d(TAG, "getUsersWhoLikedMe: Found " + usersWhoLikedMe.size() + " users");
-                                listener.onSuccess(usersWhoLikedMe);
-                            }
-                        }
                     }
                 }
             }

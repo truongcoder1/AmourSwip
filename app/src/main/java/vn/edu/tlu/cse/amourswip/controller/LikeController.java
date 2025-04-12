@@ -125,6 +125,8 @@ public class LikeController {
                         usersWhoLikedMe.add(user);
                         userIdsWhoLikedMe.add(user.getUid());
                         Log.d(TAG, "loadUsersWhoLikedMe: Added user " + user.getName() + " (uid: " + user.getUid() + ")");
+                    } else {
+                        Log.d(TAG, "loadUsersWhoLikedMe: Skipped user " + user.getName() + " (uid: " + user.getUid() + ") due to already liked/matched");
                     }
                 }
                 if (!users.isEmpty()) {
@@ -258,6 +260,8 @@ public class LikeController {
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
                         Log.d(TAG, "onLikeUser: Successfully liked user: " + user.getName());
+                        // Lưu vào node likedBy của người được thích (user)
+                        database.child("likedBy").child(user.getUid()).child(currentUserId).setValue(true);
                         database.child("likes").child(user.getUid()).child(currentUserId)
                                 .addListenerForSingleValueEvent(new ValueEventListener() {
                                     @Override
@@ -303,6 +307,8 @@ public class LikeController {
     public void onDislikeUser(User user) {
         Log.d(TAG, "onDislikeUser: Disliking user: " + user.getName() + " (uid: " + user.getUid() + ")");
         database.child("likes").child(user.getUid()).child(currentUserId).removeValue();
+        // Xóa khỏi node likedBy/currentUserId
+        database.child("likedBy").child(currentUserId).child(user.getUid()).removeValue();
         usersWhoLikedMe.remove(user);
         userIdsWhoLikedMe.remove(user.getUid());
         applyFilters();
@@ -441,15 +447,18 @@ public class LikeController {
                 .filter(user -> {
                     double distance = calculateDistance(user.getLatitude(), user.getLongitude());
                     if (distance > maxDistance) {
+                        Log.d(TAG, "filterUsers: User " + user.getName() + " filtered out due to distance: " + distance + " > " + maxDistance);
                         return false;
                     }
                     int age = user.getAge();
                     if (age < minAge || age > maxAge) {
+                        Log.d(TAG, "filterUsers: User " + user.getName() + " filtered out due to age: " + age + " not in range [" + minAge + ", " + maxAge + "]");
                         return false;
                     }
                     if (residenceFilter != null) {
                         String residence = user.getResidence() != null ? user.getResidence().toLowerCase() : "";
                         if (!residence.contains(residenceFilter)) {
+                            Log.d(TAG, "filterUsers: User " + user.getName() + " filtered out due to residence: " + residence + " does not contain " + residenceFilter);
                             return false;
                         }
                     }
