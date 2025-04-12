@@ -76,11 +76,15 @@ public class UserGridAdapter extends RecyclerView.Adapter<UserGridAdapter.UserVi
             holder.actionButtons.setVisibility(View.VISIBLE);
             holder.likeButton.setOnClickListener(v -> {
                 Log.d(TAG, "onBindViewHolder: Like button clicked for user " + user.getName());
-                onLikeClicked.accept(user);
+                if (onLikeClicked != null) {
+                    onLikeClicked.accept(user);
+                }
             });
             holder.dislikeButton.setOnClickListener(v -> {
                 Log.d(TAG, "onBindViewHolder: Dislike button clicked for user " + user.getName());
-                onDislikeClicked.accept(user);
+                if (onDislikeClicked != null) {
+                    onDislikeClicked.accept(user);
+                }
             });
         } else {
             Log.d(TAG, "onBindViewHolder: Hiding action buttons for user " + user.getName());

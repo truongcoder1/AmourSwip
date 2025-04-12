@@ -156,7 +156,15 @@ public class User implements Parcelable {
             return 0;
         }
         try {
-            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+            // Hỗ trợ nhiều định dạng ngày sinh
+            SimpleDateFormat sdf;
+            if (dateOfBirth.matches("\\d{4}-\\d{2}-\\d{2}")) {
+                sdf = new SimpleDateFormat("yyyy-MM-dd");
+            } else if (dateOfBirth.matches("\\d{2}/\\d{2}/\\d{4}")) {
+                sdf = new SimpleDateFormat("dd/MM/yyyy");
+            } else {
+                return 0; // Định dạng không hợp lệ
+            }
             Date birthDate = sdf.parse(dateOfBirth);
             Calendar birthCal = Calendar.getInstance();
             birthCal.setTime(birthDate);

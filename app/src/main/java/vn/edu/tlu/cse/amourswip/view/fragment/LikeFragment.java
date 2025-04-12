@@ -240,7 +240,7 @@ public class LikeFragment extends Fragment {
         userList.addAll(users);
         userAdapter.updateList(users);
         isLoading = false;
-        if (users.isEmpty() && controller.isLikesTabSelected()) {
+        if (users.isEmpty()) {
             Toast.makeText(getContext(), "Không có người dùng nào để hiển thị", Toast.LENGTH_SHORT).show();
         }
     }

@@ -40,17 +40,21 @@ public class LikeRepository {
                     Double latitude = snapshot.child("latitude").getValue(Double.class);
                     Double longitude = snapshot.child("longitude").getValue(Double.class);
                     if (latitude != null && longitude != null) {
+                        Log.d(TAG, "getCurrentUserLocation: Found location - latitude: " + latitude + ", longitude: " + longitude);
                         locationListener.onSuccess(latitude, longitude);
                     } else {
+                        Log.w(TAG, "getCurrentUserLocation: Latitude or longitude is null");
                         locationListener.onError("Không tìm thấy tọa độ của bạn");
                     }
                 } else {
+                    Log.w(TAG, "getCurrentUserLocation: User data not found");
                     locationListener.onError("Không tìm thấy thông tin người dùng");
                 }
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
+                Log.e(TAG, "getCurrentUserLocation: Error: " + error.getMessage());
                 locationListener.onError(error.getMessage());
             }
         });
@@ -74,6 +78,7 @@ public class LikeRepository {
                     return;
                 }
 
+                Log.d(TAG, "getUsersWhoLikedMe: Found " + snapshot.getChildrenCount() + " users in likedBy");
                 for (DataSnapshot likeSnapshot : snapshot.getChildren()) {
                     String userId = likeSnapshot.getKey();
                     if (userId != null && !userIds.contains(userId)) {
@@ -176,26 +181,49 @@ public class LikeRepository {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if (!snapshot.exists()) {
+                    Log.d(TAG, "getUsersILiked: No users found in likes");
                     listener.onEmpty();
                     return;
                 }
 
+                Log.d(TAG, "getUsersILiked: Found " + snapshot.getChildrenCount() + " users in likes");
                 for (DataSnapshot likeSnapshot : snapshot.getChildren()) {
                     String likedUserId = likeSnapshot.getKey();
                     if (likedUserId != null && !userIds.contains(likedUserId)) {
                         database.child("users").child(likedUserId).addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
                             public void onDataChange(@NonNull DataSnapshot userSnapshot) {
+                                if (!userSnapshot.exists()) {
+                                    Log.e(TAG, "getUsersILiked: User data not found for uid: " + likedUserId);
+                                    userIds.add(likedUserId);
+                                    if (userIds.size() == snapshot.getChildrenCount()) {
+                                        if (usersILiked.isEmpty()) {
+                                            Log.d(TAG, "getUsersILiked: No users found after processing");
+                                            listener.onEmpty();
+                                        } else {
+                                            Log.d(TAG, "getUsersILiked: Found " + usersILiked.size() + " users");
+                                            listener.onSuccess(usersILiked);
+                                        }
+                                    }
+                                    return;
+                                }
+
                                 User user = userSnapshot.getValue(User.class);
                                 if (user != null) {
                                     user.setUid(likedUserId);
                                     usersILiked.add(user);
                                     userIds.add(likedUserId);
+                                    Log.d(TAG, "getUsersILiked: Added user " + (user.getName() != null ? user.getName() : "Unknown") + " (uid: " + likedUserId + ")");
+                                } else {
+                                    Log.e(TAG, "getUsersILiked: Failed to parse user data for uid: " + likedUserId);
                                 }
-                                if (usersILiked.size() == snapshot.getChildrenCount()) {
+
+                                if (userIds.size() == snapshot.getChildrenCount()) {
                                     if (usersILiked.isEmpty()) {
+                                        Log.d(TAG, "getUsersILiked: No users found after processing");
                                         listener.onEmpty();
                                     } else {
+                                        Log.d(TAG, "getUsersILiked: Found " + usersILiked.size() + " users");
                                         listener.onSuccess(usersILiked);
                                     }
                                 }
@@ -203,6 +231,7 @@ public class LikeRepository {
 
                             @Override
                             public void onCancelled(@NonNull DatabaseError error) {
+                                Log.e(TAG, "getUsersILiked: Error fetching user data: " + error.getMessage());
                                 listener.onError(error.getMessage());
                             }
                         });
@@ -212,6 +241,7 @@ public class LikeRepository {
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
+                Log.e(TAG, "getUsersILiked: Error: " + error.getMessage());
                 listener.onError(error.getMessage());
             }
         });
