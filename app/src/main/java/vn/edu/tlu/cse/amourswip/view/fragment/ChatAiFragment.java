@@ -164,7 +164,7 @@ public class ChatAiFragment extends Fragment {
         try {
             jsonPayload.put("inputs", conversationContext.toString());
             jsonPayload.put("parameters", new JSONObject()
-                    .put("max_new_tokens", 200) // Tương đương max_length
+                    .put("max_new_tokens", 500) // Tương đương max_length
                     .put("top_p", 0.9)
                     .put("temperature", 0.7)
                     .put("return_full_text", false)); // Chỉ trả về phần mới

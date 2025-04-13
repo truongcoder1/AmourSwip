@@ -66,5 +66,5 @@ dependencies {
     implementation (libs.gson)
     implementation (libs.okhttp)
     implementation (libs.firebase.messaging)
-    implementation (libs.lottie)
+
 }
