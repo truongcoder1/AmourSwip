@@ -62,10 +62,10 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
                     .load(message.getSenderImage())
                     .circleCrop()
                     .placeholder(R.drawable.gai1)
-                    .error(R.drawable.gai2)
+                    .error(R.drawable.gai1)
                     .into(holder.senderImage);
         } else {
-            holder.senderImage.setImageResource(R.drawable.gai2);
+            holder.senderImage.setImageResource(R.drawable.gai1);
         }
 
         // Hiển thị ngày và thời gian

@@ -6,12 +6,15 @@
     android:background="@drawable/background_chat">
 
     <!-- Thanh tiêu đề -->
+
+    <!-- Thanh nhập tin nhắn -->
+
     <LinearLayout
         android:id="@+id/header_layout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="83dp"
         android:layout_alignParentTop="true"
-        android:layout_marginTop="11dp"
+        android:layout_marginTop="0dp"
         android:background="#E6D5F2"
         android:gravity="center_vertical"
         android:orientation="horizontal"
@@ -80,7 +83,6 @@
             android:src="@drawable/ic_dot" />
     </LinearLayout>
 
-    <!-- Thanh nhập tin nhắn -->
     <LinearLayout
         android:id="@+id/input_layout"
         android:layout_width="match_parent"
