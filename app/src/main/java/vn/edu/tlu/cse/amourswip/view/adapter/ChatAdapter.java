@@ -53,7 +53,7 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.MessageViewHol
         // Xử lý hiển thị ảnh đại diện
         if (message.isUserMessage()) {
             Glide.with(holder.itemView.getContext())
-                    .load(R.drawable.gai2) // Ảnh đại diện của người dùng
+                    .load(R.drawable.pikachuuu) // Ảnh đại diện của người dùng
                     .into(holder.messageImage);
             if (holder.messageStatus != null) {
                 holder.messageStatus.setText("Đã gửi");
@@ -61,7 +61,7 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.MessageViewHol
             }
         } else {
             Glide.with(holder.itemView.getContext())
-                    .load(R.drawable.gai1) // Ảnh đại diện của AI
+                    .load(R.drawable.ic_chatbot) // Ảnh đại diện của AI
                     .into(holder.messageImage);
             if (holder.messageStatus != null) {
                 holder.messageStatus.setVisibility(View.GONE);
