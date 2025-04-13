@@ -38,7 +38,7 @@ public class ChatAiFragment extends Fragment {
 
     private static final String TAG = "ChatAIFragment";
     private static final String HUGGINGFACE_API_URL = "https://api-inference.huggingface.co/models/meta-llama/Llama-3.2-3B-Instruct";
-    private static final String HUGGINGFACE_API_TOKEN = "";
+    private static final String HUGGINGFACE_API_TOKEN = "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";
     private static final int MAX_MESSAGES = 100; // Giới hạn số lượng tin nhắn
 
     private TextView title;
