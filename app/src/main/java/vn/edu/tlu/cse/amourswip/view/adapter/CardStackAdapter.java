@@ -33,11 +33,16 @@ public class CardStackAdapter extends RecyclerView.Adapter<CardStackAdapter.View
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         User user = userList.get(position);
 
+        // Hiển thị tên và tuổi
         holder.userNameAge.setText(user.getName() + ", " + user.getAge());
-        String residence = user.getResidence() != null ? user.getResidence() : "Không xác định";
+
+        // Hiển thị nơi ở
+        String residence = user.getResidence() != null && !user.getResidence().isEmpty() ? user.getResidence() : "Không xác định";
+        holder.userResidence.setText(residence);
+
+        // Hiển thị khoảng cách
         String distance = calculateDistance(user.getLatitude(), user.getLongitude());
         holder.userDistance.setText(distance);
-        holder.userDescription.setText(user.getDescription() != null ? user.getDescription() : "");
 
         // Tải hình ảnh theo nhu cầu (lazy loading)
         if (user.getPhotos() != null && !user.getPhotos().isEmpty()) {
@@ -83,15 +88,15 @@ public class CardStackAdapter extends RecyclerView.Adapter<CardStackAdapter.View
     static class ViewHolder extends RecyclerView.ViewHolder {
         ImageView userImage;
         TextView userNameAge;
+        TextView userResidence;
         TextView userDistance;
-        TextView userDescription;
 
         ViewHolder(@NonNull View itemView) {
             super(itemView);
             userImage = itemView.findViewById(R.id.user_image);
             userNameAge = itemView.findViewById(R.id.user_name_age);
+            userResidence = itemView.findViewById(R.id.user_residence);
             userDistance = itemView.findViewById(R.id.user_distance);
-            userDescription = itemView.findViewById(R.id.user_description);
         }
     }
 }

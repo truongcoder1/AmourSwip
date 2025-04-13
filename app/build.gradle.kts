@@ -64,4 +64,6 @@ dependencies {
     implementation(libs.cardview)
     implementation (libs.okhttp)
     implementation (libs.gson)
+    implementation (libs.okhttp)
+    implementation (libs.firebase.messaging)
 }

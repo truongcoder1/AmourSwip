@@ -19,7 +19,7 @@ import vn.edu.tlu.cse.amourswip.R;
 
 public class SignUpActivity extends AppCompatActivity {
 
-    private EditText etEmail, etUsername, etPassword, etConfirmPassword;
+    private EditText etEmail, etUsername, etPassword, etConfirmPassword, etResidence;
     private TextView tvWarning;
     private FirebaseAuth mAuth;
     private UserRepository userRepository;
@@ -33,6 +33,7 @@ public class SignUpActivity extends AppCompatActivity {
         etUsername = findViewById(R.id.username_input);
         etPassword = findViewById(R.id.password_input);
         etConfirmPassword = findViewById(R.id.confirm_password_input);
+        etResidence = findViewById(R.id.residence_input); // Khởi tạo trường "Nơi ở"
         tvWarning = findViewById(R.id.warning_text);
 
         mAuth = FirebaseAuth.getInstance();
@@ -48,6 +49,7 @@ public class SignUpActivity extends AppCompatActivity {
         String username = etUsername.getText().toString().trim();
         String password = etPassword.getText().toString().trim();
         String confirmPassword = etConfirmPassword.getText().toString().trim();
+        String residence = etResidence.getText().toString().trim();
 
         if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
             showWarning("Định dạng Email không hợp lệ (ví dụ: name@example.com)");
@@ -74,11 +76,13 @@ public class SignUpActivity extends AppCompatActivity {
             return;
         }
 
+        // Trường "Nơi ở" không bắt buộc, nên không cần kiểm tra TextUtils.isEmpty(residence)
+
         hideWarning();
         mAuth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener(this, task -> {
                     if (task.isSuccessful()) {
-                        saveUserDataAndNavigate(email, username);
+                        saveUserDataAndNavigate(email, username, residence);
                     } else {
                         String errorMessage = "Đăng ký thất bại.";
                         try {
@@ -94,7 +98,7 @@ public class SignUpActivity extends AppCompatActivity {
                 });
     }
 
-    private void saveUserDataAndNavigate(String email, String username) {
+    private void saveUserDataAndNavigate(String email, String username, String residence) {
         if (mAuth.getCurrentUser() == null) {
             showWarning("Lỗi: Không tìm thấy người dùng sau khi đăng ký.");
             return;
@@ -103,7 +107,8 @@ public class SignUpActivity extends AppCompatActivity {
         User user = new User();
         user.setUid(mAuth.getCurrentUser().getUid());
         user.setEmail(email);
-        user.setName(username); // Thêm username vào đối tượng User
+        user.setName(username);
+        user.setResidence(residence); // Lưu trường "Nơi ở" vào đối tượng User
 
         userRepository.saveUser(user, new UserRepository.OnUserActionListener() {
             @Override

@@ -109,9 +109,9 @@ public class LikeFragment extends Fragment {
         controller = new LikeController(this);
 
         if (savedInstanceState != null) {
-            userList = savedInstanceState.getParcelableArrayList(KEY_USERS_WHO_LIKED_ME);
+            userList = savedInstanceState.getParcelableArrayList(KEY_USERS_I_LIKED);
             if (userList == null) {
-                userList = savedInstanceState.getParcelableArrayList(KEY_USERS_I_LIKED);
+                userList = savedInstanceState.getParcelableArrayList(KEY_USERS_WHO_LIKED_ME);
             }
             if (userList != null) {
                 userAdapter.updateList(userList);
@@ -151,6 +151,10 @@ public class LikeFragment extends Fragment {
     }
 
     private void showFilterDialog() {
+        if (!isAdded() || getContext() == null) {
+            Log.e("LikeFragment", "Cannot show filter dialog: Fragment is not attached to an Activity");
+            return;
+        }
         Dialog dialog = new Dialog(getContext());
         dialog.setContentView(R.layout.dialog_filter);
 
@@ -241,7 +245,9 @@ public class LikeFragment extends Fragment {
         userAdapter.updateList(users);
         isLoading = false;
         if (users.isEmpty()) {
-            Toast.makeText(getContext(), "Không có người dùng nào để hiển thị", Toast.LENGTH_SHORT).show();
+            if (isAdded() && getContext() != null) {
+                Toast.makeText(getContext(), "Không có người dùng nào để hiển thị", Toast.LENGTH_SHORT).show();
+            }
         }
     }
 
@@ -257,18 +263,22 @@ public class LikeFragment extends Fragment {
             likedTab.animate().alpha(0.5f).setDuration(200).start();
             likesLabel.setTextColor(ContextCompat.getColor(getContext(), android.R.color.white));
             likedLabel.setTextColor(ContextCompat.getColor(getContext(), android.R.color.black));
-            setActionButtons(true, controller::onLikeUser, controller::onDislikeUser);
+            setActionButtons(false, null, null); // Tab "Đã thích" (bên trái) không có nút X và Trái tim
         } else {
             likesTab.animate().alpha(0.5f).setDuration(200).start();
             likedTab.animate().alpha(1f).setDuration(200).start();
             likesLabel.setTextColor(ContextCompat.getColor(getContext(), android.R.color.black));
             likedLabel.setTextColor(ContextCompat.getColor(getContext(), android.R.color.white));
-            setActionButtons(false, null, null);
+            setActionButtons(true, controller::onLikeUser, controller::onDislikeUser); // Tab "Lượt thích" (bên phải) có nút X và Trái tim
         }
     }
 
     public void showError(String error) {
-        Toast.makeText(getContext(), error, Toast.LENGTH_SHORT).show();
+        if (isAdded() && getContext() != null) {
+            Toast.makeText(getContext(), error, Toast.LENGTH_SHORT).show();
+        } else {
+            Log.e("LikeFragment", "Cannot show error: Fragment is not attached to an Activity");
+        }
     }
 
     public NavController getNavController() {

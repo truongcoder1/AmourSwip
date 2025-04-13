@@ -10,8 +10,9 @@
         android:layout_height="match_parent"
         android:background="@drawable/background_map" />
 
-    <!-- LinearLayout chứa các thành phần -->
+    <!-- LinearLayout chứa các thành phần ban đầu -->
     <LinearLayout
+        android:id="@+id/layout_default"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
@@ -43,14 +44,14 @@
             android:textColor="@android:color/black"
             android:textSize="14sp" />
 
-        <!-- ImageView cho biểu tượng bản đồ, đặt dưới TextView -->
+        <!-- ImageView cho biểu tượng bản đồ -->
         <ImageView
             android:id="@+id/map_icon"
             android:layout_width="100dp"
             android:layout_height="100dp"
             android:layout_marginTop="16dp"
-            android:src="@drawable/ic_maplocation"
-            android:scaleType="fitCenter" />
+            android:scaleType="fitCenter"
+            android:src="@drawable/ic_maplocation" />
 
         <!-- LinearLayout chứa hai nút "Cho phép" và "Bỏ qua" -->
         <LinearLayout
@@ -93,4 +94,59 @@
                 app:strokeWidth="2dp" />
         </LinearLayout>
     </LinearLayout>
+
+    <!-- LinearLayout chứa SeekBar và các thành phần điều chỉnh khoảng cách -->
+    <LinearLayout
+        android:id="@+id/layout_adjust_distance"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="250dp"
+        android:layout_marginBottom="40dp"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        android:paddingHorizontal="40dp"
+        android:visibility="gone"> <!-- Ẩn ban đầu -->
+
+        <!-- Tiêu đề "Điều chỉnh phạm vi tìm kiếm" -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:fontFamily="@font/poppins_bold"
+            android:text="Điều chỉnh phạm vi tìm kiếm"
+            android:textColor="@android:color/black"
+            android:textSize="20sp" />
+
+        <!-- SeekBar để điều chỉnh khoảng cách -->
+        <SeekBar
+            android:id="@+id/seekbar_distance"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:max="100"
+            android:progress="10" />
+
+        <!-- Hiển thị giá trị khoảng cách -->
+        <TextView
+            android:id="@+id/tv_distance"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:fontFamily="@font/poppins_regular"
+            android:text="Khoảng cách: 10 km"
+            android:textSize="16sp" />
+
+        <!-- Nút lưu -->
+        <Button
+            android:id="@+id/btn_save_distance"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/button_background"
+            android:fontFamily="@font/poppins_bold"
+            android:padding="12dp"
+            android:text="Lưu"
+            android:textSize="16sp" />
+    </LinearLayout>
+
 </RelativeLayout>

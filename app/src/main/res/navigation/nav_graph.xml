@@ -97,10 +97,10 @@
     <!-- ChatAIFragment -->
     <fragment
         android:id="@+id/chatAIFragment"
-        android:name="vn.edu.tlu.cse.amourswip.view.fragment.ChatFragment"
+        android:name="vn.edu.tlu.cse.amourswip.view.fragment.ChatAiFragment"
         android:label="ChatAIFragment">
         <action
-            android:id="@+id/action_chatAIFragment_to_listChatFragment"
+            android:id="@+id/action_chatAiFragment_to_listChatFragment"
             app:destination="@id/listChatFragment"
             app:popUpTo="@id/chatAIFragment"
             app:popUpToInclusive="false"

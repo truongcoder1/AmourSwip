@@ -5,7 +5,6 @@
     android:layout_height="match_parent"
     android:background="@drawable/background_signup">
 
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -33,11 +32,11 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:fontFamily="@font/poppins_regular"
+            android:gravity="center_horizontal"
             android:text=""
             android:textColor="#FF0000"
             android:textSize="12sp"
-            android:visibility="gone"
-            android:gravity="center_horizontal"/>
+            android:visibility="gone" />
 
         <!-- TextInputLayout cho "Email" -->
         <com.google.android.material.textfield.TextInputLayout
@@ -148,7 +147,33 @@
                 android:textSize="16sp" />
 
         </com.google.android.material.textfield.TextInputLayout>
+        <!-- TextInputLayout cho "Nơi ở" -->
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/residence_input_layout"
+            android:layout_width="280dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:background="@drawable/edit_text_background"
+            android:elevation="4dp"
+            app:boxBackgroundMode="none"
+            app:endIconDrawable="@drawable/custom_icresiden"
+            app:endIconMode="custom"
+            app:hintEnabled="false">
 
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/residence_input"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@null"
+                android:fontFamily="@font/poppins_bold"
+                android:hint="Nơi ở"
+                android:inputType="text"
+                android:paddingHorizontal="16dp"
+                android:paddingVertical="12dp"
+                android:textColorHint="#A0A0A0"
+                android:textSize="16sp" />
+
+        </com.google.android.material.textfield.TextInputLayout>
         <!-- Nút "Đăng ký" -->
         <com.google.android.material.button.MaterialButton
             android:id="@+id/sign_up_button"

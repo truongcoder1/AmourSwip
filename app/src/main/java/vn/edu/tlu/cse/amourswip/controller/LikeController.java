@@ -15,6 +15,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -31,7 +32,7 @@ public class LikeController {
     private static final String TAG = "LikeController";
     private static final int PAGE_SIZE = 10;
 
-    private final LikeFragment fragment;
+    private final WeakReference<LikeFragment> fragmentRef;
     private final LikeRepository likeRepository;
     private final DatabaseReference database;
     private final String currentUserId;
@@ -53,7 +54,7 @@ public class LikeController {
     private Set<String> matchedUserIds = new HashSet<>();
 
     public LikeController(LikeFragment fragment) {
-        this.fragment = fragment;
+        this.fragmentRef = new WeakReference<>(fragment);
         this.likeRepository = new LikeRepository();
         this.database = FirebaseDatabase.getInstance().getReference();
         this.currentUserId = likeRepository.getCurrentUserId();
@@ -66,6 +67,10 @@ public class LikeController {
         this.lastUserIdILiked = null;
         loadMatchedUsers();
         loadCurrentUserLocation();
+    }
+
+    private LikeFragment getFragment() {
+        return fragmentRef.get();
     }
 
     private void loadMatchedUsers() {
@@ -83,7 +88,10 @@ public class LikeController {
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
                 Log.e(TAG, "loadMatchedUsers: Error: " + error.getMessage());
-                fragment.showError("Lỗi tải danh sách match: " + error.getMessage());
+                LikeFragment fragment = getFragment();
+                if (fragment != null) {
+                    fragment.showError("Lỗi tải danh sách match: " + error.getMessage());
+                }
             }
         });
     }
@@ -94,19 +102,25 @@ public class LikeController {
             public void onSuccess(double latitude, double longitude) {
                 currentLatitude = latitude;
                 currentLongitude = longitude;
-                fragment.setCurrentLocation(latitude, longitude);
-                loadUsersWhoLikedMe();
-                loadUsersILiked();
+                LikeFragment fragment = getFragment();
+                if (fragment != null) {
+                    fragment.setCurrentLocation(latitude, longitude);
+                    loadUsersILiked();
+                    loadUsersWhoLikedMe();
+                }
             }
 
             @Override
             public void onError(String error) {
-                fragment.showError(error);
-                currentLatitude = 0;
-                currentLongitude = 0;
-                fragment.setCurrentLocation(0, 0);
-                loadUsersWhoLikedMe();
-                loadUsersILiked();
+                LikeFragment fragment = getFragment();
+                if (fragment != null) {
+                    fragment.showError(error);
+                    currentLatitude = 0;
+                    currentLongitude = 0;
+                    fragment.setCurrentLocation(0, 0);
+                    loadUsersILiked();
+                    loadUsersWhoLikedMe();
+                }
             }
         });
     }
@@ -126,7 +140,6 @@ public class LikeController {
                         continue;
                     }
                     Log.d(TAG, "loadUsersWhoLikedMe: Processing user " + (user.getName() != null ? user.getName() : "Unknown") + " (uid: " + user.getUid() + ")");
-                    // Chỉ thêm người dùng nếu chưa match, chưa có trong danh sách, và bạn chưa thích họ
                     if (!matchedUserIds.contains(user.getUid()) && !userIdsWhoLikedMe.contains(user.getUid()) && !userIdsILiked.contains(user.getUid())) {
                         usersWhoLikedMe.add(user);
                         userIdsWhoLikedMe.add(user.getUid());
@@ -141,26 +154,35 @@ public class LikeController {
                     Log.d(TAG, "loadUsersWhoLikedMe: No users to add after filtering conditions");
                 }
                 applyFilters();
-                if (isLikesTabSelected) {
-                    Log.d(TAG, "loadUsersWhoLikedMe: Updating UI with " + filteredUsersWhoLikedMe.size() + " filtered users");
-                    fragment.updateUserList(filteredUsersWhoLikedMe);
-                    fragment.setActionButtons(true, LikeController.this::onLikeUser, LikeController.this::onDislikeUser);
+                if (!isLikesTabSelected) {
+                    LikeFragment fragment = getFragment();
+                    if (fragment != null) {
+                        Log.d(TAG, "loadUsersWhoLikedMe: Updating UI with " + filteredUsersWhoLikedMe.size() + " filtered users");
+                        fragment.updateUserList(filteredUsersWhoLikedMe);
+                        fragment.setActionButtons(true, LikeController.this::onLikeUser, LikeController.this::onDislikeUser);
+                    }
                 }
             }
 
             @Override
             public void onEmpty() {
                 Log.d(TAG, "loadUsersWhoLikedMe: No users found");
-                if (lastUserIdWhoLikedMe == null && isLikesTabSelected) {
-                    fragment.updateUserList(new ArrayList<>());
-                    fragment.setActionButtons(true, LikeController.this::onLikeUser, LikeController.this::onDislikeUser);
+                if (lastUserIdWhoLikedMe == null && !isLikesTabSelected) {
+                    LikeFragment fragment = getFragment();
+                    if (fragment != null) {
+                        fragment.updateUserList(new ArrayList<>());
+                        fragment.setActionButtons(true, LikeController.this::onLikeUser, LikeController.this::onDislikeUser);
+                    }
                 }
             }
 
             @Override
             public void onError(String error) {
                 Log.e(TAG, "loadUsersWhoLikedMe: Error: " + error);
-                fragment.showError(error);
+                LikeFragment fragment = getFragment();
+                if (fragment != null) {
+                    fragment.showError(error);
+                }
             }
 
             @Override
@@ -185,7 +207,6 @@ public class LikeController {
                         continue;
                     }
                     Log.d(TAG, "loadUsersILiked: Processing user " + (user.getName() != null ? user.getName() : "Unknown") + " (uid: " + user.getUid() + ")");
-                    // Chỉ thêm người dùng nếu chưa match, chưa có trong danh sách, và họ chưa thích bạn
                     if (!matchedUserIds.contains(user.getUid()) && !userIdsILiked.contains(user.getUid()) && !userIdsWhoLikedMe.contains(user.getUid())) {
                         usersILiked.add(user);
                         userIdsILiked.add(user.getUid());
@@ -199,26 +220,35 @@ public class LikeController {
                     lastUserIdILiked = users.get(users.size() - 1).getUid();
                 }
                 applyFilters();
-                if (!isLikesTabSelected) {
-                    Log.d(TAG, "loadUsersILiked: Updating UI with " + filteredUsersILiked.size() + " filtered users");
-                    fragment.updateUserList(filteredUsersILiked);
-                    fragment.setActionButtons(false, null, null); // Không hiển thị icon "X" và trái tim
+                if (isLikesTabSelected) {
+                    LikeFragment fragment = getFragment();
+                    if (fragment != null) {
+                        Log.d(TAG, "loadUsersILiked: Updating UI with " + filteredUsersILiked.size() + " filtered users");
+                        fragment.updateUserList(filteredUsersILiked);
+                        fragment.setActionButtons(false, null, null);
+                    }
                 }
             }
 
             @Override
             public void onEmpty() {
                 Log.d(TAG, "loadUsersILiked: No users found");
-                if (lastUserIdILiked == null && !isLikesTabSelected) {
-                    fragment.updateUserList(new ArrayList<>());
-                    fragment.setActionButtons(false, null, null);
+                if (lastUserIdILiked == null && isLikesTabSelected) {
+                    LikeFragment fragment = getFragment();
+                    if (fragment != null) {
+                        fragment.updateUserList(new ArrayList<>());
+                        fragment.setActionButtons(false, null, null);
+                    }
                 }
             }
 
             @Override
             public void onError(String error) {
                 Log.e(TAG, "loadUsersILiked: Error: " + error);
-                fragment.showError(error);
+                LikeFragment fragment = getFragment();
+                if (fragment != null) {
+                    fragment.showError(error);
+                }
             }
 
             @Override
@@ -252,7 +282,10 @@ public class LikeController {
                             userIdsWhoLikedMe.remove(user.getUid());
                             applyFilters();
                             if (!isLikesTabSelected) {
-                                fragment.updateUserList(filteredUsersILiked);
+                                LikeFragment fragment = getFragment();
+                                if (fragment != null) {
+                                    fragment.updateUserList(filteredUsersWhoLikedMe);
+                                }
                             }
 
                             String matchedUserName = user.getName() != null ? user.getName() : "người dùng này";
@@ -263,19 +296,26 @@ public class LikeController {
                     @Override
                     public void onCancelled(@NonNull DatabaseError error) {
                         Log.e(TAG, "listenForMatch: Error: " + error.getMessage());
-                        fragment.showError("Lỗi kiểm tra match: " + error.getMessage());
+                        LikeFragment fragment = getFragment();
+                        if (fragment != null) {
+                            fragment.showError("Lỗi kiểm tra match: " + error.getMessage());
+                        }
                     }
                 });
     }
 
     public void onLikeUser(User user) {
+        LikeFragment fragment = getFragment();
+        if (fragment == null) {
+            Log.e(TAG, "onLikeUser: Fragment is null, cannot proceed");
+            return;
+        }
         Log.d(TAG, "onLikeUser: Liking user: " + user.getName() + " (uid: " + user.getUid() + ")");
         database.child("likes").child(currentUserId).child(user.getUid()).setValue(true)
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
                         Log.d(TAG, "onLikeUser: Successfully liked user: " + user.getName());
                         database.child("likedBy").child(user.getUid()).child(currentUserId).setValue(true);
-                        // Kiểm tra xem có match không
                         database.child("likes").child(user.getUid()).child(currentUserId)
                                 .addListenerForSingleValueEvent(new ValueEventListener() {
                                     @Override
@@ -298,18 +338,17 @@ public class LikeController {
                                             usersILiked.remove(user);
                                             userIdsILiked.remove(user.getUid());
                                             applyFilters();
-                                            fragment.updateUserList(isLikesTabSelected ? filteredUsersWhoLikedMe : filteredUsersILiked);
+                                            fragment.updateUserList(isLikesTabSelected ? filteredUsersILiked : filteredUsersWhoLikedMe);
 
                                             String matchedUserName = user.getName() != null ? user.getName() : "người dùng này";
                                             showMatchDialog(matchedUserName, chatId, user);
                                         } else {
-                                            // Nếu không match, chỉ cập nhật danh sách
                                             usersWhoLikedMe.remove(user);
                                             userIdsWhoLikedMe.remove(user.getUid());
                                             usersILiked.add(user);
                                             userIdsILiked.add(user.getUid());
                                             applyFilters();
-                                            fragment.updateUserList(isLikesTabSelected ? filteredUsersWhoLikedMe : filteredUsersILiked);
+                                            fragment.updateUserList(isLikesTabSelected ? filteredUsersILiked : filteredUsersWhoLikedMe);
                                         }
                                     }
 
@@ -327,14 +366,32 @@ public class LikeController {
     }
 
     public void onDislikeUser(User user) {
+        LikeFragment fragment = getFragment();
+        if (fragment == null) {
+            Log.e(TAG, "onDislikeUser: Fragment is null, cannot proceed");
+            return;
+        }
         Log.d(TAG, "onDislikeUser: Disliking user: " + user.getName() + " (uid: " + user.getUid() + ")");
+
         database.child("likedBy").child(currentUserId).child(user.getUid()).removeValue()
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
                         usersWhoLikedMe.remove(user);
                         userIdsWhoLikedMe.remove(user.getUid());
-                        applyFilters();
-                        fragment.updateUserList(filteredUsersWhoLikedMe);
+
+                        database.child("likes").child(currentUserId).child(user.getUid()).removeValue()
+                                .addOnCompleteListener(likesTask -> {
+                                    if (likesTask.isSuccessful()) {
+                                        Log.d(TAG, "onDislikeUser: Removed user " + user.getName() + " from likes");
+                                        usersILiked.remove(user);
+                                        userIdsILiked.remove(user.getUid());
+                                    } else {
+                                        Log.e(TAG, "onDislikeUser: Error removing user from likes: " + likesTask.getException().getMessage());
+                                        fragment.showError("Lỗi khi xóa khỏi danh sách đã thích: " + likesTask.getException().getMessage());
+                                    }
+                                    applyFilters();
+                                    fragment.updateUserList(filteredUsersWhoLikedMe);
+                                });
                     } else {
                         Log.e(TAG, "onDislikeUser: Error disliking user: " + task.getException().getMessage());
                         fragment.showError("Lỗi khi từ chối: " + task.getException().getMessage());
@@ -343,6 +400,12 @@ public class LikeController {
     }
 
     private void showMatchDialog(String matchedUserName, String chatId, User otherUser) {
+        LikeFragment fragment = getFragment();
+        if (fragment == null || !fragment.isAdded() || fragment.getContext() == null) {
+            Log.e(TAG, "showMatchDialog: Fragment is not attached to an Activity, cannot show dialog");
+            return;
+        }
+
         Log.d(TAG, "showMatchDialog: Attempting to show match dialog for user: " + matchedUserName);
         try {
             Dialog matchDialog = new Dialog(fragment.getContext());
@@ -423,27 +486,38 @@ public class LikeController {
 
     public void loadMoreUsers() {
         if (isLikesTabSelected) {
-            loadUsersWhoLikedMe();
-        } else {
             loadUsersILiked();
+        } else {
+            loadUsersWhoLikedMe();
         }
     }
 
     public void onLikesTabClicked() {
         isLikesTabSelected = true;
-        lastUserIdWhoLikedMe = null;
-        loadUsersWhoLikedMe();
-        fragment.updateTabSelection(true);
+        lastUserIdILiked = null;
+        loadUsersILiked();
+        LikeFragment fragment = getFragment();
+        if (fragment != null) {
+            fragment.updateTabSelection(true);
+        }
     }
 
     public void onLikedTabClicked() {
         isLikesTabSelected = false;
-        lastUserIdILiked = null;
-        loadUsersILiked();
-        fragment.updateTabSelection(false);
+        lastUserIdWhoLikedMe = null;
+        loadUsersWhoLikedMe();
+        LikeFragment fragment = getFragment();
+        if (fragment != null) {
+            fragment.updateTabSelection(false);
+        }
     }
 
     public void onUserClicked(User user) {
+        LikeFragment fragment = getFragment();
+        if (fragment == null) {
+            Log.e(TAG, "onUserClicked: Fragment is null, cannot proceed");
+            return;
+        }
         Bundle bundle = new Bundle();
         bundle.putString("friendId", user.getUid());
         fragment.getNavController().navigate(R.id.action_likeFragment_to_profileMyFriendActivity, bundle);
@@ -455,7 +529,10 @@ public class LikeController {
         this.maxAge = maxAge;
         this.residenceFilter = residence != null && !residence.isEmpty() ? residence.toLowerCase() : null;
         applyFilters();
-        fragment.updateUserList(isLikesTabSelected ? filteredUsersWhoLikedMe : filteredUsersILiked);
+        LikeFragment fragment = getFragment();
+        if (fragment != null) {
+            fragment.updateUserList(isLikesTabSelected ? filteredUsersILiked : filteredUsersWhoLikedMe);
+        }
     }
 
     private void applyFilters() {
@@ -463,11 +540,11 @@ public class LikeController {
         filteredUsersWhoLikedMe = filterUsers(usersWhoLikedMe);
         filteredUsersILiked = filterUsers(usersILiked);
         Log.d(TAG, "applyFilters: After filtering - filteredUsersWhoLikedMe: " + filteredUsersWhoLikedMe.size() + ", filteredUsersILiked: " + filteredUsersILiked.size());
-        if (filteredUsersWhoLikedMe.isEmpty() && isLikesTabSelected) {
-            Log.d(TAG, "applyFilters: No users to display in 'Lượt thích' tab after filtering");
-        }
-        if (filteredUsersILiked.isEmpty() && !isLikesTabSelected) {
+        if (filteredUsersILiked.isEmpty() && isLikesTabSelected) {
             Log.d(TAG, "applyFilters: No users to display in 'Đã thích' tab after filtering");
+        }
+        if (filteredUsersWhoLikedMe.isEmpty() && !isLikesTabSelected) {
+            Log.d(TAG, "applyFilters: No users to display in 'Lượt thích' tab after filtering");
         }
     }
 
@@ -475,23 +552,20 @@ public class LikeController {
         List<User> filteredList = new ArrayList<>(users);
         filteredList = filteredList.stream()
                 .filter(user -> {
-                    // Kiểm tra khoảng cách
                     double distance = calculateDistance(user.getLatitude(), user.getLongitude());
                     if (distance > maxDistance) {
                         Log.d(TAG, "filterUsers: User " + user.getName() + " filtered out due to distance: " + distance + " > " + maxDistance);
                         return false;
                     }
-                    // Kiểm tra độ tuổi
                     int age = user.getAge();
                     if (age == 0) {
                         Log.w(TAG, "filterUsers: User " + user.getName() + " has invalid age (0), possibly due to missing or incorrect dateOfBirth: " + user.getDateOfBirth());
-                        return true; // Không lọc người dùng nếu tuổi không hợp lệ, để tránh mất dữ liệu
+                        return true;
                     }
                     if (age < minAge || age > maxAge) {
                         Log.d(TAG, "filterUsers: User " + user.getName() + " filtered out due to age: " + age + " not in range [" + minAge + ", " + maxAge + "]");
                         return false;
                     }
-                    // Kiểm tra nơi cư trú
                     if (residenceFilter != null && !residenceFilter.isEmpty()) {
                         String residence = user.getResidence() != null ? user.getResidence().toLowerCase() : "";
                         if (!residence.contains(residenceFilter.toLowerCase())) {
@@ -508,7 +582,7 @@ public class LikeController {
     private double calculateDistance(double latitude, double longitude) {
         if (currentLatitude == 0 || currentLongitude == 0) {
             Log.w(TAG, "calculateDistance: Current location not available, skipping distance filter");
-            return 0; // Bỏ qua bộ lọc khoảng cách nếu không có vị trí hiện tại
+            return 0;
         }
 
         Location currentLocation = new Location("");
@@ -520,7 +594,7 @@ public class LikeController {
         userLocation.setLongitude(longitude);
 
         float distanceInMeters = currentLocation.distanceTo(userLocation);
-        return distanceInMeters / 1000; // Chuyển sang km
+        return distanceInMeters / 1000;
     }
 
     public List<User> getUsersWhoLikedMe() {

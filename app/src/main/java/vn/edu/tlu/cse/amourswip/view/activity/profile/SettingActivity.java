@@ -1,8 +1,6 @@
 package vn.edu.tlu.cse.amourswip.view.activity.profile;
 
 import android.annotation.SuppressLint;
-import android.content.Context;
-
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -12,20 +10,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-
 import android.widget.Toast;
-
-
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-
-
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 import com.google.firebase.auth.FirebaseUser;
-
 import vn.edu.tlu.cse.amourswip.R;
 import vn.edu.tlu.cse.amourswip.view.activity.signup.MapActivity;
 import vn.edu.tlu.cse.amourswip.view.activity.signup.SignInActivity;
@@ -50,7 +42,7 @@ public class SettingActivity extends AppCompatActivity {
         setContentView(R.layout.activity_setting);
 
         mAuth = FirebaseAuth.getInstance();
-        sharedPreferences = getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
+        sharedPreferences = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
 
         // Khởi tạo các view
         notificationButton = findViewById(R.id.notification_button);
@@ -58,12 +50,14 @@ public class SettingActivity extends AppCompatActivity {
         changePasswordButton = findViewById(R.id.change_password_button);
         logoutButton = findViewById(R.id.logout_button);
 
+        // Cập nhật trạng thái nút thông báo khi khởi động
         updateNotificationButtonState();
 
         // --- Xử lý sự kiện click ---
         notificationButton.setOnClickListener(v -> toggleNotifications());
         locationButton.setOnClickListener(v -> {
             Intent intent = new Intent(SettingActivity.this, MapActivity.class);
+            intent.putExtra("fromSettings", true); // Gửi extra để báo rằng người dùng vào từ Settings
             startActivity(intent);
         });
         changePasswordButton.setOnClickListener(v -> showChangePasswordDialog());
@@ -74,6 +68,7 @@ public class SettingActivity extends AppCompatActivity {
 
     private void updateNotificationButtonState() {
         boolean notificationsEnabled = sharedPreferences.getBoolean(NOTIFICATIONS_ENABLED_KEY, true);
+        notificationButton.setText(notificationsEnabled ? "Tắt thông báo" : "Bật thông báo");
     }
 
     private void toggleNotifications() {
@@ -85,7 +80,7 @@ public class SettingActivity extends AppCompatActivity {
         editor.apply();
 
         Toast.makeText(SettingActivity.this, newStatus ? "Đã bật thông báo" : "Đã tắt thông báo", Toast.LENGTH_SHORT).show();
-        // TODO: Add actual notification logic (e.g., FCM topic subscription)
+        updateNotificationButtonState();
     }
 
     private void showChangePasswordDialog() {
@@ -97,7 +92,6 @@ public class SettingActivity extends AppCompatActivity {
         final EditText etCurrentPassword = dialogView.findViewById(R.id.et_current_password);
         final EditText etNewPassword = dialogView.findViewById(R.id.et_new_password);
         final EditText etConfirmNewPassword = dialogView.findViewById(R.id.et_confirm_new_password);
-
 
         builder.setTitle("Đổi Mật Khẩu");
         builder.setPositiveButton("Xác nhận", null);
@@ -116,14 +110,12 @@ public class SettingActivity extends AppCompatActivity {
                 String newPassword = etNewPassword.getText().toString().trim();
                 String confirmNewPassword = etConfirmNewPassword.getText().toString().trim();
 
-                // 1. Kiểm tra mật khẩu hiện tại có trống không
                 if (TextUtils.isEmpty(currentPassword)) {
                     etCurrentPassword.setError("Vui lòng nhập mật khẩu hiện tại");
                     etCurrentPassword.requestFocus();
                     return;
                 }
 
-                // 2. Xác thực mật khẩu hiện tại với Firebase trước
                 FirebaseUser user = mAuth.getCurrentUser();
                 if (user == null || user.getEmail() == null) {
                     Toast.makeText(this, "Lỗi: Không tìm thấy thông tin người dùng.", Toast.LENGTH_SHORT).show();
@@ -132,17 +124,15 @@ public class SettingActivity extends AppCompatActivity {
 
                 AuthCredential credential = EmailAuthProvider.getCredential(user.getEmail(), currentPassword);
                 Toast.makeText(SettingActivity.this, "Đang xác thực...", Toast.LENGTH_SHORT).show();
-                positiveButton.setEnabled(false); // Vô hiệu hóa nút trong khi chờ
+                positiveButton.setEnabled(false);
 
                 user.reauthenticate(credential)
                         .addOnCompleteListener(reauthTask -> {
                             positiveButton.setEnabled(true);
 
                             if (reauthTask.isSuccessful()) {
-                                // ---- Xác thực thành công ----
                                 Log.d(TAG, "Re-authentication successful.");
 
-                                // 3. Bây giờ mới kiểm tra mật khẩu mới
                                 boolean newPasswordValid = true;
                                 if (TextUtils.isEmpty(newPassword)) {
                                     etNewPassword.setError("Vui lòng nhập mật khẩu mới");
@@ -162,16 +152,11 @@ public class SettingActivity extends AppCompatActivity {
                                     newPasswordValid = false;
                                 }
 
-                                // 4. Nếu mật khẩu mới hợp lệ -> Tiến hành cập nhật
                                 if (newPasswordValid) {
                                     updatePasswordInFirebase(user, newPassword, dialog, positiveButton);
                                 }
-
-
                             } else {
-                                // ---- Xác thực thất bại ----
                                 Log.w(TAG, "Re-authentication failed", reauthTask.getException());
-                                // Hiển thị lỗi cụ thể cho mật khẩu hiện tại
                                 if (reauthTask.getException() instanceof FirebaseAuthInvalidCredentialsException) {
                                     etCurrentPassword.setError("Mật khẩu hiện tại không đúng");
                                 } else {
@@ -179,7 +164,6 @@ public class SettingActivity extends AppCompatActivity {
                                     Toast.makeText(SettingActivity.this, "Lỗi: " + reauthTask.getException().getMessage(), Toast.LENGTH_LONG).show();
                                 }
                                 etCurrentPassword.requestFocus();
-
                             }
                         });
             });
@@ -188,9 +172,7 @@ public class SettingActivity extends AppCompatActivity {
         dialog.show();
     }
 
-    // Hàm riêng để cập nhật mật khẩu sau khi đã xác thực và kiểm tra pass mới
     private void updatePasswordInFirebase(FirebaseUser user, String newPassword, AlertDialog dialog, Button positiveButton) {
-        // Hiển thị tiến trình
         Toast.makeText(SettingActivity.this, "Đang cập nhật mật khẩu...", Toast.LENGTH_SHORT).show();
         if (positiveButton != null) positiveButton.setEnabled(false);
 
@@ -205,7 +187,6 @@ public class SettingActivity extends AppCompatActivity {
                     } else {
                         Log.w(TAG, "Error updating password", updateTask.getException());
                         Toast.makeText(SettingActivity.this, "Đổi mật khẩu thất bại: " + updateTask.getException().getMessage(), Toast.LENGTH_LONG).show();
-
                     }
                 });
     }

@@ -30,7 +30,7 @@
             android:layout_marginEnd="12dp"
             android:background="@android:color/transparent"
             android:contentDescription="Không thích"
-            android:src="@drawable/ic_dislike2" />
+            android:src="@drawable/ic_dislike2_black" />
 
         <!-- Nút "Thích" (màu xanh) -->
         <ImageButton
@@ -39,10 +39,10 @@
             android:layout_height="32dp"
             android:background="@android:color/transparent"
             android:contentDescription="Thích"
-            android:src="@drawable/ic_like" />
+            android:src="@drawable/ic_like_black" />
     </LinearLayout>
 
-    <!-- Tên, tuổi, nơi ở, và khoảng cách -->
+    <!-- LinearLayout chứa thông tin người dùng -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -51,14 +51,70 @@
         android:orientation="vertical"
         android:padding="4dp">
 
+        <!-- Tên và tuổi -->
         <TextView
-            android:id="@+id/user_name_age_distance"
+            android:id="@+id/user_name_age"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Tên, 25, Hà Nội, 2.5 km"
+            android:text="Tên, 25"
             android:textColor="@android:color/white"
             android:textSize="14sp"
             android:textStyle="bold" />
-    </LinearLayout>
 
+        <!-- Nơi ở -->
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <!-- Icon bên trái nơi ở -->
+            <ImageView
+                android:id="@+id/residence_icon"
+                android:layout_width="16dp"
+                android:layout_height="16dp"
+                android:layout_marginEnd="4dp"
+                android:scaleType="fitCenter"
+                android:src="@drawable/ic_swiperesidence" />
+
+            <!-- Nơi ở -->
+            <TextView
+                android:id="@+id/user_residence"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/poppins_regular"
+                android:text="Hà Nội"
+                android:textColor="@android:color/white"
+                android:textSize="12sp" />
+        </LinearLayout>
+
+        <!-- Khoảng cách -->
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <!-- Icon bên trái khoảng cách -->
+            <ImageView
+                android:id="@+id/distance_icon"
+                android:layout_width="16dp"
+                android:layout_height="16dp"
+                android:layout_marginEnd="4dp"
+                android:scaleType="fitCenter"
+                android:src="@drawable/ic_locationitem" />
+
+            <!-- Khoảng cách -->
+            <TextView
+                android:id="@+id/user_distance"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/poppins_regular"
+                android:text="0.0 KM"
+                android:textColor="@android:color/white"
+                android:textSize="12sp" />
+        </LinearLayout>
+    </LinearLayout>
 </FrameLayout>

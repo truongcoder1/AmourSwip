@@ -34,7 +34,7 @@ import vn.edu.tlu.cse.amourswip.R;
 import vn.edu.tlu.cse.amourswip.model.data.Message;
 import vn.edu.tlu.cse.amourswip.view.adapter.ChatAdapter;
 
-public class ChatFragment extends Fragment {
+public class ChatAiFragment extends Fragment {
 
     private static final String TAG = "ChatAIFragment";
     private static final String HUGGINGFACE_API_URL = "https://api-inference.huggingface.co/models/meta-llama/Llama-3.2-3B-Instruct";
@@ -69,7 +69,7 @@ public class ChatFragment extends Fragment {
 
         if (FirebaseAuth.getInstance().getCurrentUser() == null) {
             Toast.makeText(getActivity(), "Vui lòng đăng nhập để trò chuyện", Toast.LENGTH_SHORT).show();
-            navController.navigate(R.id.action_chatAIFragment_to_listChatFragment);
+            navController.navigate(R.id.action_chatAiFragment_to_listChatFragment);
             return view;
         }
 
@@ -177,7 +177,7 @@ public class ChatFragment extends Fragment {
         // Tạo yêu cầu API
         RequestBody body = RequestBody.create(jsonPayload.toString(), MediaType.parse("application/json; charset=utf-8"));
         Request request = new Request.Builder()
-                .url("https://api-inference.huggingface.co/models/meta-llama/Llama-3.2-3B-Instruct")
+                .url(HUGGINGFACE_API_URL)
                 .addHeader("Authorization", "Bearer " + HUGGINGFACE_API_TOKEN)
                 .post(body)
                 .build();

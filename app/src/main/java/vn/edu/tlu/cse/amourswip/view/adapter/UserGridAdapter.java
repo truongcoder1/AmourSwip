@@ -55,9 +55,16 @@ public class UserGridAdapter extends RecyclerView.Adapter<UserGridAdapter.UserVi
     public void onBindViewHolder(@NonNull UserViewHolder holder, int position) {
         User user = userList.get(position);
 
+        // Hiển thị tên và tuổi
+        holder.userNameAge.setText(user.getName() + ", " + user.getAge());
+
+        // Hiển thị nơi ở
+        String residence = user.getResidence() != null && !user.getResidence().isEmpty() ? user.getResidence() : "Không xác định";
+        holder.userResidence.setText(residence);
+
+        // Hiển thị khoảng cách
         String distance = calculateDistance(user.getLatitude(), user.getLongitude());
-        String residence = user.getResidence() != null ? user.getResidence() : "N/A";
-        holder.userNameAgeDistance.setText(user.getName() + ", " + user.getAge() + ", " + residence + ", " + distance);
+        holder.userDistance.setText(distance);
 
         if (user.getPhotos() != null && !user.getPhotos().isEmpty()) {
             Glide.with(holder.itemView.getContext())
@@ -112,7 +119,7 @@ public class UserGridAdapter extends RecyclerView.Adapter<UserGridAdapter.UserVi
 
         float distanceInMeters = currentLocation.distanceTo(userLocation);
         float distanceInKm = distanceInMeters / 1000;
-        return String.format("%.1f km", distanceInKm);
+        return String.format("%.1f KM", distanceInKm);
     }
 
     public void updateList(List<User> newList) {
@@ -122,7 +129,9 @@ public class UserGridAdapter extends RecyclerView.Adapter<UserGridAdapter.UserVi
 
     static class UserViewHolder extends RecyclerView.ViewHolder {
         ImageView userImage;
-        TextView userNameAgeDistance;
+        TextView userNameAge;
+        TextView userResidence;
+        TextView userDistance;
         LinearLayout actionButtons;
         ImageButton likeButton;
         ImageButton dislikeButton;
@@ -130,7 +139,9 @@ public class UserGridAdapter extends RecyclerView.Adapter<UserGridAdapter.UserVi
         UserViewHolder(@NonNull View itemView) {
             super(itemView);
             userImage = itemView.findViewById(R.id.grid_photo);
-            userNameAgeDistance = itemView.findViewById(R.id.user_name_age_distance);
+            userNameAge = itemView.findViewById(R.id.user_name_age);
+            userResidence = itemView.findViewById(R.id.user_residence);
+            userDistance = itemView.findViewById(R.id.user_distance);
             actionButtons = itemView.findViewById(R.id.action_buttons);
             likeButton = itemView.findViewById(R.id.like_button);
             dislikeButton = itemView.findViewById(R.id.dislike_button);

@@ -33,9 +33,6 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <!-- RecyclerView for chat messages -->
-
-    <!-- Input Layout -->
-
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/chat_recycler_view"
         android:layout_width="396dp"
@@ -49,6 +46,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.443" />
 
+    <!-- Input Layout -->
     <LinearLayout
         android:id="@+id/input_layout"
         android:layout_width="0dp"

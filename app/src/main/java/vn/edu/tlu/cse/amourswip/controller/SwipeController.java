@@ -97,6 +97,7 @@ public class SwipeController {
         this.isLoading = false;
         this.swipeHistory = new Stack<>();
         initializeCardStack();
+        loadCurrentUser();
     }
 
     private void initializeCardStack() {
@@ -129,8 +130,6 @@ public class SwipeController {
             cardStackView.swipe();
             fragment.showLikeAnimationOnButton(likeButton);
         });
-
-        loadCurrentUser();
     }
 
     public void resetPagination() {
@@ -148,7 +147,6 @@ public class SwipeController {
 
         if (currentUser == null) {
             Log.d(TAG, "loadUsers: currentUser is null, waiting...");
-            loadCurrentUser();
             return;
         }
 
@@ -177,27 +175,27 @@ public class SwipeController {
                             if (user != null && !user.getUid().equals(currentUserId)
                                     && !matchedUserIds.contains(user.getUid())
                                     && !skippedUserIds.contains(user.getUid())) {
-                                String currentUserGender = currentUser.getGender();
-                                String userGender = user.getGender();
-                                Log.d(TAG, "Current user gender: " + currentUserGender + ", User: " + user.getName() + ", Gender: " + userGender);
+                                String currentUserGender = currentUser != null ? currentUser.getGender() : null;
+                                String userGender = user != null ? user.getGender() : null;
+                                Log.d(TAG, "Current user gender: " + currentUserGender + ", User: " + (user != null ? user.getName() : "null") + ", Gender: " + userGender);
 
                                 if (currentUserGender != null && userGender != null) {
-                                    if (currentUserGender.equals("Khác")) {
-                                        if (userGender.equals("Nam") || userGender.equals("Nữ") || userGender.equals("Khác")) {
+                                    if ("Khác".equals(currentUserGender)) {
+                                        if ("Nam".equals(userGender) || "Nữ".equals(userGender) || "Khác".equals(userGender)) {
                                             newUsers.add(user);
                                             Log.d(TAG, "User added (current user is Khác, showing all genders): " + user.getName());
                                         }
-                                    } else if (currentUserGender.equals("Nam") && (userGender.equals("Nữ") || userGender.equals("Khác"))) {
+                                    } else if ("Nam".equals(currentUserGender) && ("Nữ".equals(userGender) || "Khác".equals(userGender))) {
                                         newUsers.add(user);
                                         Log.d(TAG, "User added (gender match): " + user.getName());
-                                    } else if (currentUserGender.equals("Nữ") && (userGender.equals("Nam") || userGender.equals("Khác"))) {
+                                    } else if ("Nữ".equals(currentUserGender) && ("Nam".equals(userGender) || "Khác".equals(userGender))) {
                                         newUsers.add(user);
                                         Log.d(TAG, "User added (gender match): " + user.getName());
                                     } else {
                                         Log.d(TAG, "User skipped (gender mismatch): " + user.getName());
                                     }
                                 } else {
-                                    Log.d(TAG, "User skipped (gender null): " + user.getName());
+                                    Log.d(TAG, "User skipped (gender null for currentUser or user): " + (user != null ? user.getName() : "null"));
                                 }
                             } else {
                                 Log.d(TAG, "User skipped: " + (user == null ? "null user" :

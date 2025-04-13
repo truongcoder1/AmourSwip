@@ -1,5 +1,7 @@
 package vn.edu.tlu.cse.amourswip.view.fragment;
 
+import android.Manifest;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -15,10 +17,13 @@ import android.widget.TextView;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -39,6 +44,7 @@ import java.util.List;
 public class SwipeFragment extends Fragment {
 
     private static final String TAG = "SwipeFragment";
+    private static final int REQUEST_CODE_LOCATION = 102;
 
     private CardStackView cardStackView;
     private ImageButton skipButton;
@@ -60,6 +66,9 @@ public class SwipeFragment extends Fragment {
     private CardStackAdapter adapter;
     private CardStackLayoutManager layoutManager;
     private View currentStamp;
+    private FusedLocationProviderClient fusedLocationClient;
+    private double currentLatitude;
+    private double currentLongitude;
 
     @Nullable
     @Override
@@ -78,6 +87,7 @@ public class SwipeFragment extends Fragment {
 
         auth = FirebaseAuth.getInstance();
         database = FirebaseDatabase.getInstance().getReference();
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(getActivity());
 
         if (auth.getCurrentUser() == null) {
             Log.w(TAG, "onViewCreated: User not logged in");
@@ -215,6 +225,9 @@ public class SwipeFragment extends Fragment {
         cardStackView.setLayoutManager(layoutManager);
         cardStackView.setAdapter(adapter);
 
+        // Lấy vị trí hiện tại của người dùng
+        requestLocationPermission();
+
         // Thêm listener để làm mới danh sách
         swipeRefreshLayout.setOnRefreshListener(() -> {
             controller.resetPagination();
@@ -236,6 +249,48 @@ public class SwipeFragment extends Fragment {
 
         controller = new SwipeController(this, cardStackView, skipCircle, likeCircle, skipButton, likeButton,
                 null, null, navController, userList, adapter);
+    }
+
+    private void requestLocationPermission() {
+        if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_CODE_LOCATION);
+        } else {
+            getUserLocation();
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == REQUEST_CODE_LOCATION) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                getUserLocation();
+            } else {
+                Toast.makeText(getContext(), "Ứng dụng cần quyền truy cập vị trí để tính khoảng cách", Toast.LENGTH_LONG).show();
+                adapter.setCurrentUserLocation(0, 0); // Nếu không có quyền, khoảng cách sẽ hiển thị "N/A"
+            }
+        }
+    }
+
+    private void getUserLocation() {
+        if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            return;
+        }
+        fusedLocationClient.getLastLocation().addOnSuccessListener(getActivity(), location -> {
+            if (location != null) {
+                currentLatitude = location.getLatitude();
+                currentLongitude = location.getLongitude();
+                adapter.setCurrentUserLocation(currentLatitude, currentLongitude);
+                Log.d(TAG, "User location: " + currentLatitude + ", " + currentLongitude);
+            } else {
+                Log.w(TAG, "Cannot get user location");
+                adapter.setCurrentUserLocation(0, 0); // Nếu không lấy được vị trí, khoảng cách sẽ hiển thị "N/A"
+            }
+        }).addOnFailureListener(e -> {
+            Log.e(TAG, "Error getting location: " + e.getMessage());
+            adapter.setCurrentUserLocation(0, 0);
+            Toast.makeText(getContext(), "Lỗi lấy vị trí: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+        });
     }
 
     public void showLikeAnimation() {}
