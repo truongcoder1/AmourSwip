@@ -20,9 +20,6 @@
     <!-- Quyền thông báo (Android 13+) -->
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
 
-
-
-
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
@@ -33,14 +30,21 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.AmourSwip"
         tools:targetApi="31">
+
+        <!-- SplashActivity (Activity khởi động) -->
         <activity
-            android:name=".view.activity.signup.WelcomeActivity"
+            android:name=".view.activity.signup.SplashActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <!-- WelcomeActivity -->
+        <activity
+            android:name=".view.activity.signup.WelcomeActivity"
+            android:exported="true" />
 
         <activity android:name=".view.activity.main.MainActivity" />
         <activity android:name=".view.activity.signup.SignInActivity" />
@@ -52,7 +56,7 @@
         <activity android:name=".view.activity.signup.MapActivity" />
         <activity android:name=".view.activity.profile.SettingActivity" />
         <activity android:name=".view.activity.profile.EditProfileActivity" />
-        <activity android:name=".view.activity.profile.ProfileMyFriendActivity"/>
+        <activity android:name=".view.activity.profile.ProfileMyFriendActivity" />
         <activity android:name=".view.activity.profile.EditPhotosActivity" />
 
         <provider
@@ -64,7 +68,6 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/provider_paths" />
         </provider>
-
 
     </application>
 
