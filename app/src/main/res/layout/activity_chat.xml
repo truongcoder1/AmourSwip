@@ -6,26 +6,23 @@
     android:background="@drawable/background_chat">
 
     <!-- Thanh tiêu đề -->
-
-    <!-- Thanh nhập tin nhắn -->
-
     <LinearLayout
         android:id="@+id/header_layout"
         android:layout_width="match_parent"
-        android:layout_height="83dp"
+        android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
-        android:layout_marginTop="0dp"
+        android:layout_marginTop="12dp"
         android:background="#E6D5F2"
         android:gravity="center_vertical"
         android:orientation="horizontal"
-        android:padding="12dp">
+        android:padding="16dp">
 
         <!-- Nút quay lại -->
         <ImageButton
             android:id="@+id/back_button"
-            android:layout_width="25dp"
-            android:layout_height="25dp"
-            android:layout_marginEnd="8dp"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_marginEnd="12dp"
             android:background="@android:color/transparent"
             android:scaleType="fitCenter"
             android:src="@drawable/ic_back" />
@@ -33,9 +30,9 @@
         <!-- Hình ảnh người dùng -->
         <ImageView
             android:id="@+id/user_image"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:layout_marginEnd="8dp"
+            android:layout_width="56dp"
+            android:layout_height="56dp"
+            android:layout_marginEnd="12dp"
             android:background="@drawable/circle_background"
             android:clipToOutline="true"
             android:outlineProvider="background"
@@ -58,16 +55,16 @@
                 android:fontFamily="@font/poppins_bold"
                 android:text="Xu Xu 22"
                 android:textColor="@android:color/black"
-                android:textSize="16sp"
+                android:textSize="18sp"
                 android:textStyle="bold" />
         </LinearLayout>
 
         <!-- Nút video call -->
         <ImageButton
             android:id="@+id/video_call_button"
-            android:layout_width="25dp"
-            android:layout_height="match_parent"
-            android:layout_marginStart="8dp"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_marginStart="12dp"
             android:background="@android:color/transparent"
             android:scaleType="fitCenter"
             android:src="@drawable/ic_camchat" />
@@ -75,14 +72,15 @@
         <!-- Nút menu -->
         <ImageButton
             android:id="@+id/menu_button"
-            android:layout_width="25dp"
-            android:layout_height="match_parent"
-            android:layout_marginStart="8dp"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_marginStart="12dp"
             android:background="@android:color/transparent"
             android:scaleType="fitCenter"
             android:src="@drawable/ic_dot" />
     </LinearLayout>
 
+    <!-- Thanh nhập tin nhắn -->
     <LinearLayout
         android:id="@+id/input_layout"
         android:layout_width="match_parent"
@@ -129,7 +127,7 @@
     </LinearLayout>
 
     <!-- RecyclerView để hiển thị danh sách tin nhắn -->
-    <androidx.recyclerview.widget.RecyclerView
+        <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/messages_recycler_view"
         android:layout_width="match_parent"
         android:layout_height="0dp"

@@ -39,6 +39,7 @@
                 android:textColor="@android:color/white"
                 android:textSize="16sp"
                 android:ellipsize="none"
+                android:singleLine="false"
                 android:maxWidth="@dimen/max_message_width" />
 
             <!-- Trạng thái "Đã gửi"/"Đã xem" -->
