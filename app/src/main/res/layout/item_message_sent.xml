@@ -37,7 +37,9 @@
                 android:padding="12dp"
                 android:text="Xin lỗi =(("
                 android:textColor="@android:color/white"
-                android:textSize="16sp" />
+                android:textSize="16sp"
+                android:ellipsize="none"
+                android:maxWidth="@dimen/max_message_width" />
 
             <!-- Trạng thái "Đã gửi"/"Đã xem" -->
             <TextView

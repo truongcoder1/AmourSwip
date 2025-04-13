@@ -42,10 +42,7 @@
         </activity>
 
         <!-- WelcomeActivity -->
-        <activity
-            android:name=".view.activity.signup.WelcomeActivity"
-            android:exported="true" />
-
+        <activity android:name=".view.activity.signup.WelcomeActivity"/>
         <activity android:name=".view.activity.main.MainActivity" />
         <activity android:name=".view.activity.signup.SignInActivity" />
         <activity android:name=".view.activity.signup.SignUpActivity" />
