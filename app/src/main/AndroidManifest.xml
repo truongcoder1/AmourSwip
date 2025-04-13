@@ -31,9 +31,10 @@
         android:theme="@style/Theme.AmourSwip"
         tools:targetApi="31">
 
-        <!-- SplashActivity (Activity khởi động) -->
+
+        <!-- WelcomeActivity (Màn hình khởi động mới) -->
         <activity
-            android:name=".view.activity.signup.SplashActivity"
+            android:name=".view.activity.signup.WelcomeActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -41,8 +42,6 @@
             </intent-filter>
         </activity>
 
-        <!-- WelcomeActivity -->
-        <activity android:name=".view.activity.signup.WelcomeActivity"/>
         <activity android:name=".view.activity.main.MainActivity" />
         <activity android:name=".view.activity.signup.SignInActivity" />
         <activity android:name=".view.activity.signup.SignUpActivity" />

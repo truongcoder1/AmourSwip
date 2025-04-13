@@ -5,6 +5,11 @@
     android:layout_height="match_parent"
     android:background="@drawable/background_main">
 
+    <!-- Container để chứa các trái tim động -->
+    <RelativeLayout
+        android:id="@+id/heart_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 
     <TextView
         android:id="@+id/tvSlogan"
@@ -32,6 +37,7 @@
         android:text="@string/sign_up"
         android:textColor="@android:color/black"
         android:textSize="18sp"
+        android:visibility="invisible"
         app:cornerRadius="50dp" />
 
     <!-- Nút Đăng nhập -->
@@ -49,6 +55,7 @@
         android:text="@string/sign_in"
         android:textColor="@android:color/black"
         android:textSize="18sp"
+        android:visibility="invisible"
         app:cornerRadius="50dp" />
 
 </RelativeLayout>

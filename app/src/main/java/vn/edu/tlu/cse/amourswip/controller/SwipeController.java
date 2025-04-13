@@ -176,19 +176,46 @@ public class SwipeController {
                                     && !matchedUserIds.contains(user.getUid())
                                     && !skippedUserIds.contains(user.getUid())) {
                                 String currentUserGender = currentUser != null ? currentUser.getGender() : null;
+                                String currentUserPreferredGender = currentUser != null ? currentUser.getPreferredGender() : null;
                                 String userGender = user != null ? user.getGender() : null;
-                                Log.d(TAG, "Current user gender: " + currentUserGender + ", User: " + (user != null ? user.getName() : "null") + ", Gender: " + userGender);
+                                Log.d(TAG, "Current user gender: " + currentUserGender + ", Preferred gender: " + currentUserPreferredGender + ", User: " + (user != null ? user.getName() : "null") + ", Gender: " + userGender);
 
-                                if (currentUserGender != null && userGender != null) {
-                                    if ("Khác".equals(currentUserGender)) {
+                                if (currentUserGender != null && currentUserPreferredGender != null && userGender != null) {
+                                    // Người Nam thích giới tính Khác: Thấy cả Nam và Nữ
+                                    if ("Nam".equals(currentUserGender) && "Khác".equals(currentUserPreferredGender)) {
+                                        if ("Nam".equals(userGender) || "Nữ".equals(userGender)) {
+                                            newUsers.add(user);
+                                            Log.d(TAG, "User added (Nam preferring Khác, showing Nam/Nữ): " + user.getName());
+                                        }
+                                    }
+                                    // Người Nữ thích giới tính Khác: Thấy cả Nam và Nữ
+                                    else if ("Nữ".equals(currentUserGender) && "Khác".equals(currentUserPreferredGender)) {
+                                        if ("Nam".equals(userGender) || "Nữ".equals(userGender)) {
+                                            newUsers.add(user);
+                                            Log.d(TAG, "User added (Nữ preferring Khác, showing Nam/Nữ): " + user.getName());
+                                        }
+                                    }
+                                    // Người Khác thích giới tính Khác: Thấy cả Nam và Nữ
+                                    else if ("Khác".equals(currentUserGender) && "Khác".equals(currentUserPreferredGender)) {
+                                        if ("Nam".equals(userGender) || "Nữ".equals(userGender)) {
+                                            newUsers.add(user);
+                                            Log.d(TAG, "User added (Khác preferring Khác, showing Nam/Nữ): " + user.getName());
+                                        }
+                                    }
+                                    // Logic cũ: Người Khác thấy tất cả
+                                    else if ("Khác".equals(currentUserGender)) {
                                         if ("Nam".equals(userGender) || "Nữ".equals(userGender) || "Khác".equals(userGender)) {
                                             newUsers.add(user);
                                             Log.d(TAG, "User added (current user is Khác, showing all genders): " + user.getName());
                                         }
-                                    } else if ("Nam".equals(currentUserGender) && ("Nữ".equals(userGender) || "Khác".equals(userGender))) {
+                                    }
+                                    // Logic cũ: Người Nam thích Nữ hoặc Khác
+                                    else if ("Nam".equals(currentUserGender) && ("Nữ".equals(userGender) || "Khác".equals(userGender))) {
                                         newUsers.add(user);
                                         Log.d(TAG, "User added (gender match): " + user.getName());
-                                    } else if ("Nữ".equals(currentUserGender) && ("Nam".equals(userGender) || "Khác".equals(userGender))) {
+                                    }
+                                    // Logic cũ: Người Nữ thích Nam hoặc Khác
+                                    else if ("Nữ".equals(currentUserGender) && ("Nam".equals(userGender) || "Khác".equals(userGender))) {
                                         newUsers.add(user);
                                         Log.d(TAG, "User added (gender match): " + user.getName());
                                     } else {
