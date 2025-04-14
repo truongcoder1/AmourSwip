@@ -5,12 +5,11 @@ import android.os.Parcelable;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-public class User implements Parcelable {
+public class xUser implements Parcelable {
     private String uid;
     private String email;
     private String name;
@@ -27,11 +26,11 @@ public class User implements Parcelable {
     private String occupation;
     private String description;
 
-    public User() {}
+    public xUser() {}
 
-    public User(String uid, String email, String name, String gender, String preferredGender, String dateOfBirth,
-                List<String> photos, boolean locationEnabled, double latitude, double longitude,
-                String religion, String residence, String educationLevel, String occupation, String description) {
+    public xUser(String uid, String email, String name, String gender, String preferredGender, String dateOfBirth,
+                 List<String> photos, boolean locationEnabled, double latitude, double longitude,
+                 String religion, String residence, String educationLevel, String occupation, String description) {
         this.uid = uid;
         this.email = email;
         this.name = name;
@@ -49,7 +48,7 @@ public class User implements Parcelable {
         this.description = description;
     }
 
-    protected User(Parcel in) {
+    protected xUser(Parcel in) {
         uid = in.readString();
         email = in.readString();
         name = in.readString();
@@ -67,15 +66,15 @@ public class User implements Parcelable {
         description = in.readString();
     }
 
-    public static final Creator<User> CREATOR = new Creator<User>() {
+    public static final Creator<xUser> CREATOR = new Creator<xUser>() {
         @Override
-        public User createFromParcel(Parcel in) {
-            return new User(in);
+        public xUser createFromParcel(Parcel in) {
+            return new xUser(in);
         }
 
         @Override
-        public User[] newArray(int size) {
-            return new User[size];
+        public xUser[] newArray(int size) {
+            return new xUser[size];
         }
     };
 

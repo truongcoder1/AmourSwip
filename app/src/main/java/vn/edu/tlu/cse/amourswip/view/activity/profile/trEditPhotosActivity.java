@@ -89,7 +89,7 @@ public class trEditPhotosActivity extends AppCompatActivity {
         settingsIcon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(trEditPhotosActivity.this, SettingActivity.class);
+                Intent intent = new Intent(trEditPhotosActivity.this, xSettingActivity.class);
                 startActivity(intent);
             }
         });

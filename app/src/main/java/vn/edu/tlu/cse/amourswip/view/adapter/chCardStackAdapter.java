@@ -10,15 +10,15 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import java.util.List;
 import vn.edu.tlu.cse.amourswip.R;
-import vn.edu.tlu.cse.amourswip.model.data.User;
+import vn.edu.tlu.cse.amourswip.model.data.xUser;
 
-public class CardStackAdapter extends RecyclerView.Adapter<CardStackAdapter.ViewHolder> {
+public class chCardStackAdapter extends RecyclerView.Adapter<chCardStackAdapter.ViewHolder> {
 
-    private List<User> userList;
+    private List<xUser> userList;
     private double currentLatitude;
     private double currentLongitude;
 
-    public CardStackAdapter(List<User> userList) {
+    public chCardStackAdapter(List<xUser> userList) {
         this.userList = userList;
     }
 
@@ -31,7 +31,7 @@ public class CardStackAdapter extends RecyclerView.Adapter<CardStackAdapter.View
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        User user = userList.get(position);
+        xUser user = userList.get(position);
 
         // Hiển thị tên và tuổi
         holder.userNameAge.setText(user.getName() + ", " + user.getAge());

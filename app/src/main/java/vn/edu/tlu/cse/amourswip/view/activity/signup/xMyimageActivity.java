@@ -36,14 +36,14 @@ import java.util.List;
 import java.util.Locale;
 
 import vn.edu.tlu.cse.amourswip.R;
-import vn.edu.tlu.cse.amourswip.model.repository.UserRepository;
+import vn.edu.tlu.cse.amourswip.model.repository.xUserRepository;
 
-public class MyimageActivity extends AppCompatActivity {
+public class xMyimageActivity extends AppCompatActivity {
 
     private static final String TAG = "MyimageActivity";
     private static final int CAMERA_PERMISSION_REQUEST_CODE = 101;
 
-    private UserRepository userRepository;
+    private xUserRepository userRepository;
     private StorageReference storageRef;
     private final List<String> photoUrls = new ArrayList<>();
     private ActivityResultLauncher<String> pickImageLauncher;
@@ -59,7 +59,7 @@ public class MyimageActivity extends AppCompatActivity {
         // Đảm bảo tên layout khớp với tên file XML của bạn
         setContentView(R.layout.acitivity_myimage); // Hoặc tên layout đúng
 
-        userRepository = new UserRepository();
+        userRepository = new xUserRepository();
         storageRef = FirebaseStorage.getInstance().getReference("user_photos");
 
         // --- Lấy tham chiếu đến các View ---
@@ -127,7 +127,7 @@ public class MyimageActivity extends AppCompatActivity {
                 return;
             }
             Log.d(TAG, "Chuẩn bị cập nhật ảnh lên DB: " + photoUrls.toString());
-            userRepository.updateUserField("photos", photoUrls, new UserRepository.OnUserActionListener() {
+            userRepository.updateUserField("photos", photoUrls, new xUserRepository.OnUserActionListener() {
                 @Override
                 public void onSuccess() {
                     Log.d(TAG, "Cập nhật URL ảnh thành công.");
@@ -136,7 +136,7 @@ public class MyimageActivity extends AppCompatActivity {
                 @Override
                 public void onFailure(String errorMessage) {
                     Log.e(TAG, "Lỗi khi cập nhật URL ảnh: " + errorMessage);
-                    Toast.makeText(MyimageActivity.this, "Lỗi khi cập nhật ảnh: " + errorMessage, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(xMyimageActivity.this, "Lỗi khi cập nhật ảnh: " + errorMessage, Toast.LENGTH_SHORT).show();
                 }
             });
         });
@@ -292,16 +292,16 @@ public class MyimageActivity extends AppCompatActivity {
                             // Chỉ thêm URL nếu tải lên thành công và lấy được URL
                             photoUrls.add(url);
                             Log.d(TAG, "Tải lên thành công, URL: " + url);
-                            Toast.makeText(MyimageActivity.this, "Tải ảnh lên thành công!", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(xMyimageActivity.this, "Tải ảnh lên thành công!", Toast.LENGTH_SHORT).show();
                         }).addOnFailureListener(e -> {
                             Log.e(TAG, "Lỗi khi lấy download URL: ", e);
-                            Toast.makeText(MyimageActivity.this,"Lỗi khi lấy link ảnh", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(xMyimageActivity.this,"Lỗi khi lấy link ảnh", Toast.LENGTH_SHORT).show();
                             // Cân nhắc xóa ảnh khỏi ImageView hoặc thông báo lỗi rõ hơn
                         });
                     })
                     .addOnFailureListener(e -> {
                         Log.e(TAG, "Lỗi khi tải ảnh lên Firebase: ", e);
-                        Toast.makeText(MyimageActivity.this, "Lỗi khi tải ảnh lên", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(xMyimageActivity.this, "Lỗi khi tải ảnh lên", Toast.LENGTH_SHORT).show();
                         // Cân nhắc xóa ảnh khỏi ImageView
                     })
                     .addOnProgressListener(snapshot -> {
@@ -314,13 +314,13 @@ public class MyimageActivity extends AppCompatActivity {
             if (userId == null) errorMsg += "userId bị null. ";
             if (uri == null) errorMsg += "uri bị null.";
             Log.e(TAG, errorMsg);
-            Toast.makeText(MyimageActivity.this, "Không thể tải ảnh (thiếu thông tin)", Toast.LENGTH_SHORT).show();
+            Toast.makeText(xMyimageActivity.this, "Không thể tải ảnh (thiếu thông tin)", Toast.LENGTH_SHORT).show();
         }
     }
 
     // --- Hàm chuyển sang Activity tiếp theo ---
     private void goToNextActivity() {
-        Intent intent = new Intent(MyimageActivity.this, MapActivity.class); // Thay MapActivity bằng Activity đích của bạn
+        Intent intent = new Intent(xMyimageActivity.this, xMapActivity.class); // Thay MapActivity bằng Activity đích của bạn
         startActivity(intent);
         finish(); // Kết thúc Activity hiện tại
     }

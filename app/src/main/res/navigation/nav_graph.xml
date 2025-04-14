@@ -7,7 +7,7 @@
     <!-- SwipeFragment -->
     <fragment
         android:id="@+id/swipeFragment"
-        android:name="vn.edu.tlu.cse.amourswip.view.fragment.SwipeFragment"
+        android:name="vn.edu.tlu.cse.amourswip.view.fragment.chSwipeFragment"
         android:label="SwipeFragment">
         <action
             android:id="@+id/action_swipeFragment_to_listChatFragment"
@@ -23,7 +23,7 @@
     <!-- ListChatFragment -->
     <fragment
         android:id="@+id/listChatFragment"
-        android:name="vn.edu.tlu.cse.amourswip.view.fragment.ListChatFragment"
+        android:name="vn.edu.tlu.cse.amourswip.view.fragment.chListChatFragment"
         android:label="ListChatFragment">
         <action
             android:id="@+id/action_listChatFragment_to_chatUserFragment"
@@ -54,7 +54,7 @@
     <!-- LikeFragment -->
     <fragment
         android:id="@+id/likeFragment"
-        android:name="vn.edu.tlu.cse.amourswip.view.fragment.LikeFragment"
+        android:name="vn.edu.tlu.cse.amourswip.view.fragment.chLikeFragment"
         android:label="LikeFragment">
         <action
             android:id="@+id/action_likeFragment_to_profileMyFriendActivity"

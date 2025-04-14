@@ -1,24 +1,26 @@
 package vn.edu.tlu.cse.amourswip.view.activity.signup;
 
 import android.content.Intent;
-import android.content.res.ColorStateList; // Import
+import android.content.res.ColorStateList;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat; // Import
-import com.google.android.material.button.MaterialButton; // Import và sử dụng
-import vn.edu.tlu.cse.amourswip.model.repository.UserRepository;
+import androidx.core.content.ContextCompat;
+import com.google.android.material.button.MaterialButton;
+import vn.edu.tlu.cse.amourswip.model.repository.xUserRepository;
 import vn.edu.tlu.cse.amourswip.R;
 
-public class PreferGenderActivity extends AppCompatActivity {
+public class xSelectGenderActivity extends AppCompatActivity {
 
-    private UserRepository userRepository;
-    private MaterialButton btnAll;
+    private xUserRepository userRepository;
     private MaterialButton btnMale;
     private MaterialButton btnFemale;
+    private MaterialButton btnOther;
     private MaterialButton btnNext;
-    private String selectedPreferredGender = null;
+    private String selectedGender = null;
+
+
     private int selectedStrokeWidth;
     private ColorStateList selectedStrokeColor;
     private final int defaultStrokeWidth = 0;
@@ -29,82 +31,81 @@ public class PreferGenderActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_prefergender);
+        setContentView(R.layout.activity_selectedgender);
 
-        userRepository = new UserRepository();
+        userRepository = new xUserRepository();
 
-        // --- Tìm các nút bằng ID ---
-        btnAll = findViewById(R.id.all_button);
         btnMale = findViewById(R.id.male_button);
         btnFemale = findViewById(R.id.female_button);
+        btnOther = findViewById(R.id.other_button);
         btnNext = findViewById(R.id.next_button);
 
-
-        selectedStrokeWidth = 6;
+        // Khởi tạo giá trị đường viền
+        selectedStrokeWidth = 6; // dp
         selectedStrokeColor = ContextCompat.getColorStateList(this, R.color.selected_button_stroke_color);
 
-        // --- Đặt trạng thái ban đầu cho các nút lựa chọn ---
-        setButtonState(btnAll, false);
+        // --- Ban đầu, làm mờ tất cả các nút giới tính một chút ---
+
         setButtonState(btnMale, false);
         setButtonState(btnFemale, false);
+        setButtonState(btnOther, false);
 
 
-        // --- Listener cho các nút chọn sở thích giới tính ---
-        View.OnClickListener onPreferredGenderSelected = v -> {
-            setButtonState(btnAll, false);
+        // Listener for gender selection buttons
+        View.OnClickListener onGenderSelected = v -> {
+            // --- Đặt lại trạng thái "không được chọn" cho TẤT CẢ các nút giới tính ---
             setButtonState(btnMale, false);
             setButtonState(btnFemale, false);
+            setButtonState(btnOther, false);
 
-            // Đặt nút được click vào trạng thái được chọn
+            // --- Áp dụng trạng thái "được chọn" cho nút ĐƯỢC CHỌN ---
             MaterialButton selectedButton = (MaterialButton) v;
             setButtonState(selectedButton, true);
 
-            // Lưu lựa chọn
+
             int id = v.getId();
-            if (id == R.id.all_button) {
-                selectedPreferredGender = "Khác";
-            } else if (id == R.id.male_button) {
-                selectedPreferredGender = "Nam";
+            if (id == R.id.male_button) {
+                selectedGender = "Nam";
             } else if (id == R.id.female_button) {
-                selectedPreferredGender = "Nữ";
+                selectedGender = "Nữ";
+            } else if (id == R.id.other_button) {
+                selectedGender = "Khác";
             }
 
 
-            btnNext.setEnabled(selectedPreferredGender != null);
+            btnNext.setEnabled(selectedGender != null);
         };
 
-        // Gán listener cho các nút lựa chọn
-        btnAll.setOnClickListener(onPreferredGenderSelected);
-        btnMale.setOnClickListener(onPreferredGenderSelected);
-        btnFemale.setOnClickListener(onPreferredGenderSelected);
 
-        // --- Listener cho nút "Tiếp" ---
+        btnMale.setOnClickListener(onGenderSelected);
+        btnFemale.setOnClickListener(onGenderSelected);
+        btnOther.setOnClickListener(onGenderSelected);
+
+
         btnNext.setOnClickListener(v -> {
-            if (selectedPreferredGender != null) {
-
+            if (selectedGender != null) {
                 btnNext.setEnabled(false);
-                btnAll.setEnabled(false);
+
                 btnMale.setEnabled(false);
                 btnFemale.setEnabled(false);
+                btnOther.setEnabled(false);
 
-                // Cập nhật sở thích giới tính vào Realtime Database
-                userRepository.updateUserField("preferredGender", selectedPreferredGender, new UserRepository.OnUserActionListener() {
+                userRepository.updateUserField("gender", selectedGender, new xUserRepository.OnUserActionListener() {
                     @Override
                     public void onSuccess() {
-
-                        Intent intent = new Intent(PreferGenderActivity.this, DateOfBirthActivity.class);
+                        Intent intent = new Intent(xSelectGenderActivity.this, xPreferGenderActivity.class);
                         startActivity(intent);
 
                     }
 
                     @Override
                     public void onFailure(String errorMessage) {
-                        Toast.makeText(PreferGenderActivity.this, "Lỗi khi cập nhật sở thích giới tính: " + errorMessage, Toast.LENGTH_SHORT).show();
-                        // Enable lại các nút nếu có lỗi
+                        Toast.makeText(xSelectGenderActivity.this, "Lỗi khi cập nhật giới tính: " + errorMessage, Toast.LENGTH_SHORT).show();
+                        // Enable lại các nút nếu có lỗi để người dùng thử lại
                         btnNext.setEnabled(true);
-                        btnAll.setEnabled(true);
                         btnMale.setEnabled(true);
                         btnFemale.setEnabled(true);
+                        btnOther.setEnabled(true);
                     }
                 });
             }

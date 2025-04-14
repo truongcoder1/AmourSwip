@@ -7,7 +7,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import vn.edu.tlu.cse.amourswip.model.data.User;
+import vn.edu.tlu.cse.amourswip.model.data.xUser;
 
 public class trChatRepository {
 
@@ -23,7 +23,7 @@ public class trChatRepository {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if (snapshot.exists()) {
-                    User user = snapshot.getValue(User.class);
+                    xUser user = snapshot.getValue(xUser.class);
                     if (user != null) {
                         listener.onSuccess(user);
                     } else {
@@ -42,7 +42,7 @@ public class trChatRepository {
     }
 
     public interface OnResultListener {
-        void onSuccess(User user);
+        void onSuccess(xUser user);
         void onError(String error);
         void onLoading();
     }

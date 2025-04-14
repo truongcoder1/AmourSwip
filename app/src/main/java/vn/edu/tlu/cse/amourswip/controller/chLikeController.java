@@ -12,18 +12,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 import vn.edu.tlu.cse.amourswip.R;
-import vn.edu.tlu.cse.amourswip.model.data.User;
-import vn.edu.tlu.cse.amourswip.model.repository.LikeRepository;
-import vn.edu.tlu.cse.amourswip.view.fragment.LikeFragment;
+import vn.edu.tlu.cse.amourswip.model.data.xUser;
+import vn.edu.tlu.cse.amourswip.model.repository.chLikeRepository;
+import vn.edu.tlu.cse.amourswip.view.fragment.chLikeFragment;
 
-public class LikeController {
+public class chLikeController {
 
     private static final String TAG = "LikeController";
     private static final int PAGE_SIZE = 10;
-    private final LikeFragment fragment;
-    private final LikeRepository repository;
-    private List<User> usersWhoLikedMe;
-    private List<User> usersILiked;
+    private final chLikeFragment fragment;
+    private final chLikeRepository repository;
+    private List<xUser> usersWhoLikedMe;
+    private List<xUser> usersILiked;
     private String lastUserIdWhoLikedMe;
     private String lastUserIdILiked;
     private boolean isLikesTabSelected;
@@ -32,9 +32,9 @@ public class LikeController {
     private int maxAge = Integer.MAX_VALUE;
     private String residenceFilter;
 
-    public LikeController(LikeFragment fragment) {
+    public chLikeController(chLikeFragment fragment) {
         this.fragment = fragment;
-        this.repository = new LikeRepository();
+        this.repository = new chLikeRepository();
         this.usersWhoLikedMe = new ArrayList<>();
         this.usersILiked = new ArrayList<>();
         this.lastUserIdWhoLikedMe = null;
@@ -42,7 +42,7 @@ public class LikeController {
         this.isLikesTabSelected = true;
 
         // Load current user location
-        repository.getCurrentUserLocation(new LikeRepository.OnLocationListener() {
+        repository.getCurrentUserLocation(new chLikeRepository.OnLocationListener() {
             @Override
             public void onSuccess(double latitude, double longitude) {
                 fragment.setCurrentLocation(latitude, longitude);
@@ -81,9 +81,9 @@ public class LikeController {
     }
 
     private void loadUsersWhoLikedMe() {
-        repository.getUsersWhoLikedMe(new LikeRepository.OnResultListener() {
+        repository.getUsersWhoLikedMe(new chLikeRepository.OnResultListener() {
             @Override
-            public void onSuccess(List<User> users) {
+            public void onSuccess(List<xUser> users) {
                 usersWhoLikedMe.addAll(users);
                 applyFilterToUsers(usersWhoLikedMe);
                 fragment.updateUserList(usersWhoLikedMe);
@@ -108,9 +108,9 @@ public class LikeController {
     }
 
     private void loadUsersILiked() {
-        repository.getUsersILiked(new LikeRepository.OnResultListener() {
+        repository.getUsersILiked(new chLikeRepository.OnResultListener() {
             @Override
-            public void onSuccess(List<User> users) {
+            public void onSuccess(List<xUser> users) {
                 usersILiked.addAll(users);
                 applyFilterToUsers(usersILiked);
                 fragment.updateUserList(usersILiked);
@@ -134,7 +134,7 @@ public class LikeController {
         }, lastUserIdILiked, PAGE_SIZE);
     }
 
-    public void onLikeUser(User otherUser) {
+    public void onLikeUser(xUser otherUser) {
         DatabaseReference database = FirebaseDatabase.getInstance().getReference();
         String currentUserId = repository.getCurrentUserId();
 
@@ -168,7 +168,7 @@ public class LikeController {
                 });
     }
 
-    public void onDislikeUser(User otherUser) {
+    public void onDislikeUser(xUser otherUser) {
         DatabaseReference database = FirebaseDatabase.getInstance().getReference();
         String currentUserId = repository.getCurrentUserId();
 
@@ -185,7 +185,7 @@ public class LikeController {
                 });
     }
 
-    private void checkForMatch(User otherUser) {
+    private void checkForMatch(xUser otherUser) {
         DatabaseReference database = FirebaseDatabase.getInstance().getReference();
         String currentUserId = repository.getCurrentUserId();
 
@@ -232,9 +232,9 @@ public class LikeController {
         fragment.updateUserList(isLikesTabSelected ? usersWhoLikedMe : usersILiked);
     }
 
-    private void applyFilterToUsers(List<User> users) {
-        List<User> filteredUsers = new ArrayList<>();
-        for (User user : users) {
+    private void applyFilterToUsers(List<xUser> users) {
+        List<xUser> filteredUsers = new ArrayList<>();
+        for (xUser user : users) {
             // Lọc theo khoảng cách
             double distance = calculateDistance(user);
             if (distance > maxDistance) {
@@ -258,28 +258,28 @@ public class LikeController {
         users.addAll(filteredUsers);
     }
 
-    private double calculateDistance(User user) {
+    private double calculateDistance(xUser user) {
         // Tính khoảng cách dựa trên latitude và longitude (giả định)
         return 0; // Thay bằng logic thực tế nếu cần
     }
 
-    private int calculateAge(User user) {
+    private int calculateAge(xUser user) {
         // Tính tuổi dựa trên dateOfBirth (giả định)
         return 25; // Thay bằng logic thực tế nếu cần
     }
 
-    public void onUserClicked(User user) {
+    public void onUserClicked(xUser user) {
         // Điều hướng đến ProfileMyFriendActivity hoặc fragment tương ứng
         Bundle bundle = new Bundle();
         bundle.putString("friendId", user.getUid());
         fragment.getNavController().navigate(R.id.action_likeFragment_to_profileMyFriendActivity, bundle);
     }
 
-    public List<User> getUsersWhoLikedMe() {
+    public List<xUser> getUsersWhoLikedMe() {
         return new ArrayList<>(usersWhoLikedMe);
     }
 
-    public List<User> getUsersILiked() {
+    public List<xUser> getUsersILiked() {
         return new ArrayList<>(usersILiked);
     }
 

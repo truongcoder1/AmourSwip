@@ -1,6 +1,6 @@
 package vn.edu.tlu.cse.amourswip.model.data;
 
-public class Notification {
+public class chNotification {
     private String userId; // ID của người dùng gửi thông báo
     private String userName; // Tên của người dùng
     private String userImage; // URL hình ảnh của người dùng
@@ -8,10 +8,10 @@ public class Notification {
     private String time; // Thời gian thông báo
     private boolean isUnread; // Trạng thái chưa xem
 
-    public Notification() {
+    public chNotification() {
     }
 
-    public Notification(String userId, String userName, String userImage, String lastMessage, String time, boolean isUnread) {
+    public chNotification(String userId, String userName, String userImage, String lastMessage, String time, boolean isUnread) {
         this.userId = userId;
         this.userName = userName;
         this.userImage = userImage;

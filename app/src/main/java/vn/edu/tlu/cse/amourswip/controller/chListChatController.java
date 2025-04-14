@@ -9,27 +9,27 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import vn.edu.tlu.cse.amourswip.R;
-import vn.edu.tlu.cse.amourswip.model.data.Notification;
-import vn.edu.tlu.cse.amourswip.model.repository.NotificationRepository;
-import vn.edu.tlu.cse.amourswip.view.fragment.ListChatFragment;
+import vn.edu.tlu.cse.amourswip.model.data.chNotification;
+import vn.edu.tlu.cse.amourswip.model.repository.chNotificationRepository;
+import vn.edu.tlu.cse.amourswip.view.fragment.chListChatFragment;
 
-public class ListChatController {
+public class chListChatController {
 
     private static final String TAG = "ListChatController";
-    private final ListChatFragment fragment;
-    private final NotificationRepository notificationRepository;
+    private final chListChatFragment fragment;
+    private final chNotificationRepository notificationRepository;
     private final String currentUserId;
 
-    public ListChatController(ListChatFragment fragment) {
+    public chListChatController(chListChatFragment fragment) {
         this.fragment = fragment;
-        this.notificationRepository = new NotificationRepository();
+        this.notificationRepository = new chNotificationRepository();
         this.currentUserId = FirebaseAuth.getInstance().getCurrentUser().getUid();
     }
 
     public void loadNotifications() {
-        notificationRepository.getNotifications(new NotificationRepository.OnResultListener() {
+        notificationRepository.getNotifications(new chNotificationRepository.OnResultListener() {
             @Override
-            public void onSuccess(List<Notification> notifications) {
+            public void onSuccess(List<chNotification> notifications) {
                 fragment.updateNotifications(notifications);
             }
 
@@ -50,7 +50,7 @@ public class ListChatController {
         });
     }
 
-    public void onNotificationClicked(Notification notification) {
+    public void onNotificationClicked(chNotification notification) {
         // Tạo chatId
         String chatId = currentUserId.compareTo(notification.getUserId()) < 0
                 ? currentUserId + "_" + notification.getUserId()

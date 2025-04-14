@@ -12,10 +12,10 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import vn.edu.tlu.cse.amourswip.model.data.User;
+import vn.edu.tlu.cse.amourswip.model.data.xUser;
 import android.util.Log;
 
-public class LikeRepository {
+public class chLikeRepository {
 
     private static final String TAG = "LikeRepository";
     private final DatabaseReference database;
@@ -23,7 +23,7 @@ public class LikeRepository {
     private long processedUsers;
     private long totalUsers;
 
-    public LikeRepository() {
+    public chLikeRepository() {
         database = FirebaseDatabase.getInstance().getReference();
         currentUserId = FirebaseAuth.getInstance().getCurrentUser().getUid();
     }
@@ -62,7 +62,7 @@ public class LikeRepository {
 
     public void getUsersWhoLikedMe(OnResultListener listener, String lastUserId, int pageSize) {
         listener.onLoading();
-        List<User> usersWhoLikedMe = new ArrayList<>();
+        List<xUser> usersWhoLikedMe = new ArrayList<>();
         Set<String> userIds = new HashSet<>();
 
         Query query = database.child("likedBy").child(currentUserId).orderByKey();
@@ -101,7 +101,7 @@ public class LikeRepository {
                                 }
 
                                 // Ánh xạ thủ công để xử lý dữ liệu không đầy đủ
-                                User user = new User();
+                                xUser user = new xUser();
                                 user.setUid(userId);
                                 user.setName(userSnapshot.child("name").getValue(String.class));
                                 user.setEmail(userSnapshot.child("email").getValue(String.class));
@@ -170,7 +170,7 @@ public class LikeRepository {
 
     public void getUsersILiked(OnResultListener listener, String lastUserId, int pageSize) {
         listener.onLoading();
-        List<User> usersILiked = new ArrayList<>();
+        List<xUser> usersILiked = new ArrayList<>();
         Set<String> userIds = new HashSet<>();
 
         Query query = database.child("likes").child(currentUserId).orderByKey();
@@ -208,7 +208,7 @@ public class LikeRepository {
                                     return;
                                 }
 
-                                User user = userSnapshot.getValue(User.class);
+                                xUser user = userSnapshot.getValue(xUser.class);
                                 if (user != null) {
                                     user.setUid(likedUserId);
                                     usersILiked.add(user);
@@ -248,7 +248,7 @@ public class LikeRepository {
     }
 
     public interface OnResultListener {
-        void onSuccess(List<User> users);
+        void onSuccess(List<xUser> users);
         void onEmpty();
         void onError(String error);
         void onLoading();

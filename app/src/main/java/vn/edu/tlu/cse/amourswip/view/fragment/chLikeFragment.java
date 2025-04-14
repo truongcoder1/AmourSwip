@@ -25,11 +25,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 import vn.edu.tlu.cse.amourswip.R;
-import vn.edu.tlu.cse.amourswip.controller.LikeController;
-import vn.edu.tlu.cse.amourswip.model.data.User;
-import vn.edu.tlu.cse.amourswip.view.adapter.UserGridAdapter;
+import vn.edu.tlu.cse.amourswip.controller.chLikeController;
+import vn.edu.tlu.cse.amourswip.model.data.xUser;
+import vn.edu.tlu.cse.amourswip.view.adapter.chUserGridAdapter;
 
-public class LikeFragment extends Fragment {
+public class chLikeFragment extends Fragment {
 
     private static final String KEY_USERS_WHO_LIKED_ME = "usersWhoLikedMe";
     private static final String KEY_USERS_I_LIKED = "usersILiked";
@@ -47,10 +47,10 @@ public class LikeFragment extends Fragment {
     private TextView likedLabel;
     private RecyclerView userRecyclerView;
     private SwipeRefreshLayout swipeRefreshLayout;
-    private UserGridAdapter userAdapter;
-    private List<User> userList;
+    private chUserGridAdapter userAdapter;
+    private List<xUser> userList;
     private NavController navController;
-    private LikeController controller;
+    private chLikeController controller;
     private double currentLatitude;
     private double currentLongitude;
     private boolean isLoading;
@@ -77,7 +77,7 @@ public class LikeFragment extends Fragment {
         swipeRefreshLayout = view.findViewById(R.id.swipe_refresh_layout);
 
         userList = new ArrayList<>();
-        userAdapter = new UserGridAdapter(userList, this::onUserClicked, currentLatitude, currentLongitude);
+        userAdapter = new chUserGridAdapter(userList, this::onUserClicked, currentLatitude, currentLongitude);
         userRecyclerView.setAdapter(userAdapter);
         userRecyclerView.setLayoutManager(new GridLayoutManager(getContext(), 2));
 
@@ -106,7 +106,7 @@ public class LikeFragment extends Fragment {
 
         filterButton.setOnClickListener(v -> showFilterDialog());
 
-        controller = new LikeController(this);
+        controller = new chLikeController(this);
 
         if (savedInstanceState != null) {
             userList = savedInstanceState.getParcelableArrayList(KEY_USERS_I_LIKED);
@@ -234,11 +234,11 @@ public class LikeFragment extends Fragment {
     public void setCurrentLocation(double latitude, double longitude) {
         this.currentLatitude = latitude;
         this.currentLongitude = longitude;
-        userAdapter = new UserGridAdapter(userList, this::onUserClicked, currentLatitude, currentLongitude);
+        userAdapter = new chUserGridAdapter(userList, this::onUserClicked, currentLatitude, currentLongitude);
         userRecyclerView.setAdapter(userAdapter);
     }
 
-    public void updateUserList(List<User> users) {
+    public void updateUserList(List<xUser> users) {
         Log.d("LikeFragment", "updateUserList: Updating with " + users.size() + " users");
         userList.clear();
         userList.addAll(users);
@@ -251,7 +251,7 @@ public class LikeFragment extends Fragment {
         }
     }
 
-    public void setActionButtons(boolean show, Consumer<User> onLikeClicked, Consumer<User> onDislikeClicked) {
+    public void setActionButtons(boolean show, Consumer<xUser> onLikeClicked, Consumer<xUser> onDislikeClicked) {
         Log.d("LikeFragment", "setActionButtons: show=" + show);
         userAdapter.setShowActionButtons(show, onLikeClicked, onDislikeClicked);
     }
@@ -287,7 +287,7 @@ public class LikeFragment extends Fragment {
         return navController;
     }
 
-    private void onUserClicked(User user) {
+    private void onUserClicked(xUser user) {
         controller.onUserClicked(user);
     }
 }

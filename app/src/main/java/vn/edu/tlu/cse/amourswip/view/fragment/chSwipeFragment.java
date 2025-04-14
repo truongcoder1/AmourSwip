@@ -31,17 +31,16 @@ import com.yuyakaido.android.cardstackview.CardStackLayoutManager;
 import com.yuyakaido.android.cardstackview.CardStackListener;
 import com.yuyakaido.android.cardstackview.CardStackView;
 import com.yuyakaido.android.cardstackview.Direction;
-import com.yuyakaido.android.cardstackview.Duration;
-import com.yuyakaido.android.cardstackview.SwipeAnimationSetting;
+
 import vn.edu.tlu.cse.amourswip.R;
-import vn.edu.tlu.cse.amourswip.controller.SwipeController;
-import vn.edu.tlu.cse.amourswip.view.adapter.CardStackAdapter;
-import vn.edu.tlu.cse.amourswip.model.data.User;
+import vn.edu.tlu.cse.amourswip.controller.chSwipeController;
+import vn.edu.tlu.cse.amourswip.view.adapter.chCardStackAdapter;
+import vn.edu.tlu.cse.amourswip.model.data.xUser;
 import android.media.MediaPlayer;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SwipeFragment extends Fragment {
+public class chSwipeFragment extends Fragment {
 
     private static final String TAG = "SwipeFragment";
     private static final int REQUEST_CODE_LOCATION = 102;
@@ -58,12 +57,12 @@ public class SwipeFragment extends Fragment {
     private TextView errorMessage;
     private Button retryButton;
     private NavController navController;
-    private SwipeController controller;
+    private chSwipeController controller;
     private FirebaseAuth auth;
     private DatabaseReference database;
     private String currentUserId;
-    private List<User> userList;
-    private CardStackAdapter adapter;
+    private List<xUser> userList;
+    private chCardStackAdapter adapter;
     private CardStackLayoutManager layoutManager;
     private View currentStamp;
     private FusedLocationProviderClient fusedLocationClient;
@@ -113,7 +112,7 @@ public class SwipeFragment extends Fragment {
         retryButton = view.findViewById(R.id.retry_button);
 
         userList = new ArrayList<>();
-        adapter = new CardStackAdapter(userList);
+        adapter = new chCardStackAdapter(userList);
 
         layoutManager = new CardStackLayoutManager(getContext(), new CardStackListener() {
             @Override
@@ -247,7 +246,7 @@ public class SwipeFragment extends Fragment {
             controller.loadUsers();
         });
 
-        controller = new SwipeController(this, cardStackView, skipCircle, likeCircle, skipButton, likeButton,
+        controller = new chSwipeController(this, cardStackView, skipCircle, likeCircle, skipButton, likeButton,
                 null, null, navController, userList, adapter);
     }
 

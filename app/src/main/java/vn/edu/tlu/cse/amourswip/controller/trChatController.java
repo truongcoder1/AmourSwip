@@ -10,7 +10,7 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.HashMap;
 import java.util.Map;
 import vn.edu.tlu.cse.amourswip.model.data.trMessageUser;
-import vn.edu.tlu.cse.amourswip.model.data.User;
+import vn.edu.tlu.cse.amourswip.model.data.xUser;
 import vn.edu.tlu.cse.amourswip.model.repository.trChatRepository;
 import vn.edu.tlu.cse.amourswip.view.fragment.trChatUserFragment;
 
@@ -35,7 +35,7 @@ public class trChatController {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if (snapshot.exists()) {
-                    User user = snapshot.getValue(User.class);
+                    xUser user = snapshot.getValue(xUser.class);
                     if (user != null && user.getPhotos() != null && !user.getPhotos().isEmpty()) {
                         currentUserImage = user.getPhotos().get(0);
                     }
@@ -52,7 +52,7 @@ public class trChatController {
     public void loadFriendInfo() {
         chatRepository.getUserInfo(new trChatRepository.OnResultListener() {
             @Override
-            public void onSuccess(User user) {
+            public void onSuccess(xUser user) {
                 fragment.updateUserInfo(user);
             }
 

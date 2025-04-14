@@ -15,20 +15,20 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 import vn.edu.tlu.cse.amourswip.R;
-import vn.edu.tlu.cse.amourswip.model.data.User;
+import vn.edu.tlu.cse.amourswip.model.data.xUser;
 
-public class UserGridAdapter extends RecyclerView.Adapter<UserGridAdapter.UserViewHolder> {
+public class chUserGridAdapter extends RecyclerView.Adapter<chUserGridAdapter.UserViewHolder> {
 
     private static final String TAG = "UserGridAdapter";
-    private List<User> userList;
-    private final Consumer<User> onUserClicked;
+    private List<xUser> userList;
+    private final Consumer<xUser> onUserClicked;
     private double currentLatitude;
     private double currentLongitude;
     private boolean showActionButtons;
-    private Consumer<User> onLikeClicked;
-    private Consumer<User> onDislikeClicked;
+    private Consumer<xUser> onLikeClicked;
+    private Consumer<xUser> onDislikeClicked;
 
-    public UserGridAdapter(List<User> userList, Consumer<User> onUserClicked, double currentLatitude, double currentLongitude) {
+    public chUserGridAdapter(List<xUser> userList, Consumer<xUser> onUserClicked, double currentLatitude, double currentLongitude) {
         this.userList = userList != null ? userList : new ArrayList<>();
         this.onUserClicked = onUserClicked;
         this.currentLatitude = currentLatitude;
@@ -36,7 +36,7 @@ public class UserGridAdapter extends RecyclerView.Adapter<UserGridAdapter.UserVi
         this.showActionButtons = false;
     }
 
-    public void setShowActionButtons(boolean show, Consumer<User> onLikeClicked, Consumer<User> onDislikeClicked) {
+    public void setShowActionButtons(boolean show, Consumer<xUser> onLikeClicked, Consumer<xUser> onDislikeClicked) {
         Log.d(TAG, "setShowActionButtons: show=" + show);
         this.showActionButtons = show;
         this.onLikeClicked = onLikeClicked;
@@ -53,7 +53,7 @@ public class UserGridAdapter extends RecyclerView.Adapter<UserGridAdapter.UserVi
 
     @Override
     public void onBindViewHolder(@NonNull UserViewHolder holder, int position) {
-        User user = userList.get(position);
+        xUser user = userList.get(position);
 
         // Hiển thị tên và tuổi
         holder.userNameAge.setText(user.getName() + ", " + user.getAge());
@@ -122,7 +122,7 @@ public class UserGridAdapter extends RecyclerView.Adapter<UserGridAdapter.UserVi
         return String.format("%.1f KM", distanceInKm);
     }
 
-    public void updateList(List<User> newList) {
+    public void updateList(List<xUser> newList) {
         this.userList = newList != null ? newList : new ArrayList<>();
         notifyDataSetChanged();
     }

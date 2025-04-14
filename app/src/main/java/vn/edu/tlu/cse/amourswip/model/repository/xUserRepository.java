@@ -5,14 +5,14 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import vn.edu.tlu.cse.amourswip.model.data.User;
+import vn.edu.tlu.cse.amourswip.model.data.xUser;
 
-public class UserRepository {
+public class xUserRepository {
 
     private DatabaseReference database;
     private FirebaseAuth auth;
 
-    public UserRepository() {
+    public xUserRepository() {
         database = FirebaseDatabase.getInstance().getReference("users");
         auth = FirebaseAuth.getInstance();
     }
@@ -26,7 +26,7 @@ public class UserRepository {
     }
 
     // Lưu thông tin người dùng mới (dùng khi đăng ký)
-    public void saveUser(User user, OnUserActionListener listener) {
+    public void saveUser(xUser user, OnUserActionListener listener) {
         String userId = getCurrentUserId();
         if (userId != null) {
             database.child(userId).setValue(user)

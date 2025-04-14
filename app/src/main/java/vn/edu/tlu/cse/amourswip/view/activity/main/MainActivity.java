@@ -30,7 +30,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import vn.edu.tlu.cse.amourswip.R;
-import vn.edu.tlu.cse.amourswip.view.activity.signup.SignInActivity;
+import vn.edu.tlu.cse.amourswip.view.activity.signup.xSignInActivity;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -59,7 +59,7 @@ public class MainActivity extends AppCompatActivity {
 
         // Kiểm tra trạng thái đăng nhập
         if (auth.getCurrentUser() == null) {
-            startActivity(new Intent(this, SignInActivity.class));
+            startActivity(new Intent(this, xSignInActivity.class));
             finish();
             return;
         }

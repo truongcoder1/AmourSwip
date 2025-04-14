@@ -13,16 +13,16 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 
-import vn.edu.tlu.cse.amourswip.model.data.User;
-import vn.edu.tlu.cse.amourswip.model.repository.UserRepository;
+import vn.edu.tlu.cse.amourswip.model.data.xUser;
+import vn.edu.tlu.cse.amourswip.model.repository.xUserRepository;
 import vn.edu.tlu.cse.amourswip.R;
 
-public class SignUpActivity extends AppCompatActivity {
+public class xSignUpActivity extends AppCompatActivity {
 
     private EditText etEmail, etUsername, etPassword, etConfirmPassword, etResidence;
     private TextView tvWarning;
     private FirebaseAuth mAuth;
-    private UserRepository userRepository;
+    private xUserRepository userRepository;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,7 +37,7 @@ public class SignUpActivity extends AppCompatActivity {
         tvWarning = findViewById(R.id.warning_text);
 
         mAuth = FirebaseAuth.getInstance();
-        userRepository = new UserRepository();
+        userRepository = new xUserRepository();
 
         findViewById(R.id.sign_up_button).setOnClickListener(v -> {
             validateAndRegisterUser();
@@ -134,7 +134,7 @@ public class SignUpActivity extends AppCompatActivity {
         }
 
         // Tạo đối tượng User mới
-        User user = new User();
+        xUser user = new xUser();
         user.setUid(mAuth.getCurrentUser().getUid());
         user.setEmail(email);
         user.setName(username);
@@ -147,12 +147,12 @@ public class SignUpActivity extends AppCompatActivity {
 
 
         // Gọi phương thức lưu User từ UserRepository
-        userRepository.saveUser(user, new UserRepository.OnUserActionListener() {
+        userRepository.saveUser(user, new xUserRepository.OnUserActionListener() {
             @Override
             public void onSuccess() {
                 // Lưu thành công, hiển thị thông báo và chuyển sang màn hình chọn giới tính
-                Toast.makeText(SignUpActivity.this, "Đăng ký thành công!", Toast.LENGTH_SHORT).show();
-                Intent intent = new Intent(SignUpActivity.this, SelectGenderActivity.class);
+                Toast.makeText(xSignUpActivity.this, "Đăng ký thành công!", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(xSignUpActivity.this, xSelectGenderActivity.class);
                 // Xóa các activity trước đó khỏi stack để người dùng không quay lại màn hình đăng ký
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 startActivity(intent);

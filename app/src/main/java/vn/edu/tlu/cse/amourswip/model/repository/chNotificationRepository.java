@@ -12,22 +12,22 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
-import vn.edu.tlu.cse.amourswip.model.data.Notification;
-import vn.edu.tlu.cse.amourswip.model.data.User;
+import vn.edu.tlu.cse.amourswip.model.data.chNotification;
+import vn.edu.tlu.cse.amourswip.model.data.xUser;
 
-public class NotificationRepository {
+public class chNotificationRepository {
 
     private final DatabaseReference database;
     private final String currentUserId;
     private ValueEventListener matchesListener;
 
-    public NotificationRepository() {
+    public chNotificationRepository() {
         database = FirebaseDatabase.getInstance().getReference();
         currentUserId = FirebaseAuth.getInstance().getCurrentUser().getUid();
     }
 
     public void getNotifications(OnResultListener listener) {
-        List<Notification> notificationList = new ArrayList<>();
+        List<chNotification> notificationList = new ArrayList<>();
         listener.onLoading();
         matchesListener = new ValueEventListener() {
             @Override
@@ -47,7 +47,7 @@ public class NotificationRepository {
                     database.child("users").child(matchedUserId).addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot userSnapshot) {
-                            User user = userSnapshot.getValue(User.class);
+                            xUser user = userSnapshot.getValue(xUser.class);
                             if (user != null) {
                                 // Lấy tin nhắn cuối cùng từ node chats/{chatId}/lastMessage
                                 database.child("chats").child(chatId).child("lastMessage").addListenerForSingleValueEvent(new ValueEventListener() {
@@ -72,7 +72,7 @@ public class NotificationRepository {
 
                                         // Lấy URL hình ảnh từ user
                                         String userImage = user.getPhotos() != null && !user.getPhotos().isEmpty() ? user.getPhotos().get(0) : "";
-                                        Notification notification = new Notification(
+                                        chNotification notification = new chNotification(
                                                 matchedUserId,
                                                 user.getName(),
                                                 userImage,
@@ -116,7 +116,7 @@ public class NotificationRepository {
     }
     //
     public interface OnResultListener {
-        void onSuccess(List<Notification> notifications);
+        void onSuccess(List<chNotification> notifications);
         void onEmpty();
         void onError(String error);
         void onLoading();

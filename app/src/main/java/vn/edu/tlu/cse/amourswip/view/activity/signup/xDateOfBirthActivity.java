@@ -13,9 +13,9 @@ import java.util.Calendar;
 import java.util.Locale;
 
 import vn.edu.tlu.cse.amourswip.R;
-import vn.edu.tlu.cse.amourswip.model.repository.UserRepository;
+import vn.edu.tlu.cse.amourswip.model.repository.xUserRepository;
 
-public class DateOfBirthActivity extends AppCompatActivity {
+public class xDateOfBirthActivity extends AppCompatActivity {
 
     private static final String TAG = "DateOfBirthActivity";
     private static final String DATE_FORMAT = "%02d/%02d/%04d";
@@ -24,7 +24,7 @@ public class DateOfBirthActivity extends AppCompatActivity {
 
     private DatePicker datePickerSpinner;
     private MaterialButton nextButton;
-    private UserRepository userRepository;
+    private xUserRepository userRepository;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,7 +32,7 @@ public class DateOfBirthActivity extends AppCompatActivity {
         setContentView(R.layout.activity_dateofbirth);
         datePickerSpinner = findViewById(R.id.date_picker_spinner);
         nextButton = findViewById(R.id.next_button);
-        userRepository = new UserRepository();
+        userRepository = new xUserRepository();
         Calendar today = Calendar.getInstance();
         Calendar defaultDisplayDate = Calendar.getInstance();
         defaultDisplayDate.add(Calendar.YEAR, -MIN_AGE);
@@ -72,18 +72,18 @@ public class DateOfBirthActivity extends AppCompatActivity {
     }
     private void saveDateOfBirth(String dateOfBirth) {
         nextButton.setEnabled(false);
-        userRepository.updateUserField("dateOfBirth", dateOfBirth, new UserRepository.OnUserActionListener() {
+        userRepository.updateUserField("dateOfBirth", dateOfBirth, new xUserRepository.OnUserActionListener() {
             @Override
             public void onSuccess() {
                 Log.i(TAG, "Date of birth updated successfully.");
-                Intent intent = new Intent(DateOfBirthActivity.this, MyimageActivity.class);
+                Intent intent = new Intent(xDateOfBirthActivity.this, xMyimageActivity.class);
                 startActivity(intent);
                 finish();
             }
             @Override
             public void onFailure(String errorMessage) {
                 Log.e(TAG, "Failed to update date of birth: " + errorMessage);
-                Toast.makeText(DateOfBirthActivity.this, getString(R.string.error_saving_dob) + errorMessage, Toast.LENGTH_LONG).show();
+                Toast.makeText(xDateOfBirthActivity.this, getString(R.string.error_saving_dob) + errorMessage, Toast.LENGTH_LONG).show();
                 nextButton.setEnabled(true);
             }
         });

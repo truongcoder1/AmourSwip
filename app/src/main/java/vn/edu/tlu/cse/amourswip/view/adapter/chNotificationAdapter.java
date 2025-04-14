@@ -10,14 +10,14 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import java.util.List;
 import vn.edu.tlu.cse.amourswip.R;
-import vn.edu.tlu.cse.amourswip.model.data.Notification;
+import vn.edu.tlu.cse.amourswip.model.data.chNotification;
 
-public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapter.ViewHolder> {
+public class chNotificationAdapter extends RecyclerView.Adapter<chNotificationAdapter.ViewHolder> {
 
-    private List<Notification> notificationList;
+    private List<chNotification> notificationList;
     private OnItemClickListener listener;
 
-    public NotificationAdapter(List<Notification> notificationList, OnItemClickListener listener) {
+    public chNotificationAdapter(List<chNotification> notificationList, OnItemClickListener listener) {
         this.notificationList = notificationList;
         this.listener = listener;
     }
@@ -31,7 +31,7 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        Notification notification = notificationList.get(position);
+        chNotification notification = notificationList.get(position);
 
         // Gán dữ liệu
         holder.userName.setText(notification.getUserName());
@@ -66,7 +66,7 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
     }
 
     public interface OnItemClickListener {
-        void onItemClick(Notification notification);
+        void onItemClick(chNotification notification);
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder {

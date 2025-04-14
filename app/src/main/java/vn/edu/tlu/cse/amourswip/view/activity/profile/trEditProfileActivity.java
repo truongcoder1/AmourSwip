@@ -64,7 +64,7 @@ public class trEditProfileActivity extends AppCompatActivity {
         backArrow.setOnClickListener(v -> finish());
 
         settingsIcon.setOnClickListener(v -> {
-            Intent intent = new Intent(trEditProfileActivity.this, SettingActivity.class);
+            Intent intent = new Intent(trEditProfileActivity.this, xSettingActivity.class);
             startActivity(intent);
         });
 

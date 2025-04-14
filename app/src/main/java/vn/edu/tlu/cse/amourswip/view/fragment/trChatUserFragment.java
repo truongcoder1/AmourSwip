@@ -31,7 +31,7 @@ import java.util.Map;
 import vn.edu.tlu.cse.amourswip.R;
 import vn.edu.tlu.cse.amourswip.controller.trChatController;
 import vn.edu.tlu.cse.amourswip.model.data.trMessageUser;
-import vn.edu.tlu.cse.amourswip.model.data.User;
+import vn.edu.tlu.cse.amourswip.model.data.xUser;
 import vn.edu.tlu.cse.amourswip.view.activity.profile.trProfileMyFriendActivity;
 import vn.edu.tlu.cse.amourswip.view.adapter.trMessageAdapter;
 
@@ -179,7 +179,7 @@ public class trChatUserFragment extends Fragment {
     }
 
     // Phương thức để Controller gọi để cập nhật giao diện
-    public void updateUserInfo(User user) {
+    public void updateUserInfo(xUser user) {
         if (user != null) {
             userName.setText(user.getName() != null ? user.getName() : "N/A");
 

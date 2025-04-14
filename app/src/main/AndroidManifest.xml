@@ -34,7 +34,7 @@
 
         <!-- WelcomeActivity (Màn hình khởi động mới) -->
         <activity
-            android:name=".view.activity.signup.WelcomeActivity"
+            android:name=".view.activity.signup.xWelcomeActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -43,14 +43,14 @@
         </activity>
 
         <activity android:name=".view.activity.main.MainActivity" />
-        <activity android:name=".view.activity.signup.SignInActivity" />
-        <activity android:name=".view.activity.signup.SignUpActivity" />
-        <activity android:name=".view.activity.signup.SelectGenderActivity" />
-        <activity android:name=".view.activity.signup.PreferGenderActivity" />
-        <activity android:name=".view.activity.signup.DateOfBirthActivity" />
-        <activity android:name=".view.activity.signup.MyimageActivity" />
-        <activity android:name=".view.activity.signup.MapActivity" />
-        <activity android:name=".view.activity.profile.SettingActivity" />
+        <activity android:name=".view.activity.signup.xSignInActivity" />
+        <activity android:name=".view.activity.signup.xSignUpActivity" />
+        <activity android:name=".view.activity.signup.xSelectGenderActivity" />
+        <activity android:name=".view.activity.signup.xPreferGenderActivity" />
+        <activity android:name=".view.activity.signup.xDateOfBirthActivity" />
+        <activity android:name=".view.activity.signup.xMyimageActivity" />
+        <activity android:name=".view.activity.signup.xMapActivity" />
+        <activity android:name=".view.activity.profile.xSettingActivity" />
         <activity android:name=".view.activity.profile.trEditProfileActivity" />
         <activity android:name=".view.activity.profile.trProfileMyFriendActivity" />
         <activity android:name=".view.activity.profile.trEditPhotosActivity" />

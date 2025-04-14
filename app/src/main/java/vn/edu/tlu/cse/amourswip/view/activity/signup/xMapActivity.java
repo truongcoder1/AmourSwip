@@ -23,7 +23,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import vn.edu.tlu.cse.amourswip.R;
 import vn.edu.tlu.cse.amourswip.view.activity.main.MainActivity;
 
-public class MapActivity extends AppCompatActivity {
+public class xMapActivity extends AppCompatActivity {
 
     private LinearLayout layoutDefault;
     private LinearLayout layoutAdjustDistance;
@@ -95,7 +95,7 @@ public class MapActivity extends AppCompatActivity {
                 SharedPreferences.Editor editor = sharedPreferences.edit();
                 editor.putInt(DISTANCE_KEY, newDistance);
                 editor.apply();
-                Toast.makeText(MapActivity.this, "Đã lưu phạm vi tìm kiếm: " + newDistance + " km", Toast.LENGTH_SHORT).show();
+                Toast.makeText(xMapActivity.this, "Đã lưu phạm vi tìm kiếm: " + newDistance + " km", Toast.LENGTH_SHORT).show();
                 finish(); // Quay lại SettingActivity
             });
         } else {
@@ -111,7 +111,7 @@ public class MapActivity extends AppCompatActivity {
             // Logic cho nút "Bỏ qua"
             skipButton.setOnClickListener(v -> {
                 // Chuyển đến MainActivity mà không lấy vị trí
-                startActivity(new Intent(MapActivity.this, MainActivity.class));
+                startActivity(new Intent(xMapActivity.this, MainActivity.class));
                 finish();
             });
         }
@@ -152,7 +152,7 @@ public class MapActivity extends AppCompatActivity {
                 database.child("users").child(userId).child("longitude").setValue(longitude);
 
                 // Chuyển đến MainActivity
-                startActivity(new Intent(MapActivity.this, MainActivity.class));
+                startActivity(new Intent(xMapActivity.this, MainActivity.class));
                 finish();
             } else {
                 Toast.makeText(this, "Không thể lấy vị trí, vui lòng thử lại", Toast.LENGTH_SHORT).show();

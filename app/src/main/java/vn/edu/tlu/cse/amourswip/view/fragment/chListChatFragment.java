@@ -18,19 +18,19 @@ import com.google.firebase.auth.FirebaseAuth;
 import java.util.ArrayList;
 import java.util.List;
 import vn.edu.tlu.cse.amourswip.R;
-import vn.edu.tlu.cse.amourswip.view.adapter.NotificationAdapter;
-import vn.edu.tlu.cse.amourswip.controller.ListChatController;
-import vn.edu.tlu.cse.amourswip.model.data.Notification;
+import vn.edu.tlu.cse.amourswip.view.adapter.chNotificationAdapter;
+import vn.edu.tlu.cse.amourswip.controller.chListChatController;
+import vn.edu.tlu.cse.amourswip.model.data.chNotification;
 
-public class ListChatFragment extends Fragment {
+public class chListChatFragment extends Fragment {
     //alo
     private RecyclerView notificationsRecyclerView;
     private ImageButton chatbotButton;
-    private List<Notification> notificationList;
-    private NotificationAdapter adapter;
+    private List<chNotification> notificationList;
+    private chNotificationAdapter adapter;
     private FirebaseAuth auth;
     private NavController navController;
-    private ListChatController controller;
+    private chListChatController controller;
 
     @Nullable
     @Override
@@ -57,7 +57,7 @@ public class ListChatFragment extends Fragment {
         chatbotButton = view.findViewById(R.id.chatbot_button);
 
         notificationList = new ArrayList<>();
-        adapter = new NotificationAdapter(notificationList, this::onNotificationClicked);
+        adapter = new chNotificationAdapter(notificationList, this::onNotificationClicked);
         notificationsRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         notificationsRecyclerView.setAdapter(adapter);
 
@@ -72,15 +72,15 @@ public class ListChatFragment extends Fragment {
             String chatId = args.getString("chatId");
         }
 
-        controller = new ListChatController(this);
+        controller = new chListChatController(this);
         controller.loadNotifications();
     }
 
-    private void onNotificationClicked(Notification notification) {
+    private void onNotificationClicked(chNotification notification) {
         controller.onNotificationClicked(notification);
     }
 
-    public void updateNotifications(List<Notification> notifications) {
+    public void updateNotifications(List<chNotification> notifications) {
         notificationList.clear();
         notificationList.addAll(notifications);
         adapter.notifyDataSetChanged();

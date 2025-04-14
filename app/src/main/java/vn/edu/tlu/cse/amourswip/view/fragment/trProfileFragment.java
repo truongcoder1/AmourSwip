@@ -25,7 +25,7 @@ import com.google.firebase.database.ValueEventListener;
 
 import vn.edu.tlu.cse.amourswip.R;
 import vn.edu.tlu.cse.amourswip.view.activity.profile.trEditProfileActivity;
-import vn.edu.tlu.cse.amourswip.view.activity.profile.SettingActivity;
+import vn.edu.tlu.cse.amourswip.view.activity.profile.xSettingActivity;
 import vn.edu.tlu.cse.amourswip.view.adapter.trPhotoAdapter;
 
 import java.util.ArrayList;
@@ -69,7 +69,7 @@ public class trProfileFragment extends Fragment {
         });
 
         settingsIcon.setOnClickListener(v -> {
-            Intent intent = new Intent(getContext(), SettingActivity.class);
+            Intent intent = new Intent(getContext(), xSettingActivity.class);
             startActivity(intent);
         });
 
