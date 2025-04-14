@@ -11,6 +11,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
@@ -19,6 +20,7 @@ import androidx.core.content.ContextCompat;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.NavigationUI;
+
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.ChildEventListener;
@@ -26,6 +28,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+
 import vn.edu.tlu.cse.amourswip.R;
 import vn.edu.tlu.cse.amourswip.view.activity.signup.SignInActivity;
 
@@ -37,8 +40,10 @@ public class MainActivity extends AppCompatActivity {
     private NavController navController;
     private SharedPreferences sharedPreferences;
     private static final int REQUEST_CODE_NOTIFICATIONS = 101;
-    private static final String CHANNEL_ID = "MatchNotifications";
-    private static final String CHANNEL_NAME = "Match Notifications";
+    private static final String CHANNEL_ID_MATCH = "MatchNotifications";
+    private static final String CHANNEL_NAME_MATCH = "Match Notifications";
+    private static final String CHANNEL_ID_LIKE = "LikeNotifications";
+    private static final String CHANNEL_NAME_LIKE = "Like Notifications";
     private static final String PREFS_NAME = "AppSettingsPrefs";
     private static final String NOTIFICATIONS_ENABLED_KEY = "notificationsEnabled";
 
@@ -64,6 +69,9 @@ public class MainActivity extends AppCompatActivity {
 
         // Lắng nghe match mới
         listenForMatches();
+
+        // Lắng nghe lượt thích mới
+        listenForLikes();
 
         // Khởi tạo BottomNavigationView
         bottomNavigationView = findViewById(R.id.bottom_navigation);
@@ -97,7 +105,6 @@ public class MainActivity extends AppCompatActivity {
                             String friendId = intent.getStringExtra("friendId");
                             Bundle bundle = new Bundle();
                             bundle.putString("userId", friendId);
-                            // Có thể lấy userName từ Firebase nếu cần
                             bundle.putString("userName", ""); // Cập nhật sau nếu cần userName
                             navController.navigate(R.id.chatUserFragment, bundle);
                         }
@@ -126,7 +133,7 @@ public class MainActivity extends AppCompatActivity {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 // Quyền được cấp
             } else {
-                Toast.makeText(this, "Ứng dụng cần quyền thông báo để gửi thông tin khi có match mới", Toast.LENGTH_LONG).show();
+                Toast.makeText(this, "Ứng dụng cần quyền thông báo để gửi thông tin khi có lượt thích hoặc match mới", Toast.LENGTH_LONG).show();
             }
         }
     }
@@ -155,19 +162,22 @@ public class MainActivity extends AppCompatActivity {
                         if (matchedUserName == null) matchedUserName = "Một người dùng";
 
                         // Gửi thông báo cục bộ
-                        sendLocalNotification(matchedUserName);
+                        sendLocalNotification(CHANNEL_ID_MATCH, CHANNEL_NAME_MATCH, "Bạn có match mới!", "Bạn đã match với " + matchedUserName + "!", MainActivity.class);
                     }
                 });
             }
 
             @Override
-            public void onChildChanged(@NonNull DataSnapshot snapshot, String previousChildName) {}
+            public void onChildChanged(@NonNull DataSnapshot snapshot, String previousChildName) {
+            }
 
             @Override
-            public void onChildRemoved(@NonNull DataSnapshot snapshot) {}
+            public void onChildRemoved(@NonNull DataSnapshot snapshot) {
+            }
 
             @Override
-            public void onChildMoved(@NonNull DataSnapshot snapshot, String previousChildName) {}
+            public void onChildMoved(@NonNull DataSnapshot snapshot, String previousChildName) {
+            }
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
@@ -176,25 +186,73 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    private void sendLocalNotification(String matchedUserName) {
+    private void listenForLikes() {
+        String userId = auth.getCurrentUser().getUid();
+        DatabaseReference likedByRef = database.child("likedBy").child(userId);
+
+        // Lắng nghe sự kiện khi có lượt thích mới
+        likedByRef.addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(@NonNull DataSnapshot snapshot, String previousChildName) {
+                String likerUserId = snapshot.getKey();
+
+                // Kiểm tra trạng thái bật/tắt thông báo từ SharedPreferences
+                boolean notificationsEnabled = sharedPreferences.getBoolean(NOTIFICATIONS_ENABLED_KEY, true);
+                if (!notificationsEnabled) {
+                    // Thông báo bị tắt, không gửi thông báo
+                    return;
+                }
+
+                // Lấy thông tin người thích
+                database.child("users").child(likerUserId).child("name").get().addOnCompleteListener(nameTask -> {
+                    if (nameTask.isSuccessful()) {
+                        String likerName = nameTask.getResult().getValue(String.class);
+                        if (likerName == null) likerName = "Một người dùng";
+
+                        // Gửi thông báo cục bộ
+                        sendLocalNotification(CHANNEL_ID_LIKE, CHANNEL_NAME_LIKE, "Lượt thích mới!", likerName + " đã thích bạn!", MainActivity.class);
+                    }
+                });
+            }
+
+            @Override
+            public void onChildChanged(@NonNull DataSnapshot snapshot, String previousChildName) {
+            }
+
+            @Override
+            public void onChildRemoved(@NonNull DataSnapshot snapshot) {
+            }
+
+            @Override
+            public void onChildMoved(@NonNull DataSnapshot snapshot, String previousChildName) {
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Toast.makeText(MainActivity.this, "Lỗi lắng nghe lượt thích: " + error.getMessage(), Toast.LENGTH_LONG).show();
+            }
+        });
+    }
+
+    private void sendLocalNotification(String channelId, String channelName, String title, String message, Class<?> targetActivity) {
         NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
 
         // Tạo kênh thông báo (cho Android 8.0 trở lên)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            NotificationChannel channel = new NotificationChannel(CHANNEL_ID, CHANNEL_NAME, NotificationManager.IMPORTANCE_HIGH);
+            NotificationChannel channel = new NotificationChannel(channelId, channelName, NotificationManager.IMPORTANCE_HIGH);
             notificationManager.createNotificationChannel(channel);
         }
 
-        // Tạo Intent để mở MainActivity khi nhấn vào thông báo
-        Intent intent = new Intent(this, MainActivity.class);
+        // Tạo Intent để mở Activity khi nhấn vào thông báo
+        Intent intent = new Intent(this, targetActivity);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
 
         // Tạo thông báo
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, CHANNEL_ID)
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, channelId)
                 .setSmallIcon(R.drawable.gai1) // Thay bằng icon của bạn
-                .setContentTitle("Bạn có match mới!")
-                .setContentText("Bạn đã match với " + matchedUserName + "!")
+                .setContentTitle(title)
+                .setContentText(message)
                 .setPriority(NotificationCompat.PRIORITY_HIGH)
                 .setContentIntent(pendingIntent)
                 .setAutoCancel(true);
