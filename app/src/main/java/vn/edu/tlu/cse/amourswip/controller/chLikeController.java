@@ -2,12 +2,15 @@ package vn.edu.tlu.cse.amourswip.controller;
 
 import android.os.Bundle;
 import android.util.Log;
+
 import androidx.annotation.NonNull;
+
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -243,6 +246,7 @@ public class chLikeController {
                             // Xóa người dùng khỏi cả hai danh sách
                             usersWhoLikedMe.removeIf(user -> user.getUid().equals(otherUser.getUid()));
                             usersILiked.removeIf(user -> user.getUid().equals(otherUser.getUid()));
+                            // Cập nhật giao diện của tab hiện tại
                             fragment.updateUserList(isLikesTabSelected ? usersWhoLikedMe : usersILiked);
                         } else {
                             Log.d(TAG, "checkForMatch: No mutual like found with user: " + otherUser.getName());

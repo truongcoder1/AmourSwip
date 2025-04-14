@@ -58,7 +58,7 @@ public class chLikeFragment extends Fragment {
     private double currentLongitude;
     private boolean isLoading;
     private boolean isFilterApplied;
-    private boolean isLikesTabSelected; // Thêm biến này để theo dõi trạng thái tab
+    private boolean isLikesTabSelected; // Biến để theo dõi trạng thái tab
 
     @Nullable
     @Override
@@ -248,19 +248,29 @@ public class chLikeFragment extends Fragment {
     }
 
     public void updateUserList(List<xUser> users) {
-        Log.d("chLikeFragment", "updateUserList: Updating with " + users.size() + " users");
+        Log.d("chLikeFragment", "updateUserList: Updating with " + (users != null ? users.size() : 0) + " users");
+        if (users == null) {
+            users = new ArrayList<>(); // Đảm bảo danh sách không null
+        }
+
         // Sử dụng DiffUtil để tối ưu hóa cập nhật danh sách
         DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(new UserDiffCallback(userList, users));
         userList.clear();
         userList.addAll(users);
 
-        // Cập nhật danh sách tương ứng dựa trên tab hiện tại
+        // Cập nhật cả hai danh sách để đồng bộ
         if (isLikesTabSelected) {
             usersWhoLikedMe.clear();
             usersWhoLikedMe.addAll(users);
+            // Đồng bộ danh sách usersILiked với dữ liệu từ controller
+            usersILiked.clear();
+            usersILiked.addAll(controller.getUsersILiked());
         } else {
             usersILiked.clear();
             usersILiked.addAll(users);
+            // Đồng bộ danh sách usersWhoLikedMe với dữ liệu từ controller
+            usersWhoLikedMe.clear();
+            usersWhoLikedMe.addAll(controller.getUsersWhoLikedMe());
         }
 
         diffResult.dispatchUpdatesTo(userAdapter);
@@ -344,8 +354,15 @@ public class chLikeFragment extends Fragment {
         public boolean areContentsTheSame(int oldItemPosition, int newItemPosition) {
             xUser oldUser = oldList.get(oldItemPosition);
             xUser newUser = newList.get(newItemPosition);
-            return oldUser.getName().equals(newUser.getName()) &&
-                    oldUser.getPhotos().equals(newUser.getPhotos()) &&
+
+            // Kiểm tra null trước khi gọi equals()
+            String oldName = oldUser.getName() != null ? oldUser.getName() : "";
+            String newName = newUser.getName() != null ? newUser.getName() : "";
+            List<String> oldPhotos = oldUser.getPhotos() != null ? oldUser.getPhotos() : new ArrayList<>();
+            List<String> newPhotos = newUser.getPhotos() != null ? newUser.getPhotos() : new ArrayList<>();
+
+            return oldName.equals(newName) &&
+                    oldPhotos.equals(newPhotos) &&
                     oldUser.getLatitude() == newUser.getLatitude() &&
                     oldUser.getLongitude() == newUser.getLongitude();
         }
