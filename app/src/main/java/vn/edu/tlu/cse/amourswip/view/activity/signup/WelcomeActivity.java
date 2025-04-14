@@ -113,8 +113,8 @@ public class WelcomeActivity extends AppCompatActivity {
     private void createHeart() {
         // Tạo một ImageView cho trái tim
         ImageView heartView = new ImageView(this);
-        heartView.setImageResource(R.drawable.heart_icon);
-        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(30, 30); // Kích thước trái tim
+        heartView.setImageResource(R.drawable.ic_heartwel);
+        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(200, 200); // Kích thước trái tim
         params.leftMargin = random.nextInt(heartContainer.getWidth() - 30); // Vị trí ngẫu nhiên theo chiều ngang
         params.topMargin = -30; // Bắt đầu từ trên cùng
         heartView.setLayoutParams(params);
