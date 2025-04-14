@@ -2,18 +2,18 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:id="@+id/swipeFragment"
-        android:icon="@drawable/custom_iconhome"
+        android:icon="@drawable/ic_home"
         android:title="Swipe" />
     <item
         android:id="@+id/likeFragment"
-        android:icon="@drawable/custom_iconheart"
+        android:icon="@drawable/ic_heart"
         android:title="Like" />
     <item
         android:id="@+id/listChatFragment"
-        android:icon="@drawable/custome_iconchat"
+        android:icon="@drawable/ic_chat"
         android:title="Chat" />
     <item
         android:id="@+id/profileFragment"
-        android:icon="@drawable/custom_iconprofile"
+        android:icon="@drawable/ic_profile"
         android:title="Profile" />
 </menu>

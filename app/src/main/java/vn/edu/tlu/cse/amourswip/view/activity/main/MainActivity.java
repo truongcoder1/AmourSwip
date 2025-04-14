@@ -9,6 +9,7 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
@@ -34,6 +35,7 @@ import vn.edu.tlu.cse.amourswip.view.activity.signup.xSignInActivity;
 
 public class MainActivity extends AppCompatActivity {
 
+    private static final String TAG = "MainActivity";
     private FirebaseAuth auth;
     private DatabaseReference database;
     private BottomNavigationView bottomNavigationView;
@@ -74,12 +76,39 @@ public class MainActivity extends AppCompatActivity {
                     navController = Navigation.findNavController(MainActivity.this, R.id.nav_host_fragment);
                     NavigationUI.setupWithNavController(bottomNavigationView, navController);
 
+                    // Debug điều hướng
+                    bottomNavigationView.setOnItemSelectedListener(item -> {
+                        Log.d(TAG, "BottomNavigation item selected: " + item.getItemId() + " (" + getResourceName(item.getItemId()) + ")");
+                        try {
+                            boolean navigated = NavigationUI.onNavDestinationSelected(item, navController);
+                            Log.d(TAG, "NavigationUI.onNavDestinationSelected result: " + navigated);
+                            if (!navigated) {
+                                // Điều hướng thủ công nếu NavigationUI thất bại
+                                int destinationId = item.getItemId();
+                                if (destinationId == R.id.swipeFragment || destinationId == R.id.likeFragment ||
+                                        destinationId == R.id.listChatFragment || destinationId == R.id.profileFragment) {
+                                    navController.navigate(destinationId);
+                                    Log.d(TAG, "Manually navigated to: " + getResourceName(destinationId));
+                                    return true;
+                                }
+                            }
+                            return navigated;
+                        } catch (Exception e) {
+                            Log.e(TAG, "Navigation error: " + e.getMessage(), e);
+                            Toast.makeText(MainActivity.this, "Lỗi điều hướng: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                            return false;
+                        }
+                    });
+
                     navController.addOnDestinationChangedListener((controller, destination, arguments) -> {
                         int destinationId = destination.getId();
+                        Log.d(TAG, "Destination changed to: " + destinationId + " (" + getResourceName(destinationId) + ")");
                         if (destinationId == R.id.chatUserFragment || destinationId == R.id.chatAIFragment) {
                             bottomNavigationView.setVisibility(View.GONE);
+                            Log.d(TAG, "BottomNavigationView visibility: GONE");
                         } else {
                             bottomNavigationView.setVisibility(View.VISIBLE);
+                            Log.d(TAG, "BottomNavigationView visibility: VISIBLE");
                         }
                     });
 
@@ -95,6 +124,7 @@ public class MainActivity extends AppCompatActivity {
                         }
                     }
                 } catch (IllegalStateException e) {
+                    Log.e(TAG, "NavController initialization error: " + e.getMessage(), e);
                     Toast.makeText(MainActivity.this, "Lỗi khởi tạo NavController: " + e.getMessage(), Toast.LENGTH_LONG).show();
                 }
             });
@@ -103,7 +133,15 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    // Rest of the code remains unchanged
+    // Hàm phụ để lấy tên tài nguyên từ ID
+    private String getResourceName(int resId) {
+        try {
+            return getResources().getResourceName(resId);
+        } catch (Exception e) {
+            return "Unknown";
+        }
+    }
+
     private void requestNotificationPermission() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {

@@ -10,9 +10,27 @@
         android:name="vn.edu.tlu.cse.amourswip.view.fragment.chSwipeFragment"
         android:label="SwipeFragment">
         <action
+            android:id="@+id/action_swipeFragment_to_likeFragment"
+            app:destination="@id/likeFragment"
+            app:popUpTo="@id/nav_graph"
+            app:popUpToInclusive="false"
+            app:enterAnim="@anim/fade_in"
+            app:exitAnim="@anim/fade_out"
+            app:popEnterAnim="@anim/fade_in"
+            app:popExitAnim="@anim/fade_out" />
+        <action
             android:id="@+id/action_swipeFragment_to_listChatFragment"
             app:destination="@id/listChatFragment"
-            app:popUpTo="@id/swipeFragment"
+            app:popUpTo="@id/nav_graph"
+            app:popUpToInclusive="false"
+            app:enterAnim="@anim/fade_in"
+            app:exitAnim="@anim/fade_out"
+            app:popEnterAnim="@anim/fade_in"
+            app:popExitAnim="@anim/fade_out" />
+        <action
+            android:id="@+id/action_swipeFragment_to_profileFragment"
+            app:destination="@id/profileFragment"
+            app:popUpTo="@id/nav_graph"
             app:popUpToInclusive="false"
             app:enterAnim="@anim/fade_in"
             app:exitAnim="@anim/fade_out"
@@ -20,11 +38,77 @@
             app:popExitAnim="@anim/fade_out" />
     </fragment>
 
+    <!-- LikeFragment -->
+    <fragment
+        android:id="@+id/likeFragment"
+        android:name="vn.edu.tlu.cse.amourswip.view.fragment.chLikeFragment"
+        android:label="LikeFragment">
+        <action
+            android:id="@+id/action_likeFragment_to_swipeFragment"
+            app:destination="@id/swipeFragment"
+            app:popUpTo="@id/nav_graph"
+            app:popUpToInclusive="false"
+            app:enterAnim="@anim/fade_in"
+            app:exitAnim="@anim/fade_out"
+            app:popEnterAnim="@anim/fade_in"
+            app:popExitAnim="@anim/fade_out" />
+        <action
+            android:id="@+id/action_likeFragment_to_listChatFragment"
+            app:destination="@id/listChatFragment"
+            app:popUpTo="@id/nav_graph"
+            app:popUpToInclusive="false"
+            app:enterAnim="@anim/fade_in"
+            app:exitAnim="@anim/fade_out"
+            app:popEnterAnim="@anim/fade_in"
+            app:popExitAnim="@anim/fade_out" />
+        <action
+            android:id="@+id/action_likeFragment_to_profileFragment"
+            app:destination="@id/profileFragment"
+            app:popUpTo="@id/nav_graph"
+            app:popUpToInclusive="false"
+            app:enterAnim="@anim/fade_in"
+            app:exitAnim="@anim/fade_out"
+            app:popEnterAnim="@anim/fade_in"
+            app:popExitAnim="@anim/fade_out" />
+        <action
+            android:id="@+id/action_likeFragment_to_profileMyFriendActivity"
+            app:destination="@id/profileMyFriendActivity"
+            app:popUpTo="@id/likeFragment"
+            app:popUpToInclusive="false" />
+    </fragment>
+
     <!-- ListChatFragment -->
     <fragment
         android:id="@+id/listChatFragment"
         android:name="vn.edu.tlu.cse.amourswip.view.fragment.chListChatFragment"
         android:label="ListChatFragment">
+        <action
+            android:id="@+id/action_listChatFragment_to_swipeFragment"
+            app:destination="@id/swipeFragment"
+            app:popUpTo="@id/nav_graph"
+            app:popUpToInclusive="false"
+            app:enterAnim="@anim/fade_in"
+            app:exitAnim="@anim/fade_out"
+            app:popEnterAnim="@anim/fade_in"
+            app:popExitAnim="@anim/fade_out" />
+        <action
+            android:id="@+id/action_listChatFragment_to_likeFragment"
+            app:destination="@id/likeFragment"
+            app:popUpTo="@id/nav_graph"
+            app:popUpToInclusive="false"
+            app:enterAnim="@anim/fade_in"
+            app:exitAnim="@anim/fade_out"
+            app:popEnterAnim="@anim/fade_in"
+            app:popExitAnim="@anim/fade_out" />
+        <action
+            android:id="@+id/action_listChatFragment_to_profileFragment"
+            app:destination="@id/profileFragment"
+            app:popUpTo="@id/nav_graph"
+            app:popUpToInclusive="false"
+            app:enterAnim="@anim/fade_in"
+            app:exitAnim="@anim/fade_out"
+            app:popEnterAnim="@anim/fade_in"
+            app:popExitAnim="@anim/fade_out" />
         <action
             android:id="@+id/action_listChatFragment_to_chatUserFragment"
             app:destination="@id/chatUserFragment"
@@ -43,37 +127,35 @@
             app:exitAnim="@anim/fade_out"
             app:popEnterAnim="@anim/fade_in"
             app:popExitAnim="@anim/fade_out" />
-        <action
-            android:id="@+id/action_listChatFragment_to_likeFragment"
-            app:destination="@id/likeFragment"
-            app:popUpTo="@id/listChatFragment"
-            app:popUpToInclusive="true"
-            app:enterAnim="@anim/fade_in"
-            app:exitAnim="@anim/fade_out"
-            app:popEnterAnim="@anim/fade_in"
-            app:popExitAnim="@anim/fade_out" />
     </fragment>
 
     <!-- ProfileFragment -->
     <fragment
         android:id="@+id/profileFragment"
         android:name="vn.edu.tlu.cse.amourswip.view.fragment.trProfileFragment"
-        android:label="ProfileFragment" />
-
-    <!-- LikeFragment -->
-    <fragment
-        android:id="@+id/likeFragment"
-        android:name="vn.edu.tlu.cse.amourswip.view.fragment.chLikeFragment"
-        android:label="LikeFragment">
+        android:label="ProfileFragment">
         <action
-            android:id="@+id/action_likeFragment_to_profileMyFriendActivity"
-            app:destination="@id/profileMyFriendActivity"
-            app:popUpTo="@id/likeFragment"
-            app:popUpToInclusive="false" />
+            android:id="@+id/action_profileFragment_to_swipeFragment"
+            app:destination="@id/swipeFragment"
+            app:popUpTo="@id/nav_graph"
+            app:popUpToInclusive="false"
+            app:enterAnim="@anim/fade_in"
+            app:exitAnim="@anim/fade_out"
+            app:popEnterAnim="@anim/fade_in"
+            app:popExitAnim="@anim/fade_out" />
         <action
-            android:id="@+id/action_likeFragment_to_listChatFragment"
+            android:id="@+id/action_profileFragment_to_likeFragment"
+            app:destination="@id/likeFragment"
+            app:popUpTo="@id/nav_graph"
+            app:popUpToInclusive="false"
+            app:enterAnim="@anim/fade_in"
+            app:exitAnim="@anim/fade_out"
+            app:popEnterAnim="@anim/fade_in"
+            app:popExitAnim="@anim/fade_out" />
+        <action
+            android:id="@+id/action_profileFragment_to_listChatFragment"
             app:destination="@id/listChatFragment"
-            app:popUpTo="@id/likeFragment"
+            app:popUpTo="@id/nav_graph"
             app:popUpToInclusive="false"
             app:enterAnim="@anim/fade_in"
             app:exitAnim="@anim/fade_out"
