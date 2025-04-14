@@ -13,29 +13,29 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import vn.edu.tlu.cse.amourswip.R;
-import vn.edu.tlu.cse.amourswip.model.data.MessageUser;
+import vn.edu.tlu.cse.amourswip.model.data.trMessageUser;
 
-public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageViewHolder> {
+public class trMessageAdapter extends RecyclerView.Adapter<trMessageAdapter.MessageViewHolder> {
 
     private static final int VIEW_TYPE_SENT = 1;
     private static final int VIEW_TYPE_RECEIVED = 2;
 
-    private List<MessageUser> messageList;
+    private List<trMessageUser> messageList;
     private String currentUserId;
 
-    public MessageAdapter(List<MessageUser> messageList, String currentUserId) {
+    public trMessageAdapter(List<trMessageUser> messageList, String currentUserId) {
         this.messageList = messageList;
         this.currentUserId = currentUserId;
     }
 
-    public void addMessage(MessageUser message) {
+    public void addMessage(trMessageUser message) {
         messageList.add(message);
         notifyItemInserted(messageList.size() - 1);
     }
 
     @Override
     public int getItemViewType(int position) {
-        MessageUser message = messageList.get(position);
+        trMessageUser message = messageList.get(position);
         return message.getSenderId().equals(currentUserId) ? VIEW_TYPE_SENT : VIEW_TYPE_RECEIVED;
     }
 
@@ -53,7 +53,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
 
     @Override
     public void onBindViewHolder(@NonNull MessageViewHolder holder, int position) {
-        MessageUser message = messageList.get(position);
+        trMessageUser message = messageList.get(position);
         holder.messageText.setText(message.getMessage());
 
         // Hiển thị ảnh người gửi nếu có
@@ -97,8 +97,8 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
         if (position == 0) {
             return true; // Luôn hiển thị ngày cho tin nhắn đầu tiên
         }
-        MessageUser currentMessage = messageList.get(position);
-        MessageUser previousMessage = messageList.get(position - 1);
+        trMessageUser currentMessage = messageList.get(position);
+        trMessageUser previousMessage = messageList.get(position - 1);
 
         // So sánh ngày của tin nhắn hiện tại và tin nhắn trước đó
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd", Locale.getDefault());

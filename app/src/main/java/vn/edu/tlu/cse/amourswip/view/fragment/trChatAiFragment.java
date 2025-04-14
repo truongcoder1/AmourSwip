@@ -31,10 +31,10 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 import vn.edu.tlu.cse.amourswip.R;
-import vn.edu.tlu.cse.amourswip.model.data.Message;
-import vn.edu.tlu.cse.amourswip.view.adapter.ChatAdapter;
+import vn.edu.tlu.cse.amourswip.model.data.trMessageAI;
+import vn.edu.tlu.cse.amourswip.view.adapter.trChatAiAdapter;
 
-public class ChatAiFragment extends Fragment {
+public class trChatAiFragment extends Fragment {
 
     private static final String TAG = "ChatAIFragment";
     private static final String HUGGINGFACE_API_URL = "https://api-inference.huggingface.co/models/meta-llama/Llama-3.2-3B-Instruct";
@@ -46,8 +46,8 @@ public class ChatAiFragment extends Fragment {
     private ImageButton sendButton;
     private ImageView backArrow;
     private RecyclerView recyclerView;
-    private List<Message> messageList;
-    private ChatAdapter chatAdapter;
+    private List<trMessageAI> messageList;
+    private trChatAiAdapter chatAdapter;
     private NavController navController;
     private OkHttpClient client;
 
@@ -90,7 +90,7 @@ public class ChatAiFragment extends Fragment {
 
     private void setupRecyclerView() {
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        chatAdapter = new ChatAdapter(messageList);
+        chatAdapter = new trChatAiAdapter(messageList);
         recyclerView.setAdapter(chatAdapter);
     }
 
@@ -106,7 +106,7 @@ public class ChatAiFragment extends Fragment {
     private void displayWelcomeMessage() {
         if (messageList.isEmpty()) {
             Log.d(TAG, "Hiển thị tin nhắn chào mừng");
-            Message welcomeMessage = new Message("Xin chào! Tôi là LOVE AI, tôi có thể giúp gì cho bạn hôm nay?", false, System.currentTimeMillis());
+            trMessageAI welcomeMessage = new trMessageAI("Xin chào! Tôi là LOVE AI, tôi có thể giúp gì cho bạn hôm nay?", false, System.currentTimeMillis());
             addMessage(welcomeMessage);
         }
     }
@@ -124,13 +124,13 @@ public class ChatAiFragment extends Fragment {
             return;
         }
 
-        Message message = new Message(messageText, true, System.currentTimeMillis());
+        trMessageAI message = new trMessageAI(messageText, true, System.currentTimeMillis());
         addMessage(message);
         fetchAIResponse(messageText);
         messageInput.setText("");
     }
 
-    private void addMessage(Message message) {
+    private void addMessage(trMessageAI message) {
         if (messageList.size() >= MAX_MESSAGES) {
             messageList.remove(0); // Xóa tin nhắn cũ nhất nếu vượt quá giới hạn
             chatAdapter.notifyItemRemoved(0);
@@ -149,7 +149,7 @@ public class ChatAiFragment extends Fragment {
         int maxContextMessages = 6;
         int startIndex = Math.max(0, messageList.size() - maxContextMessages);
         for (int i = startIndex; i < messageList.size(); i++) {
-            Message msg = messageList.get(i);
+            trMessageAI msg = messageList.get(i);
             conversationContext.append(msg.isUserMessage() ? "<|user|> " : "<|assistant|> ")
                     .append(msg.getText())
                     .append(" <|end|> ");
@@ -221,7 +221,7 @@ public class ChatAiFragment extends Fragment {
 
                         if (!finalResponse.isEmpty()) {
                             requireActivity().runOnUiThread(() -> {
-                                Message aiMessage = new Message(finalResponse, false, System.currentTimeMillis());
+                                trMessageAI aiMessage = new trMessageAI(finalResponse, false, System.currentTimeMillis());
                                 addMessage(aiMessage);
                             });
                         } else {

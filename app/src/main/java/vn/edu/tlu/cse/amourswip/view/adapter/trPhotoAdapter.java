@@ -11,12 +11,12 @@ import java.util.List;
 
 import vn.edu.tlu.cse.amourswip.R;
 
-public class PhotoAdapter extends BaseAdapter {
+public class trPhotoAdapter extends BaseAdapter {
 
     private Context context;
     private List<String> photoUrls;
 
-    public PhotoAdapter(Context context, List<String> photoUrls) {
+    public trPhotoAdapter(Context context, List<String> photoUrls) {
         this.context = context;
         this.photoUrls = photoUrls;
     }

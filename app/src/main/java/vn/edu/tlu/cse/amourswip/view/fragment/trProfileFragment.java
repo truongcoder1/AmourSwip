@@ -24,14 +24,14 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import vn.edu.tlu.cse.amourswip.R;
-import vn.edu.tlu.cse.amourswip.view.activity.profile.EditProfileActivity;
+import vn.edu.tlu.cse.amourswip.view.activity.profile.trEditProfileActivity;
 import vn.edu.tlu.cse.amourswip.view.activity.profile.SettingActivity;
-import vn.edu.tlu.cse.amourswip.view.adapter.PhotoAdapter;
+import vn.edu.tlu.cse.amourswip.view.adapter.trPhotoAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class ProfileFragment extends Fragment {
+public class trProfileFragment extends Fragment {
 
     private ImageView backArrow;
     private ImageView settingsIcon;
@@ -41,7 +41,7 @@ public class ProfileFragment extends Fragment {
     private GridView photoGrid;
     private DatabaseReference userRef;
     private List<String> photoUrls = new ArrayList<>();
-    private PhotoAdapter photoAdapter;
+    private trPhotoAdapter photoAdapter;
 
     @Nullable
     @Override
@@ -58,7 +58,7 @@ public class ProfileFragment extends Fragment {
         String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
         userRef = FirebaseDatabase.getInstance().getReference().child("users").child(userId);
 
-        photoAdapter = new PhotoAdapter(getContext(), photoUrls);
+        photoAdapter = new trPhotoAdapter(getContext(), photoUrls);
         photoGrid.setAdapter(photoAdapter);
 
         loadUserProfile();
@@ -74,7 +74,7 @@ public class ProfileFragment extends Fragment {
         });
 
         editButton.setOnClickListener(v -> {
-            Intent intent = new Intent(getContext(), EditProfileActivity.class);
+            Intent intent = new Intent(getContext(), trEditProfileActivity.class);
             startActivity(intent);
         });
 

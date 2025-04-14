@@ -2,7 +2,6 @@ package vn.edu.tlu.cse.amourswip.view.activity.profile;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.Button;
 import android.widget.GridView;
 import android.widget.ImageView;
@@ -19,12 +18,12 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import vn.edu.tlu.cse.amourswip.view.activity.main.MainActivity;
-import vn.edu.tlu.cse.amourswip.view.adapter.PhotoAdapter;
+import vn.edu.tlu.cse.amourswip.view.adapter.trPhotoAdapter;
 import vn.edu.tlu.cse.amourswip.R;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ProfileMyFriendActivity extends AppCompatActivity {
+public class trProfileMyFriendActivity extends AppCompatActivity {
 
     private ImageView backArrow;
     private ImageView avatarImage;
@@ -35,7 +34,7 @@ public class ProfileMyFriendActivity extends AppCompatActivity {
     private GridView photoGrid;
     private DatabaseReference userRef;
     private List<String> photoUrls = new ArrayList<>();
-    private PhotoAdapter photoAdapter;
+    private trPhotoAdapter photoAdapter;
     private String friendId;
 
     @Override
@@ -61,7 +60,7 @@ public class ProfileMyFriendActivity extends AppCompatActivity {
 
         userRef = FirebaseDatabase.getInstance().getReference().child("users").child(friendId);
 
-        photoAdapter = new PhotoAdapter(this, photoUrls);
+        photoAdapter = new trPhotoAdapter(this, photoUrls);
         photoGrid.setAdapter(photoAdapter);
 
         loadFriendProfile();
@@ -69,7 +68,7 @@ public class ProfileMyFriendActivity extends AppCompatActivity {
         backArrow.setOnClickListener(v -> finish());
 
         messageButton.setOnClickListener(v -> {
-            Intent intent = new Intent(ProfileMyFriendActivity.this, MainActivity.class);
+            Intent intent = new Intent(trProfileMyFriendActivity.this, MainActivity.class);
             intent.putExtra("friendId", friendId);
             intent.putExtra("navigateTo", "chatFragment");
             startActivity(intent);
@@ -120,7 +119,7 @@ public class ProfileMyFriendActivity extends AppCompatActivity {
 
                     // Hiển thị ảnh đại diện
                     if (avatarUrl != null) {
-                        Glide.with(ProfileMyFriendActivity.this)
+                        Glide.with(trProfileMyFriendActivity.this)
                                 .load(avatarUrl)
                                 .placeholder(R.drawable.gai1)
                                 .error(R.drawable.gai1)
@@ -131,13 +130,13 @@ public class ProfileMyFriendActivity extends AppCompatActivity {
 
                     photoAdapter.notifyDataSetChanged();
                 } else {
-                    Toast.makeText(ProfileMyFriendActivity.this, "Không tìm thấy thông tin người dùng", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(trProfileMyFriendActivity.this, "Không tìm thấy thông tin người dùng", Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-                Toast.makeText(ProfileMyFriendActivity.this, "Lỗi khi tải thông tin: " + error.getMessage(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(trProfileMyFriendActivity.this, "Lỗi khi tải thông tin: " + error.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -168,14 +167,14 @@ public class ProfileMyFriendActivity extends AppCompatActivity {
                 .addOnSuccessListener(aVoid -> {
                     matchesRef.child(friendId).child(currentUserId).removeValue()
                             .addOnSuccessListener(aVoid2 -> {
-                                Toast.makeText(ProfileMyFriendActivity.this, "Đã hủy ghép đôi", Toast.LENGTH_SHORT).show();
-                                Intent intent = new Intent(ProfileMyFriendActivity.this, MainActivity.class);
+                                Toast.makeText(trProfileMyFriendActivity.this, "Đã hủy ghép đôi", Toast.LENGTH_SHORT).show();
+                                Intent intent = new Intent(trProfileMyFriendActivity.this, MainActivity.class);
                                 startActivity(intent);
                                 finish();
                             });
                 })
                 .addOnFailureListener(e -> {
-                    Toast.makeText(ProfileMyFriendActivity.this, "Lỗi khi hủy ghép đôi: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(trProfileMyFriendActivity.this, "Lỗi khi hủy ghép đôi: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                 });
     }
 }

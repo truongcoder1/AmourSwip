@@ -48,7 +48,7 @@
     <!-- ProfileFragment -->
     <fragment
         android:id="@+id/profileFragment"
-        android:name="vn.edu.tlu.cse.amourswip.view.fragment.ProfileFragment"
+        android:name="vn.edu.tlu.cse.amourswip.view.fragment.trProfileFragment"
         android:label="ProfileFragment" />
 
     <!-- LikeFragment -->
@@ -75,7 +75,7 @@
     <!-- ChatUserFragment -->
     <fragment
         android:id="@+id/chatUserFragment"
-        android:name="vn.edu.tlu.cse.amourswip.view.fragment.ChatUserFragment"
+        android:name="vn.edu.tlu.cse.amourswip.view.fragment.trChatUserFragment"
         android:label="ChatUserFragment">
         <action
             android:id="@+id/action_chatUserFragment_to_listChatFragment"
@@ -97,7 +97,7 @@
     <!-- ChatAIFragment -->
     <fragment
         android:id="@+id/chatAIFragment"
-        android:name="vn.edu.tlu.cse.amourswip.view.fragment.ChatAiFragment"
+        android:name="vn.edu.tlu.cse.amourswip.view.fragment.trChatAiFragment"
         android:label="ChatAIFragment">
         <action
             android:id="@+id/action_chatAiFragment_to_listChatFragment"
@@ -113,7 +113,7 @@
     <!-- ProfileMyFriendActivity -->
     <activity
         android:id="@+id/profileMyFriendActivity"
-        android:name="vn.edu.tlu.cse.amourswip.view.activity.profile.ProfileMyFriendActivity"
+        android:name="vn.edu.tlu.cse.amourswip.view.activity.profile.trProfileMyFriendActivity"
         android:label="ProfileMyFriendActivity" />
 
 </navigation>

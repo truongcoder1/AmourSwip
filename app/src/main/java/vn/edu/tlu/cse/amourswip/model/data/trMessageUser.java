@@ -1,6 +1,6 @@
 package vn.edu.tlu.cse.amourswip.model.data;
 
-public class MessageUser {
+public class trMessageUser {
     private String messageId;
     private String senderId;
     private String message;
@@ -8,9 +8,9 @@ public class MessageUser {
     private String senderImage;
     private String status; // Trạng thái: "sent" hoặc "seen"
 
-    public MessageUser() {}
+    public trMessageUser() {}
 
-    public MessageUser(String messageId, String senderId, String message, long timestamp, String senderImage, String status) {
+    public trMessageUser(String messageId, String senderId, String message, long timestamp, String senderImage, String status) {
         this.messageId = messageId;
         this.senderId = senderId;
         this.message = message;

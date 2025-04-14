@@ -51,9 +51,9 @@
         <activity android:name=".view.activity.signup.MyimageActivity" />
         <activity android:name=".view.activity.signup.MapActivity" />
         <activity android:name=".view.activity.profile.SettingActivity" />
-        <activity android:name=".view.activity.profile.EditProfileActivity" />
-        <activity android:name=".view.activity.profile.ProfileMyFriendActivity" />
-        <activity android:name=".view.activity.profile.EditPhotosActivity" />
+        <activity android:name=".view.activity.profile.trEditProfileActivity" />
+        <activity android:name=".view.activity.profile.trProfileMyFriendActivity" />
+        <activity android:name=".view.activity.profile.trEditPhotosActivity" />
 
         <provider
             android:name="androidx.core.content.FileProvider"

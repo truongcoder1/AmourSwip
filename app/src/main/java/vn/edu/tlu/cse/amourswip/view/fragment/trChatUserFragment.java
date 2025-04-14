@@ -29,14 +29,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import vn.edu.tlu.cse.amourswip.R;
-import vn.edu.tlu.cse.amourswip.controller.ChatController;
-import vn.edu.tlu.cse.amourswip.model.data.MessageUser;
+import vn.edu.tlu.cse.amourswip.controller.trChatController;
+import vn.edu.tlu.cse.amourswip.model.data.trMessageUser;
 import vn.edu.tlu.cse.amourswip.model.data.User;
-import vn.edu.tlu.cse.amourswip.view.activity.profile.ProfileMyFriendActivity;
-import vn.edu.tlu.cse.amourswip.view.adapter.MessageAdapter;
+import vn.edu.tlu.cse.amourswip.view.activity.profile.trProfileMyFriendActivity;
+import vn.edu.tlu.cse.amourswip.view.adapter.trMessageAdapter;
 
-public class ChatUserFragment extends Fragment {
-
+public class trChatUserFragment extends Fragment {
     private ImageButton backButton;
     private ImageView userImage;
     private TextView userName;
@@ -46,13 +45,13 @@ public class ChatUserFragment extends Fragment {
     private EditText messageInput;
     private ImageButton gifButton;
     private ImageButton sendButton;
-    private ChatController controller;
+    private trChatController controller;
     private String friendId;
     private String chatId;
     private String currentUserId;
     private NavController navController;
-    private MessageAdapter messageAdapter;
-    private List<MessageUser> messageList;
+    private trMessageAdapter messageAdapter;
+    private List<trMessageUser> messageList;
     private DatabaseReference messagesRef;
 
     @Nullable
@@ -96,7 +95,7 @@ public class ChatUserFragment extends Fragment {
 
         // Khởi tạo RecyclerView và MessageAdapter
         messageList = new ArrayList<>();
-        messageAdapter = new MessageAdapter(messageList, currentUserId);
+        messageAdapter = new trMessageAdapter(messageList, currentUserId);
         messagesRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         messagesRecyclerView.setAdapter(messageAdapter);
 
@@ -104,7 +103,7 @@ public class ChatUserFragment extends Fragment {
         listenForMessages();
 
         // Khởi tạo Controller
-        controller = new ChatController(this, friendId);
+        controller = new trChatController(this, friendId);
         controller.loadFriendInfo();
 
         // Xử lý các sự kiện click
@@ -128,7 +127,7 @@ public class ChatUserFragment extends Fragment {
         messagesRef.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-                MessageUser message = snapshot.getValue(MessageUser.class);
+                trMessageUser message = snapshot.getValue(trMessageUser.class);
                 if (message != null) {
                     messageAdapter.addMessage(message);
                     messagesRecyclerView.scrollToPosition(messageList.size() - 1);
@@ -150,7 +149,7 @@ public class ChatUserFragment extends Fragment {
 
             @Override
             public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-                MessageUser updatedMessage = snapshot.getValue(MessageUser.class);
+                trMessageUser updatedMessage = snapshot.getValue(trMessageUser.class);
                 if (updatedMessage != null) {
                     for (int i = 0; i < messageList.size(); i++) {
                         if (messageList.get(i).getMessageId().equals(updatedMessage.getMessageId())) {
@@ -210,7 +209,7 @@ public class ChatUserFragment extends Fragment {
     }
 
     public void startProfileMyFriendActivity() {
-        Intent intent = new Intent(getActivity(), ProfileMyFriendActivity.class);
+        Intent intent = new Intent(getActivity(), trProfileMyFriendActivity.class);
         intent.putExtra("friendId", friendId);
         startActivity(intent);
     }

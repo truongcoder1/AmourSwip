@@ -9,11 +9,11 @@ import com.google.firebase.database.ValueEventListener;
 
 import vn.edu.tlu.cse.amourswip.model.data.User;
 
-public class ChatRepository {
+public class trChatRepository {
 
     private final DatabaseReference userRef;
 
-    public ChatRepository(String userId) {
+    public trChatRepository(String userId) {
         userRef = FirebaseDatabase.getInstance().getReference().child("users").child(userId);
     }
 

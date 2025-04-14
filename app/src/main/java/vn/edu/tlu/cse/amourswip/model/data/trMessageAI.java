@@ -1,15 +1,15 @@
 package vn.edu.tlu.cse.amourswip.model.data;
 
-public class Message {
+public class trMessageAI {
     private String text;
     private boolean isUserMessage;
     private long timestamp;
 
-    public Message() {
+    public trMessageAI() {
         // Constructor mặc định cho Firebase (nếu cần)
     }
 
-    public Message(String text, boolean isUserMessage, long timestamp) {
+    public trMessageAI(String text, boolean isUserMessage, long timestamp) {
         this.text = text;
         this.isUserMessage = isUserMessage;
         this.timestamp = timestamp;

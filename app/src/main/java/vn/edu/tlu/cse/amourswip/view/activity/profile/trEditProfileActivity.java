@@ -2,7 +2,6 @@ package vn.edu.tlu.cse.amourswip.view.activity.profile;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -18,9 +17,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import vn.edu.tlu.cse.amourswip.R;
-import vn.edu.tlu.cse.amourswip.view.activity.profile.SettingActivity;
 
-public class EditProfileActivity extends AppCompatActivity {
+public class trEditProfileActivity extends AppCompatActivity {
 
     private ImageView backArrow;
     private ImageView settingsIcon;
@@ -66,12 +64,12 @@ public class EditProfileActivity extends AppCompatActivity {
         backArrow.setOnClickListener(v -> finish());
 
         settingsIcon.setOnClickListener(v -> {
-            Intent intent = new Intent(EditProfileActivity.this, SettingActivity.class);
+            Intent intent = new Intent(trEditProfileActivity.this, SettingActivity.class);
             startActivity(intent);
         });
 
         editPhotoButton.setOnClickListener(v -> {
-            Intent intent = new Intent(EditProfileActivity.this, EditPhotosActivity.class);
+            Intent intent = new Intent(trEditProfileActivity.this, trEditPhotosActivity.class);
             startActivity(intent);
         });
 
@@ -121,7 +119,7 @@ public class EditProfileActivity extends AppCompatActivity {
 
                     // Hiển thị ảnh đại diện
                     if (avatarUrl != null) {
-                        Glide.with(EditProfileActivity.this)
+                        Glide.with(trEditProfileActivity.this)
                                 .load(avatarUrl)
                                 .placeholder(R.drawable.gai1)
                                 .error(R.drawable.gai1)
@@ -130,13 +128,13 @@ public class EditProfileActivity extends AppCompatActivity {
                         avatarImage.setImageResource(R.drawable.gai1);
                     }
                 } else {
-                    Toast.makeText(EditProfileActivity.this, "Không tìm thấy thông tin người dùng", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(trEditProfileActivity.this, "Không tìm thấy thông tin người dùng", Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-                Toast.makeText(EditProfileActivity.this, "Lỗi khi tải thông tin: " + error.getMessage(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(trEditProfileActivity.this, "Lỗi khi tải thông tin: " + error.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -161,7 +159,7 @@ public class EditProfileActivity extends AppCompatActivity {
         userRef.child("occupation").setValue(occupation);
         userRef.child("description").setValue("Đang " + (relationship.isEmpty() ? "yêu" : relationship) + ", thích " + (interests.isEmpty() ? "đi du lịch..." : interests));
 
-        Toast.makeText(EditProfileActivity.this, "Cập nhật hồ sơ thành công", Toast.LENGTH_SHORT).show();
+        Toast.makeText(trEditProfileActivity.this, "Cập nhật hồ sơ thành công", Toast.LENGTH_SHORT).show();
         finish();
     }
 }

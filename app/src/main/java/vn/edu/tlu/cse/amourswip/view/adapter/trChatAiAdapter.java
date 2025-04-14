@@ -9,22 +9,22 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import vn.edu.tlu.cse.amourswip.R;
-import vn.edu.tlu.cse.amourswip.model.data.Message;
+import vn.edu.tlu.cse.amourswip.model.data.trMessageAI;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
-public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.MessageViewHolder> {
+public class trChatAiAdapter extends RecyclerView.Adapter<trChatAiAdapter.MessageViewHolder> {
 
     private static final int VIEW_TYPE_USER = 1;
     private static final int VIEW_TYPE_AI = 2;
 
-    private final List<Message> messageList;
+    private final List<trMessageAI> messageList;
     private long lastMessageTimestamp = -1;
 
-    public ChatAdapter(List<Message> messageList) {
+    public trChatAiAdapter(List<trMessageAI> messageList) {
         this.messageList = messageList;
     }
 
@@ -47,7 +47,7 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.MessageViewHol
 
     @Override
     public void onBindViewHolder(@NonNull MessageViewHolder holder, int position) {
-        Message message = messageList.get(position);
+        trMessageAI message = messageList.get(position);
         holder.messageText.setText(message.getText());
 
         // Xử lý hiển thị ảnh đại diện

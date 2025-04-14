@@ -9,22 +9,22 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import java.util.HashMap;
 import java.util.Map;
-import vn.edu.tlu.cse.amourswip.model.data.MessageUser;
+import vn.edu.tlu.cse.amourswip.model.data.trMessageUser;
 import vn.edu.tlu.cse.amourswip.model.data.User;
-import vn.edu.tlu.cse.amourswip.model.repository.ChatRepository;
-import vn.edu.tlu.cse.amourswip.view.fragment.ChatUserFragment;
+import vn.edu.tlu.cse.amourswip.model.repository.trChatRepository;
+import vn.edu.tlu.cse.amourswip.view.fragment.trChatUserFragment;
 
-public class ChatController {
+public class trChatController {
 
-    private final ChatUserFragment fragment;
-    private final ChatRepository chatRepository;
+    private final trChatUserFragment fragment;
+    private final trChatRepository chatRepository;
     private final String friendId;
     private String currentUserImage;
 
-    public ChatController(ChatUserFragment fragment, String friendId) {
+    public trChatController(trChatUserFragment fragment, String friendId) {
         this.fragment = fragment;
         this.friendId = friendId;
-        this.chatRepository = new ChatRepository(friendId);
+        this.chatRepository = new trChatRepository(friendId);
         loadCurrentUserImage();
     }
 
@@ -50,7 +50,7 @@ public class ChatController {
     }
 
     public void loadFriendInfo() {
-        chatRepository.getUserInfo(new ChatRepository.OnResultListener() {
+        chatRepository.getUserInfo(new trChatRepository.OnResultListener() {
             @Override
             public void onSuccess(User user) {
                 fragment.updateUserInfo(user);
@@ -101,7 +101,7 @@ public class ChatController {
         }
 
         long timestamp = System.currentTimeMillis();
-        MessageUser message = new MessageUser(messageId, currentUserId, messageText, timestamp, currentUserImage, "sent");
+        trMessageUser message = new trMessageUser(messageId, currentUserId, messageText, timestamp, currentUserImage, "sent");
 
         Map<String, Object> messageValues = new HashMap<>();
         messageValues.put("messageId", message.getMessageId());
