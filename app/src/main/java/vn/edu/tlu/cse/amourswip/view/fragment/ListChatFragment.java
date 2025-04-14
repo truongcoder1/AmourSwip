@@ -1,6 +1,7 @@
 package vn.edu.tlu.cse.amourswip.view.fragment;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -46,7 +47,9 @@ public class ListChatFragment extends Fragment {
         auth = FirebaseAuth.getInstance();
 
         if (auth.getCurrentUser() == null) {
-            Toast.makeText(getActivity(), "Vui lòng đăng nhập", Toast.LENGTH_SHORT).show();
+            if (getActivity() != null) {
+                Toast.makeText(getActivity(), "Vui lòng đăng nhập", Toast.LENGTH_SHORT).show();
+            }
             return;
         }
 
@@ -84,10 +87,22 @@ public class ListChatFragment extends Fragment {
     }
 
     public void showError(String error) {
-        Toast.makeText(getActivity(), error, Toast.LENGTH_LONG).show();
+        if (getActivity() != null) {
+            Toast.makeText(getActivity(), error, Toast.LENGTH_LONG).show();
+        } else {
+            Log.e("ListChatFragment", "Cannot show error toast, Activity is null: " + error);
+        }
     }
 
     public NavController getNavController() {
         return navController;
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (controller != null) {
+            controller.onDestroy();
+        }
     }
 }

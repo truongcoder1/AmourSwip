@@ -12,7 +12,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
-
 import vn.edu.tlu.cse.amourswip.model.data.Notification;
 import vn.edu.tlu.cse.amourswip.model.data.User;
 
@@ -20,6 +19,7 @@ public class NotificationRepository {
 
     private final DatabaseReference database;
     private final String currentUserId;
+    private ValueEventListener matchesListener;
 
     public NotificationRepository() {
         database = FirebaseDatabase.getInstance().getReference();
@@ -29,7 +29,7 @@ public class NotificationRepository {
     public void getNotifications(OnResultListener listener) {
         List<Notification> notificationList = new ArrayList<>();
         listener.onLoading();
-        database.child("matches").child(currentUserId).addValueEventListener(new ValueEventListener() {
+        matchesListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 notificationList.clear();
@@ -104,7 +104,15 @@ public class NotificationRepository {
             public void onCancelled(@NonNull DatabaseError error) {
                 listener.onError(error.getMessage());
             }
-        });
+        };
+        database.child("matches").child(currentUserId).addValueEventListener(matchesListener);
+    }
+
+    public void removeListeners() {
+        if (matchesListener != null) {
+            database.child("matches").child(currentUserId).removeEventListener(matchesListener);
+            matchesListener = null;
+        }
     }
 
     public interface OnResultListener {

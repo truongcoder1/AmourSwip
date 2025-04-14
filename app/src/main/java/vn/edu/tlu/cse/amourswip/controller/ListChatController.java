@@ -1,6 +1,7 @@
 package vn.edu.tlu.cse.amourswip.controller;
 
 import android.os.Bundle;
+import android.util.Log;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -14,6 +15,7 @@ import vn.edu.tlu.cse.amourswip.view.fragment.ListChatFragment;
 
 public class ListChatController {
 
+    private static final String TAG = "ListChatController";
     private final ListChatFragment fragment;
     private final NotificationRepository notificationRepository;
     private final String currentUserId;
@@ -71,5 +73,10 @@ public class ListChatController {
                 .addOnFailureListener(e -> {
                     fragment.showError("Lỗi khi cập nhật trạng thái đọc: " + e.getMessage());
                 });
+    }
+
+    public void onDestroy() {
+        notificationRepository.removeListeners();
+        Log.d(TAG, "onDestroy: Removed Firebase listeners");
     }
 }
