@@ -59,24 +59,24 @@ public class LikeController {
     public void onLikesTabClicked() {
         isLikesTabSelected = true;
         fragment.updateTabSelection(true);
-        lastUserIdILiked = null;
-        usersILiked.clear();
-        loadUsersILiked(); // Tab "Lượt thích" giờ hiển thị danh sách người bạn đã thích
+        lastUserIdWhoLikedMe = null;
+        usersWhoLikedMe.clear();
+        loadUsersWhoLikedMe(); // Tab "Lượt thích" hiển thị danh sách người đã thích bạn
     }
 
     public void onLikedTabClicked() {
         isLikesTabSelected = false;
         fragment.updateTabSelection(false);
-        lastUserIdWhoLikedMe = null;
-        usersWhoLikedMe.clear();
-        loadUsersWhoLikedMe(); // Tab "Đã thích" giờ hiển thị danh sách người đã thích bạn
+        lastUserIdILiked = null;
+        usersILiked.clear();
+        loadUsersILiked(); // Tab "Đã thích" hiển thị danh sách người bạn đã thích
     }
 
     public void loadMoreUsers() {
         if (isLikesTabSelected) {
-            loadUsersILiked();
-        } else {
             loadUsersWhoLikedMe();
+        } else {
+            loadUsersILiked();
         }
     }
 
@@ -145,7 +145,8 @@ public class LikeController {
                         Log.d(TAG, "onLikeUser: Successfully liked user: " + otherUser.getName());
                         // Thêm người dùng vào danh sách đã thích
                         usersILiked.add(otherUser);
-                        fragment.updateUserList(usersILiked);
+                        usersWhoLikedMe.remove(otherUser);
+                        fragment.updateUserList(usersWhoLikedMe);
 
                         // Lưu vào node likedBy của người được thích
                         database.child("likedBy").child(otherUser.getUid()).child(currentUserId).setValue(true)
@@ -227,8 +228,8 @@ public class LikeController {
         this.maxAge = maxAge;
         this.residenceFilter = residenceFilter != null && !residenceFilter.isEmpty() ? residenceFilter : null;
 
-        applyFilterToUsers(isLikesTabSelected ? usersILiked : usersWhoLikedMe);
-        fragment.updateUserList(isLikesTabSelected ? usersILiked : usersWhoLikedMe);
+        applyFilterToUsers(isLikesTabSelected ? usersWhoLikedMe : usersILiked);
+        fragment.updateUserList(isLikesTabSelected ? usersWhoLikedMe : usersILiked);
     }
 
     private void applyFilterToUsers(List<User> users) {

@@ -259,14 +259,14 @@ public class LikeFragment extends Fragment {
     public void updateTabSelection(boolean isLikesTab) {
         Log.d("LikeFragment", "updateTabSelection: isLikesTab=" + isLikesTab);
         if (isLikesTab) {
-            // Tab "Lượt thích" giờ hiển thị danh sách người bạn đã thích
+            // Tab "Lượt thích" hiển thị danh sách người đã thích bạn
             likesTab.animate().alpha(1f).setDuration(200).start();
             likedTab.animate().alpha(0.5f).setDuration(200).start();
             likesLabel.setTextColor(ContextCompat.getColor(getContext(), android.R.color.white));
             likedLabel.setTextColor(ContextCompat.getColor(getContext(), android.R.color.black));
             setActionButtons(true, controller::onLikeUser, controller::onDislikeUser); // Tab "Lượt thích" có nút X và Trái tim
         } else {
-            // Tab "Đã thích" giờ hiển thị danh sách người đã thích bạn
+            // Tab "Đã thích" hiển thị danh sách người bạn đã thích
             likesTab.animate().alpha(0.5f).setDuration(200).start();
             likedTab.animate().alpha(1f).setDuration(200).start();
             likesLabel.setTextColor(ContextCompat.getColor(getContext(), android.R.color.black));
