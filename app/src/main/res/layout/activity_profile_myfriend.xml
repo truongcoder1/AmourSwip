@@ -47,16 +47,17 @@
                 android:textSize="18sp"
                 app:layout_constraintStart_toEndOf="@id/back_arrow"
                 app:layout_constraintTop_toTopOf="parent" />
+
             <!-- Avatar Image -->
             <ImageView
                 android:id="@+id/avatar_image"
                 android:layout_width="100dp"
                 android:layout_height="100dp"
                 android:layout_marginTop="32dp"
+                android:scaleType="centerCrop"
                 android:background="@drawable/circle_background"
                 android:clipToOutline="true"
                 android:contentDescription="Avatar"
-                android:outlineProvider="background"
                 android:src="@drawable/gai1"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.498"
