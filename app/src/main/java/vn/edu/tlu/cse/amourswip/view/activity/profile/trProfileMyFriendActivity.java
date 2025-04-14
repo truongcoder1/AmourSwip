@@ -2,6 +2,7 @@ package vn.edu.tlu.cse.amourswip.view.activity.profile;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Button;
 import android.widget.GridView;
 import android.widget.ImageView;
@@ -29,7 +30,6 @@ public class trProfileMyFriendActivity extends AppCompatActivity {
     private ImageView avatarImage;
     private TextView title;
     private TextView userInfo;
-    private Button messageButton;
     private Button cancelMatchButton;
     private GridView photoGrid;
     private DatabaseReference userRef;
@@ -46,16 +46,21 @@ public class trProfileMyFriendActivity extends AppCompatActivity {
         avatarImage = findViewById(R.id.avatar_image);
         title = findViewById(R.id.title);
         userInfo = findViewById(R.id.user_info);
-        messageButton = findViewById(R.id.message_button);
         cancelMatchButton = findViewById(R.id.cancel_match_button);
         photoGrid = findViewById(R.id.photo_grid);
 
         friendId = getIntent().getStringExtra("friendId");
+        boolean fromLikeFragment = getIntent().getBooleanExtra("fromLikeFragment", false);
 
         if (friendId == null) {
             Toast.makeText(this, "Không tìm thấy thông tin người dùng", Toast.LENGTH_SHORT).show();
             finish();
             return;
+        }
+
+        // Ẩn nút "Hủy ghép" nếu từ likeFragment
+        if (fromLikeFragment) {
+            cancelMatchButton.setVisibility(View.GONE);
         }
 
         userRef = FirebaseDatabase.getInstance().getReference().child("users").child(friendId);
@@ -66,14 +71,6 @@ public class trProfileMyFriendActivity extends AppCompatActivity {
         loadFriendProfile();
 
         backArrow.setOnClickListener(v -> finish());
-
-        messageButton.setOnClickListener(v -> {
-            Intent intent = new Intent(trProfileMyFriendActivity.this, MainActivity.class);
-            intent.putExtra("friendId", friendId);
-            intent.putExtra("navigateTo", "chatFragment");
-            startActivity(intent);
-            finish();
-        });
 
         cancelMatchButton.setOnClickListener(v -> cancelMatch());
     }

@@ -51,20 +51,16 @@ public class chListChatController {
     }
 
     public void onNotificationClicked(chNotification notification) {
-        // Tạo chatId
         String chatId = currentUserId.compareTo(notification.getUserId()) < 0
                 ? currentUserId + "_" + notification.getUserId()
                 : notification.getUserId() + "_" + currentUserId;
 
-        // Cập nhật trạng thái isUnread thành false trong Firebase
         DatabaseReference lastMessageRef = FirebaseDatabase.getInstance().getReference("chats").child(chatId).child("lastMessage");
         Map<String, Object> updates = new HashMap<>();
         updates.put("isUnread", false);
         lastMessageRef.updateChildren(updates)
                 .addOnSuccessListener(aVoid -> {
-                    // Đánh dấu thông báo là đã xem trong giao diện
                     notification.setUnread(false);
-                    // Điều hướng đến ChatUserFragment
                     Bundle bundle = new Bundle();
                     bundle.putString("userId", notification.getUserId());
                     bundle.putString("userName", notification.getUserName());
@@ -74,7 +70,7 @@ public class chListChatController {
                     fragment.showError("Lỗi khi cập nhật trạng thái đọc: " + e.getMessage());
                 });
     }
-    //
+
     public void onDestroy() {
         notificationRepository.removeListeners();
         Log.d(TAG, "onDestroy: Removed Firebase listeners");

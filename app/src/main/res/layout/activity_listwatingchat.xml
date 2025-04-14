@@ -5,21 +5,27 @@
     android:layout_height="match_parent"
     android:background="@drawable/background_notification0">
 
-    <!-- RecyclerView để hiển thị danh sách thông báo -->
-
-    <!-- ImageButton cho chatbot (nằm ở góc dưới bên phải, ngay trên BottomNavigationView) -->
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/notifications_recycler_view"
+    <!-- SwipeRefreshLayout bao quanh RecyclerView -->
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/swipe_refresh_layout"
         android:layout_width="match_parent"
-        android:layout_height="630dp"
+        android:layout_height="match_parent"
         android:layout_alignParentTop="true"
         android:layout_alignParentBottom="true"
         android:layout_marginTop="102dp"
-        android:layout_marginBottom="0dp"
-        android:paddingHorizontal="16dp"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+        android:layout_marginBottom="0dp">
 
+        <!-- RecyclerView để hiển thị danh sách thông báo -->
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/notifications_recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingHorizontal="16dp"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
+    <!-- ImageButton cho chatbot -->
     <ImageButton
         android:id="@+id/chatbot_button"
         android:layout_width="60dp"

@@ -14,8 +14,11 @@ import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import vn.edu.tlu.cse.amourswip.R;
 import vn.edu.tlu.cse.amourswip.view.adapter.chNotificationAdapter;
@@ -23,9 +26,9 @@ import vn.edu.tlu.cse.amourswip.controller.chListChatController;
 import vn.edu.tlu.cse.amourswip.model.data.chNotification;
 
 public class chListChatFragment extends Fragment {
-    //alo
     private RecyclerView notificationsRecyclerView;
     private ImageButton chatbotButton;
+    private SwipeRefreshLayout swipeRefreshLayout; // Thêm SwipeRefreshLayout
     private List<chNotification> notificationList;
     private chNotificationAdapter adapter;
     private FirebaseAuth auth;
@@ -55,6 +58,7 @@ public class chListChatFragment extends Fragment {
 
         notificationsRecyclerView = view.findViewById(R.id.notifications_recycler_view);
         chatbotButton = view.findViewById(R.id.chatbot_button);
+        swipeRefreshLayout = view.findViewById(R.id.swipe_refresh_layout); // Khởi tạo SwipeRefreshLayout
 
         notificationList = new ArrayList<>();
         adapter = new chNotificationAdapter(notificationList, this::onNotificationClicked);
@@ -65,6 +69,12 @@ public class chListChatFragment extends Fragment {
             Bundle bundle = new Bundle();
             bundle.putBoolean("isChatWithAI", true);
             navController.navigate(R.id.action_listChatFragment_to_chatAIFragment, bundle);
+        });
+
+        // Thêm listener cho SwipeRefreshLayout
+        swipeRefreshLayout.setOnRefreshListener(() -> {
+            controller.loadNotifications(); // Gọi lại loadNotifications để reload danh sách
+            swipeRefreshLayout.setRefreshing(false); // Tắt hiệu ứng làm mới
         });
 
         Bundle args = getArguments();
@@ -81,7 +91,18 @@ public class chListChatFragment extends Fragment {
     }
 
     public void updateNotifications(List<chNotification> notifications) {
+        Log.d("ListChatFragment", "Updating notifications, size: " + notifications.size());
+        for (chNotification n : notifications) {
+            Log.d("ListChatFragment", "Notification: " + n.getUserName() + ", timestamp: " + n.getTimestamp());
+        }
         notificationList.clear();
+        // Sắp xếp theo timestamp giảm dần (mới nhất lên đầu)
+        Collections.sort(notifications, new Comparator<chNotification>() {
+            @Override
+            public int compare(chNotification n1, chNotification n2) {
+                return Long.compare(n2.getTimestamp(), n1.getTimestamp()); // Giảm dần
+            }
+        });
         notificationList.addAll(notifications);
         adapter.notifyDataSetChanged();
     }

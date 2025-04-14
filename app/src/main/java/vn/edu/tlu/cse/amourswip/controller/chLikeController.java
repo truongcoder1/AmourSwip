@@ -277,11 +277,11 @@ public class chLikeController {
 
     private void pushMatchNotification(String currentUserId, String otherUserId, String chatId) {
         // Tạo thông báo match cho đối phương
-        String matchId = String.valueOf(System.currentTimeMillis()); // Sử dụng timestamp làm ID duy nhất
+        String matchId = String.valueOf(System.currentTimeMillis());
         Map<String, Object> notification = new HashMap<>();
         notification.put("otherUserId", currentUserId);
         notification.put("chatId", chatId);
-        notification.put("timestamp", System.currentTimeMillis());
+        notification.put("timestamp", System.currentTimeMillis()); // Đảm bảo timestamp chính xác
 
         // Đẩy thông báo vào node match_notifications của đối phương
         matchNotificationsRef.child(otherUserId).child(matchId).setValue(notification)
@@ -344,6 +344,7 @@ public class chLikeController {
         // Điều hướng đến ProfileMyFriendActivity hoặc fragment tương ứng
         Bundle bundle = new Bundle();
         bundle.putString("friendId", user.getUid());
+        bundle.putBoolean("fromLikeFragment", true);
         fragment.getNavController().navigate(R.id.action_likeFragment_to_profileMyFriendActivity, bundle);
     }
 

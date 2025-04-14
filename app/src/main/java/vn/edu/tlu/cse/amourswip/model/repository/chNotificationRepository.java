@@ -1,5 +1,7 @@
 package vn.edu.tlu.cse.amourswip.model.repository;
 
+import android.util.Log;
+
 import androidx.annotation.NonNull;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -49,28 +51,66 @@ public class chNotificationRepository {
                         public void onDataChange(@NonNull DataSnapshot userSnapshot) {
                             xUser user = userSnapshot.getValue(xUser.class);
                             if (user != null) {
-                                // Lấy tin nhắn cuối cùng từ node chats/{chatId}/lastMessage
+                                // Lấy tin nhắn cuối cùng và timestamp từ node chats/{chatId}/lastMessage
                                 database.child("chats").child(chatId).child("lastMessage").addListenerForSingleValueEvent(new ValueEventListener() {
                                     @Override
                                     public void onDataChange(@NonNull DataSnapshot lastMessageSnapshot) {
                                         String lastMessage = "đã match với bạn"; // Giá trị mặc định
                                         String time = new SimpleDateFormat("hh:mm a", Locale.getDefault()).format(new Date());
                                         boolean isUnread = true;
+                                        long timestamp = System.currentTimeMillis(); // Giá trị mặc định
 
                                         if (lastMessageSnapshot.exists()) {
                                             lastMessage = lastMessageSnapshot.child("message").getValue(String.class) != null
                                                     ? lastMessageSnapshot.child("message").getValue(String.class)
                                                     : "đã match với bạn";
-                                            Long timestamp = lastMessageSnapshot.child("timestamp").getValue(Long.class);
-                                            if (timestamp != null) {
-                                                time = new SimpleDateFormat("hh:mm a", Locale.getDefault()).format(new Date(timestamp));
+                                            Long messageTimestamp = lastMessageSnapshot.child("timestamp").getValue(Long.class);
+                                            if (messageTimestamp != null) {
+                                                time = new SimpleDateFormat("hh:mm a", Locale.getDefault()).format(new Date(messageTimestamp));
+                                                timestamp = messageTimestamp;
                                             }
                                             isUnread = lastMessageSnapshot.child("isUnread").getValue(Boolean.class) != null
                                                     ? lastMessageSnapshot.child("isUnread").getValue(Boolean.class)
                                                     : true;
+                                        } else {
+                                            // Nếu không có lastMessage, lấy timestamp từ match_notifications
+                                            database.child("match_notifications").child(currentUserId).orderByChild("otherUserId").equalTo(matchedUserId)
+                                                    .addListenerForSingleValueEvent(new ValueEventListener() {
+                                                        @Override
+                                                        public void onDataChange(@NonNull DataSnapshot notificationSnapshot) {
+                                                            Long matchTimestamp = null;
+                                                            for (DataSnapshot snap : notificationSnapshot.getChildren()) {
+                                                                matchTimestamp = snap.child("timestamp").getValue(Long.class);
+                                                                if (matchTimestamp != null) {
+                                                                    break;
+                                                                }
+                                                            }
+
+                                                            // Tạo chNotification
+                                                            String userImage = user.getPhotos() != null && !user.getPhotos().isEmpty() ? user.getPhotos().get(0) : "";
+                                                            chNotification notification = new chNotification(
+                                                                    matchedUserId,
+                                                                    user.getName(),
+                                                                    userImage,
+                                                                    "đã match với bạn", // Giá trị mặc định cho lastMessage
+                                                                    matchTimestamp != null ? new SimpleDateFormat("hh:mm a", Locale.getDefault()).format(new Date(matchTimestamp)) : new SimpleDateFormat("hh:mm a", Locale.getDefault()).format(new Date()),
+                                                                    true, // Giá trị mặc định cho isUnread
+                                                                    matchTimestamp != null ? matchTimestamp : System.currentTimeMillis()
+                                                            );
+                                                            notificationList.add(notification);
+                                                            Log.d("NotificationRepository", "Created notification: " + user.getName() + ", timestamp: " + (matchTimestamp != null ? matchTimestamp : System.currentTimeMillis()));
+                                                            listener.onSuccess(notificationList);
+                                                        }
+
+                                                        @Override
+                                                        public void onCancelled(@NonNull DatabaseError error) {
+                                                            listener.onError(error.getMessage());
+                                                        }
+                                                    });
+                                            return;
                                         }
 
-                                        // Lấy URL hình ảnh từ user
+                                        // Tạo chNotification
                                         String userImage = user.getPhotos() != null && !user.getPhotos().isEmpty() ? user.getPhotos().get(0) : "";
                                         chNotification notification = new chNotification(
                                                 matchedUserId,
@@ -78,9 +118,11 @@ public class chNotificationRepository {
                                                 userImage,
                                                 lastMessage,
                                                 time,
-                                                isUnread
+                                                isUnread,
+                                                timestamp
                                         );
-                                        notificationList.add(0, notification);
+                                        notificationList.add(notification);
+                                        Log.d("NotificationRepository", "Created notification: " + user.getName() + ", timestamp: " + timestamp);
                                         listener.onSuccess(notificationList);
                                     }
 
@@ -114,7 +156,7 @@ public class chNotificationRepository {
             matchesListener = null;
         }
     }
-    //
+
     public interface OnResultListener {
         void onSuccess(List<chNotification> notifications);
         void onEmpty();
