@@ -37,8 +37,8 @@ import vn.edu.tlu.cse.amourswip.view.adapter.trChatAiAdapter;
 public class trChatAiFragment extends Fragment {
 
     private static final String TAG = "ChatAIFragment";
-    private static final String HUGGINGFACE_API_URL = "https://api-inference.huggingface.co/models/meta-llama/Llama-3.2-3B-Instruct";
-    private static final String HUGGINGFACE_API_TOKEN = "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";
+    private static final String HUGGINGFACE_API_URL = "https://api-inference.huggingface.co/models/meta-llama/Llama-3.2-1B-Instruct";
+    private static final String HUGGINGFACE_API_TOKEN = "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";
     private static final int MAX_MESSAGES = 100; // Giới hạn số lượng tin nhắn
 
     private TextView title;
@@ -164,7 +164,7 @@ public class trChatAiFragment extends Fragment {
         try {
             jsonPayload.put("inputs", conversationContext.toString());
             jsonPayload.put("parameters", new JSONObject()
-                    .put("max_new_tokens", 500) // Tương đương max_length
+                    .put("max_new_tokens", 250) // Tương đương max_length
                     .put("top_p", 0.9)
                     .put("temperature", 0.7)
                     .put("return_full_text", false)); // Chỉ trả về phần mới

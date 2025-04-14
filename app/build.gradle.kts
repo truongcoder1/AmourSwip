@@ -13,8 +13,9 @@ android {
         targetSdk = 35
         versionCode = 1
         versionName = "1.0"
-
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+        // Thêm dòng này để định nghĩa HUGGINGFACE_API_TOKEN
     }
     buildFeatures {
         viewBinding = true
@@ -53,18 +54,17 @@ dependencies {
     implementation(libs.firebase.auth)
     implementation(libs.firebase.firestore)
     implementation(libs.firebase.database)
-    implementation (libs.navigation.fragment.v277)
-    implementation (libs.navigation.ui)
-    implementation (libs.firebase.storage)
-    implementation (libs.appcompat.v161)
-    implementation (libs.material)
-    implementation (libs.glide)
-    implementation (libs.annotation)
-    implementation (libs.play.services.location)
+    implementation(libs.navigation.fragment.v277)
+    implementation(libs.navigation.ui)
+    implementation(libs.firebase.storage)
+    implementation(libs.appcompat.v161)
+    implementation(libs.material)
+    implementation(libs.glide)
+    implementation(libs.annotation)
+    implementation(libs.play.services.location)
     implementation(libs.cardview)
-    implementation (libs.okhttp)
-    implementation (libs.gson)
-    implementation (libs.okhttp)
-    implementation (libs.firebase.messaging)
-
+    implementation(libs.okhttp)
+    implementation(libs.gson)
+    implementation(libs.okhttp) // Lưu ý: Dependency này bị lặp, có thể xóa một dòng
+    implementation(libs.firebase.messaging)
 }
