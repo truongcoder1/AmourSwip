@@ -10,6 +10,7 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
@@ -22,6 +23,13 @@ import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+import com.bumptech.glide.Glide;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
@@ -32,6 +40,7 @@ import vn.edu.tlu.cse.amourswip.view.adapter.chUserGridAdapter;
 
 public class chLikeFragment extends Fragment {
 
+    private static final String TAG = "chLikeFragment";
     private static final String KEY_USERS_WHO_LIKED_ME = "usersWhoLikedMe";
     private static final String KEY_USERS_I_LIKED = "usersILiked";
     private static final String KEY_IS_LIKES_TAB_SELECTED = "isLikesTabSelected";
@@ -59,6 +68,9 @@ public class chLikeFragment extends Fragment {
     private boolean isLoading;
     private boolean isFilterApplied;
     private boolean isLikesTabSelected; // Biến để theo dõi trạng thái tab
+    private DatabaseReference matchNotificationsRef; // Thêm biến để lắng nghe thông báo match
+    private ValueEventListener matchListener; // Listener cho thông báo match
+    private String currentUserId; // ID của người dùng hiện tại
 
     @Nullable
     @Override
@@ -71,6 +83,9 @@ public class chLikeFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         navController = Navigation.findNavController(view);
+
+        currentUserId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        matchNotificationsRef = FirebaseDatabase.getInstance().getReference("match_notifications").child(currentUserId);
 
         likesTab = view.findViewById(R.id.likes_tab);
         likedTab = view.findViewById(R.id.liked_tab);
@@ -144,6 +159,9 @@ public class chLikeFragment extends Fragment {
         likedTab.setOnClickListener(v -> controller.onLikedTabClicked());
 
         updateTabSelection(isLikesTabSelected);
+
+        // Lắng nghe thông báo match từ Firebase
+        setupMatchListener();
     }
 
     @Override
@@ -157,6 +175,58 @@ public class chLikeFragment extends Fragment {
         outState.putInt(KEY_MAX_AGE, controller.getMaxAge());
         outState.putString(KEY_RESIDENCE_FILTER, controller.getResidenceFilter());
         outState.putBoolean(KEY_FILTER_APPLIED, isFilterApplied);
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        // Hủy lắng nghe sự kiện match khi fragment bị hủy
+        if (matchNotificationsRef != null && matchListener != null) {
+            matchNotificationsRef.removeEventListener(matchListener);
+        }
+    }
+
+    private void setupMatchListener() {
+        matchListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                for (DataSnapshot matchSnapshot : snapshot.getChildren()) {
+                    String matchId = matchSnapshot.getKey();
+                    String otherUserId = matchSnapshot.child("otherUserId").getValue(String.class);
+                    String chatId = matchSnapshot.child("chatId").getValue(String.class);
+
+                    if (otherUserId != null && chatId != null) {
+                        // Lấy thông tin người dùng match để hiển thị dialog
+                        DatabaseReference otherUserRef = FirebaseDatabase.getInstance().getReference("users").child(otherUserId);
+                        otherUserRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot userSnapshot) {
+                                xUser otherUser = userSnapshot.getValue(xUser.class);
+                                if (otherUser != null) {
+                                    String matchedUserName = otherUser.getName() != null ? otherUser.getName() : "người dùng này";
+                                    showMatchDialog(matchedUserName, chatId, otherUser);
+                                }
+                                // Xóa thông báo sau khi hiển thị
+                                matchNotificationsRef.child(matchId).removeValue();
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError error) {
+                                Log.e(TAG, "Error loading matched user: " + error.getMessage());
+                                showError("Lỗi tải thông tin người dùng match: " + error.getMessage());
+                            }
+                        });
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Log.e(TAG, "Error listening for match notifications: " + error.getMessage());
+                showError("Lỗi lắng nghe thông báo match: " + error.getMessage());
+            }
+        };
+        matchNotificationsRef.addValueEventListener(matchListener);
     }
 
     private void showFilterDialog() {
@@ -323,6 +393,89 @@ public class chLikeFragment extends Fragment {
 
     private void onUserClicked(xUser user) {
         controller.onUserClicked(user);
+    }
+
+    // Phương thức hiển thị dialog match
+    public void showMatchDialog(String matchedUserName, String chatId, xUser otherUser) {
+        Log.d(TAG, "showMatchDialog: Attempting to show match dialog for user: " + matchedUserName);
+        try {
+            Dialog matchDialog = new Dialog(getContext());
+            matchDialog.setContentView(R.layout.match_dialog);
+
+            TextView matchTitle = matchDialog.findViewById(R.id.match_title);
+            ImageView currentUserImage = matchDialog.findViewById(R.id.current_user_image);
+            ImageView otherUserImage = matchDialog.findViewById(R.id.other_user_image);
+            Button sendMessageButton = matchDialog.findViewById(R.id.send_message_button);
+            Button keepSwipingButton = matchDialog.findViewById(R.id.keep_swiping_button);
+
+            if (matchTitle == null || currentUserImage == null || otherUserImage == null ||
+                    sendMessageButton == null || keepSwipingButton == null) {
+                Log.e(TAG, "showMatchDialog: One or more views in match_dialog.xml are null");
+                return;
+            }
+
+            String message = "Bạn và " + matchedUserName + " đã match thành công!";
+            matchTitle.setText(message);
+
+            // Lấy ảnh của người dùng hiện tại
+            DatabaseReference currentUserRef = FirebaseDatabase.getInstance().getReference("users").child(currentUserId);
+            currentUserRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    xUser currentUser = snapshot.getValue(xUser.class);
+                    if (currentUser != null && currentUser.getPhotos() != null && !currentUser.getPhotos().isEmpty()) {
+                        Glide.with(getContext())
+                                .load(currentUser.getPhotos().get(0))
+                                .placeholder(R.drawable.gai1)
+                                .error(R.drawable.gai1)
+                                .into(currentUserImage);
+                    } else {
+                        currentUserImage.setImageResource(R.drawable.gai1);
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+                    Log.e(TAG, "Error loading current user: " + error.getMessage());
+                    currentUserImage.setImageResource(R.drawable.gai1);
+                }
+            });
+
+            // Hiển thị ảnh của người được match
+            if (otherUser != null && otherUser.getPhotos() != null && !otherUser.getPhotos().isEmpty()) {
+                Glide.with(getContext())
+                        .load(otherUser.getPhotos().get(0))
+                        .placeholder(R.drawable.gai2)
+                        .error(R.drawable.gai2)
+                        .into(otherUserImage);
+            } else {
+                otherUserImage.setImageResource(R.drawable.gai2);
+            }
+
+            sendMessageButton.setOnClickListener(v -> {
+                Log.d(TAG, "Send message button clicked, navigating to chat with chatId: " + chatId);
+                matchDialog.dismiss();
+                Bundle bundle = new Bundle();
+                bundle.putString("chatId", chatId);
+                try {
+                    navController.navigate(R.id.action_likeFragment_to_listChatFragment, bundle);
+                } catch (Exception e) {
+                    Log.e(TAG, "Error navigating to chat: " + e.getMessage());
+                    showError("Lỗi điều hướng: " + e.getMessage());
+                }
+            });
+
+            keepSwipingButton.setOnClickListener(v -> {
+                Log.d(TAG, "Keep swiping button clicked, dismissing dialog");
+                matchDialog.dismiss();
+            });
+
+            Log.d(TAG, "showMatchDialog: Showing dialog");
+            matchDialog.show();
+        } catch (Exception e) {
+            Log.e(TAG, "Error showing match dialog: " + e.getMessage(), e);
+            showError("Lỗi hiển thị dialog match: " + e.getMessage());
+        }
     }
 
     // DiffUtil Callback để tối ưu hóa cập nhật danh sách

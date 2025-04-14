@@ -2,18 +2,17 @@ package vn.edu.tlu.cse.amourswip.controller;
 
 import android.os.Bundle;
 import android.util.Log;
-
 import androidx.annotation.NonNull;
-
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import vn.edu.tlu.cse.amourswip.R;
@@ -36,6 +35,7 @@ public class chLikeController {
     private int minAge = 0;
     private int maxAge = Integer.MAX_VALUE;
     private String residenceFilter;
+    private final DatabaseReference matchNotificationsRef; // Thêm để đẩy thông báo match
 
     public chLikeController(chLikeFragment fragment) {
         this.fragment = fragment;
@@ -45,6 +45,7 @@ public class chLikeController {
         this.lastUserIdWhoLikedMe = null;
         this.lastUserIdILiked = null;
         this.isLikesTabSelected = true;
+        this.matchNotificationsRef = FirebaseDatabase.getInstance().getReference("match_notifications");
 
         // Load current user location
         repository.getCurrentUserLocation(new chLikeRepository.OnLocationListener() {
@@ -235,19 +236,32 @@ public class chLikeController {
                                     ? currentUserId + "_" + otherUser.getUid()
                                     : otherUser.getUid() + "_" + currentUserId;
 
+                            // Lưu thông tin match cho cả hai bên
                             database.child("matches").child(currentUserId).child(otherUser.getUid()).setValue(true);
                             database.child("matches").child(otherUser.getUid()).child(currentUserId).setValue(true);
 
                             database.child("chats").child(chatId).child("participants").child(currentUserId).setValue(true);
                             database.child("chats").child(chatId).child("participants").child(otherUser.getUid()).setValue(true);
 
-                            String matchedUserName = otherUser.getName() != null ? otherUser.getName() : "người dùng này";
-                            Log.d(TAG, "Match successful with user: " + matchedUserName);
-                            // Xóa người dùng khỏi cả hai danh sách
+                            // Xóa thông tin lượt thích của cả hai bên trên Firebase
+                            database.child("likes").child(currentUserId).child(otherUser.getUid()).removeValue();
+                            database.child("likedBy").child(currentUserId).child(otherUser.getUid()).removeValue();
+                            database.child("likes").child(otherUser.getUid()).child(currentUserId).removeValue();
+                            database.child("likedBy").child(otherUser.getUid()).child(currentUserId).removeValue();
+
+                            // Xóa người dùng khỏi cả hai danh sách của người dùng hiện tại
                             usersWhoLikedMe.removeIf(user -> user.getUid().equals(otherUser.getUid()));
                             usersILiked.removeIf(user -> user.getUid().equals(otherUser.getUid()));
-                            // Cập nhật giao diện của tab hiện tại
                             fragment.updateUserList(isLikesTabSelected ? usersWhoLikedMe : usersILiked);
+
+                            String matchedUserName = otherUser.getName() != null ? otherUser.getName() : "người dùng này";
+                            Log.d(TAG, "Match successful with user: " + matchedUserName);
+
+                            // Hiển thị dialog match cho người dùng hiện tại
+                            fragment.showMatchDialog(matchedUserName, chatId, otherUser);
+
+                            // Đẩy thông báo match cho đối phương
+                            pushMatchNotification(currentUserId, otherUser.getUid(), chatId);
                         } else {
                             Log.d(TAG, "checkForMatch: No mutual like found with user: " + otherUser.getName());
                         }
@@ -257,6 +271,25 @@ public class chLikeController {
                     public void onCancelled(@NonNull DatabaseError error) {
                         Log.e(TAG, "checkForMatch: Error checking match: " + error.getMessage());
                         fragment.showError("Lỗi kiểm tra match: " + error.getMessage());
+                    }
+                });
+    }
+
+    private void pushMatchNotification(String currentUserId, String otherUserId, String chatId) {
+        // Tạo thông báo match cho đối phương
+        String matchId = String.valueOf(System.currentTimeMillis()); // Sử dụng timestamp làm ID duy nhất
+        Map<String, Object> notification = new HashMap<>();
+        notification.put("otherUserId", currentUserId);
+        notification.put("chatId", chatId);
+        notification.put("timestamp", System.currentTimeMillis());
+
+        // Đẩy thông báo vào node match_notifications của đối phương
+        matchNotificationsRef.child(otherUserId).child(matchId).setValue(notification)
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        Log.d(TAG, "pushMatchNotification: Successfully pushed match notification to user: " + otherUserId);
+                    } else {
+                        Log.e(TAG, "pushMatchNotification: Error pushing match notification: " + task.getException().getMessage());
                     }
                 });
     }

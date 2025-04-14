@@ -1,6 +1,7 @@
 package vn.edu.tlu.cse.amourswip.view.fragment;
 
 import android.Manifest;
+import android.app.Dialog;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Handler;
@@ -11,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -25,18 +27,22 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.yuyakaido.android.cardstackview.CardStackLayoutManager;
 import com.yuyakaido.android.cardstackview.CardStackListener;
 import com.yuyakaido.android.cardstackview.CardStackView;
 import com.yuyakaido.android.cardstackview.Direction;
-
 import vn.edu.tlu.cse.amourswip.R;
 import vn.edu.tlu.cse.amourswip.controller.chSwipeController;
 import vn.edu.tlu.cse.amourswip.view.adapter.chCardStackAdapter;
 import vn.edu.tlu.cse.amourswip.model.data.xUser;
 import android.media.MediaPlayer;
+import com.bumptech.glide.Glide;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -60,6 +66,8 @@ public class chSwipeFragment extends Fragment {
     private chSwipeController controller;
     private FirebaseAuth auth;
     private DatabaseReference database;
+    private DatabaseReference matchNotificationsRef; // Thêm để lắng nghe thông báo match
+    private ValueEventListener matchListener; // Listener cho thông báo match
     private String currentUserId;
     private List<xUser> userList;
     private chCardStackAdapter adapter;
@@ -97,6 +105,7 @@ public class chSwipeFragment extends Fragment {
         }
 
         currentUserId = auth.getCurrentUser().getUid();
+        matchNotificationsRef = database.child("match_notifications").child(currentUserId);
         Log.d(TAG, "onViewCreated: Current user ID: " + currentUserId);
 
         cardStackView = view.findViewById(R.id.card_stack_view);
@@ -248,6 +257,61 @@ public class chSwipeFragment extends Fragment {
 
         controller = new chSwipeController(this, cardStackView, skipCircle, likeCircle, skipButton, likeButton,
                 null, null, navController, userList, adapter);
+
+        // Lắng nghe thông báo match từ Firebase
+        setupMatchListener();
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        // Hủy lắng nghe sự kiện match khi fragment bị hủy
+        if (matchNotificationsRef != null && matchListener != null) {
+            matchNotificationsRef.removeEventListener(matchListener);
+        }
+    }
+
+    private void setupMatchListener() {
+        matchListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                for (DataSnapshot matchSnapshot : snapshot.getChildren()) {
+                    String matchId = matchSnapshot.getKey();
+                    String otherUserId = matchSnapshot.child("otherUserId").getValue(String.class);
+                    String chatId = matchSnapshot.child("chatId").getValue(String.class);
+
+                    if (otherUserId != null && chatId != null) {
+                        // Lấy thông tin người dùng match để hiển thị dialog
+                        DatabaseReference otherUserRef = FirebaseDatabase.getInstance().getReference("users").child(otherUserId);
+                        otherUserRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot userSnapshot) {
+                                xUser otherUser = userSnapshot.getValue(xUser.class);
+                                if (otherUser != null) {
+                                    String matchedUserName = otherUser.getName() != null ? otherUser.getName() : "người dùng này";
+                                    showMatchDialog(matchedUserName, chatId, otherUser);
+                                }
+                                // Xóa thông báo sau khi hiển thị
+                                matchNotificationsRef.child(matchId).removeValue();
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError error) {
+                                Log.e(TAG, "Error loading matched user: " + error.getMessage());
+                                showError("Lỗi tải thông tin người dùng match: " + error.getMessage());
+                            }
+                        });
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Log.e(TAG, "Error listening for match notifications: " + error.getMessage());
+                showError("Lỗi lắng nghe thông báo match: " + error.getMessage());
+            }
+        };
+        matchNotificationsRef.addValueEventListener(matchListener);
     }
 
     private void requestLocationPermission() {
@@ -381,5 +445,88 @@ public class chSwipeFragment extends Fragment {
         cardStackView.setVisibility(View.VISIBLE);
         loadingIndicator.setVisibility(View.GONE);
         errorLayout.setVisibility(View.GONE);
+    }
+
+    public void showMatchDialog(String matchedUserName, String chatId, xUser otherUser) {
+        Log.d(TAG, "showMatchDialog: Attempting to show match dialog for user: " + matchedUserName);
+        try {
+            Dialog matchDialog = new Dialog(getContext());
+            matchDialog.setContentView(R.layout.match_dialog);
+
+            TextView matchTitle = matchDialog.findViewById(R.id.match_title);
+            ImageView currentUserImage = matchDialog.findViewById(R.id.current_user_image);
+            ImageView otherUserImage = matchDialog.findViewById(R.id.other_user_image);
+            Button sendMessageButton = matchDialog.findViewById(R.id.send_message_button);
+            Button keepSwipingButton = matchDialog.findViewById(R.id.keep_swiping_button);
+
+            if (matchTitle == null || currentUserImage == null || otherUserImage == null ||
+                    sendMessageButton == null || keepSwipingButton == null) {
+                Log.e(TAG, "showMatchDialog: One or more views in match_dialog.xml are null");
+                return;
+            }
+
+            String message = "Bạn và " + matchedUserName + " đã match thành công!";
+            matchTitle.setText(message);
+
+            // Lấy ảnh của người dùng hiện tại
+            DatabaseReference currentUserRef = FirebaseDatabase.getInstance().getReference("users").child(currentUserId);
+            currentUserRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    xUser currentUser = snapshot.getValue(xUser.class);
+                    if (currentUser != null && currentUser.getPhotos() != null && !currentUser.getPhotos().isEmpty()) {
+                        Glide.with(getContext())
+                                .load(currentUser.getPhotos().get(0))
+                                .placeholder(R.drawable.gai1)
+                                .error(R.drawable.gai1)
+                                .into(currentUserImage);
+                    } else {
+                        currentUserImage.setImageResource(R.drawable.gai1);
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+                    Log.e(TAG, "Error loading current user: " + error.getMessage());
+                    currentUserImage.setImageResource(R.drawable.gai1);
+                }
+            });
+
+            // Hiển thị ảnh của người được match
+            if (otherUser != null && otherUser.getPhotos() != null && !otherUser.getPhotos().isEmpty()) {
+                Glide.with(getContext())
+                        .load(otherUser.getPhotos().get(0))
+                        .placeholder(R.drawable.gai2)
+                        .error(R.drawable.gai2)
+                        .into(otherUserImage);
+            } else {
+                otherUserImage.setImageResource(R.drawable.gai2);
+            }
+
+            sendMessageButton.setOnClickListener(v -> {
+                Log.d(TAG, "Send message button clicked, navigating to chat with chatId: " + chatId);
+                matchDialog.dismiss();
+                Bundle bundle = new Bundle();
+                bundle.putString("chatId", chatId);
+                try {
+                    navController.navigate(R.id.action_swipeFragment_to_listChatFragment, bundle);
+                } catch (Exception e) {
+                    Log.e(TAG, "Error navigating to chat: " + e.getMessage());
+                    showError("Lỗi điều hướng: " + e.getMessage());
+                }
+            });
+
+            keepSwipingButton.setOnClickListener(v -> {
+                Log.d(TAG, "Keep swiping button clicked, dismissing dialog");
+                matchDialog.dismiss();
+                controller.loadUsers();
+            });
+
+            Log.d(TAG, "showMatchDialog: Showing dialog");
+            matchDialog.show();
+        } catch (Exception e) {
+            Log.e(TAG, "Error showing match dialog: " + e.getMessage(), e);
+            showError("Lỗi hiển thị dialog match: " + e.getMessage());
+        }
     }
 }

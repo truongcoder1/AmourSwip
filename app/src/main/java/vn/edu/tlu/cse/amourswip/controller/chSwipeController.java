@@ -1,6 +1,5 @@
 package vn.edu.tlu.cse.amourswip.controller;
 
-import android.app.Dialog;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -9,10 +8,8 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import androidx.annotation.NonNull;
 import androidx.navigation.NavController;
-
 import com.bumptech.glide.Glide;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -26,13 +23,13 @@ import com.yuyakaido.android.cardstackview.CardStackView;
 import com.yuyakaido.android.cardstackview.Direction;
 import com.yuyakaido.android.cardstackview.Duration;
 import com.yuyakaido.android.cardstackview.SwipeAnimationSetting;
-
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.Stack;
-
 import vn.edu.tlu.cse.amourswip.R;
 import vn.edu.tlu.cse.amourswip.model.data.xUser;
 import vn.edu.tlu.cse.amourswip.view.adapter.chCardStackAdapter;
@@ -53,6 +50,7 @@ public class chSwipeController {
     private final View matchNotificationLayout;
     private final NavController navController;
     private final DatabaseReference database;
+    private final DatabaseReference matchNotificationsRef; // Thêm để đẩy thông báo match
     private final String currentUserId;
     private final List<xUser> userList;
     private final chCardStackAdapter adapter;
@@ -89,6 +87,7 @@ public class chSwipeController {
         this.matchNotificationLayout = matchNotificationLayout;
         this.navController = navController;
         this.database = FirebaseDatabase.getInstance().getReference();
+        this.matchNotificationsRef = database.child("match_notifications");
         this.currentUserId = FirebaseAuth.getInstance().getCurrentUser().getUid();
         this.userList = userList;
         this.adapter = adapter;
@@ -434,16 +433,29 @@ public class chSwipeController {
                                     ? currentUserId + "_" + otherUser.getUid()
                                     : otherUser.getUid() + "_" + currentUserId;
 
+                            // Lưu thông tin match cho cả hai bên
                             database.child("matches").child(currentUserId).child(otherUser.getUid()).setValue(true);
                             database.child("matches").child(otherUser.getUid()).child(currentUserId).setValue(true);
 
                             database.child("chats").child(chatId).child("participants").child(currentUserId).setValue(true);
                             database.child("chats").child(chatId).child("participants").child(otherUser.getUid()).setValue(true);
 
+                            // Xóa thông tin lượt thích của cả hai bên trên Firebase
+                            database.child("likes").child(currentUserId).child(otherUser.getUid()).removeValue();
+                            database.child("likedBy").child(currentUserId).child(otherUser.getUid()).removeValue();
+                            database.child("likes").child(otherUser.getUid()).child(currentUserId).removeValue();
+                            database.child("likedBy").child(otherUser.getUid()).child(currentUserId).removeValue();
+
                             String matchedUserName = otherUser.getName() != null ? otherUser.getName() : "người dùng này";
                             Log.d(TAG, "Match successful with user: " + matchedUserName);
-                            showMatchDialog(matchedUserName, chatId, otherUser);
 
+                            // Hiển thị dialog match cho người dùng hiện tại
+                            fragment.showMatchDialog(matchedUserName, chatId, otherUser);
+
+                            // Đẩy thông báo match cho đối phương
+                            pushMatchNotification(currentUserId, otherUser.getUid(), chatId);
+
+                            // Cập nhật danh sách của người dùng hiện tại
                             matchedUserIds.add(otherUser.getUid());
                             userList.remove(otherUser);
                             adapter.notifyDataSetChanged();
@@ -460,71 +472,22 @@ public class chSwipeController {
                 });
     }
 
-    private void showMatchDialog(String matchedUserName, String chatId, xUser otherUser) {
-        Log.d(TAG, "showMatchDialog: Attempting to show match dialog for user: " + matchedUserName);
-        try {
-            Dialog matchDialog = new Dialog(fragment.getContext());
-            matchDialog.setContentView(R.layout.match_dialog);
+    private void pushMatchNotification(String currentUserId, String otherUserId, String chatId) {
+        // Tạo thông báo match cho đối phương
+        String matchId = String.valueOf(System.currentTimeMillis()); // Sử dụng timestamp làm ID duy nhất
+        Map<String, Object> notification = new HashMap<>();
+        notification.put("otherUserId", currentUserId);
+        notification.put("chatId", chatId);
+        notification.put("timestamp", System.currentTimeMillis());
 
-            TextView matchTitle = matchDialog.findViewById(R.id.match_title);
-            ImageView currentUserImage = matchDialog.findViewById(R.id.current_user_image);
-            ImageView otherUserImage = matchDialog.findViewById(R.id.other_user_image);
-            Button sendMessageButton = matchDialog.findViewById(R.id.send_message_button);
-            Button keepSwipingButton = matchDialog.findViewById(R.id.keep_swiping_button);
-
-            if (matchTitle == null || currentUserImage == null || otherUserImage == null ||
-                    sendMessageButton == null || keepSwipingButton == null) {
-                Log.e(TAG, "showMatchDialog: One or more views in match_dialog.xml are null");
-                return;
-            }
-
-            String message = "Bạn và " + matchedUserName + " đã match thành công!";
-            matchTitle.setText(message);
-
-            if (currentUser != null && currentUser.getPhotos() != null && !currentUser.getPhotos().isEmpty()) {
-                Glide.with(fragment.getContext())
-                        .load(currentUser.getPhotos().get(0))
-                        .placeholder(R.drawable.gai1)
-                        .error(R.drawable.gai1)
-                        .into(currentUserImage);
-            } else {
-                currentUserImage.setImageResource(R.drawable.gai1);
-            }
-
-            if (otherUser != null && otherUser.getPhotos() != null && !otherUser.getPhotos().isEmpty()) {
-                Glide.with(fragment.getContext())
-                        .load(otherUser.getPhotos().get(0))
-                        .placeholder(R.drawable.gai2)
-                        .error(R.drawable.gai2)
-                        .into(otherUserImage);
-            } else {
-                otherUserImage.setImageResource(R.drawable.gai2);
-            }
-
-            sendMessageButton.setOnClickListener(v -> {
-                Log.d(TAG, "Send message button clicked, navigating to chat with chatId: " + chatId);
-                matchDialog.dismiss();
-                Bundle bundle = new Bundle();
-                bundle.putString("chatId", chatId);
-                try {
-                    navController.navigate(R.id.action_swipeFragment_to_listChatFragment, bundle);
-                } catch (Exception e) {
-                    Log.e(TAG, "Error navigating to chat: " + e.getMessage());
-                    fragment.showError("Lỗi điều hướng: " + e.getMessage());
-                }
-            });
-
-            keepSwipingButton.setOnClickListener(v -> {
-                Log.d(TAG, "Keep swiping button clicked, dismissing dialog");
-                matchDialog.dismiss();
-                loadUsers();
-            });
-
-            Log.d(TAG, "showMatchDialog: Showing dialog");
-            matchDialog.show();
-        } catch (Exception e) {
-            Log.e(TAG, "Error showing match dialog: " + e.getMessage(), e);
-            fragment.showError("Lỗi hiển thị dialog match: " + e.getMessage());
-        }
+        // Đẩy thông báo vào node match_notifications của đối phương
+        matchNotificationsRef.child(otherUserId).child(matchId).setValue(notification)
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        Log.d(TAG, "pushMatchNotification: Successfully pushed match notification to user: " + otherUserId);
+                    } else {
+                        Log.e(TAG, "pushMatchNotification: Error pushing match notification: " + task.getException().getMessage());
+                    }
+                });
     }
 }
