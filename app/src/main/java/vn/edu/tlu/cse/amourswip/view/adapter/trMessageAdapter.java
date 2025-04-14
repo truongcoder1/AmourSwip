@@ -30,7 +30,7 @@ public class trMessageAdapter extends RecyclerView.Adapter<trMessageAdapter.Mess
 
     public void addMessage(trMessageUser message) {
         messageList.add(message);
-        notifyItemInserted(messageList.size() - 1);
+        notifyItemInserted(messageList.size() - 1);// khiến recy hiển thị tn mới mà ko cần làm mới toàn bộ danh sách
     }
 
     @Override
