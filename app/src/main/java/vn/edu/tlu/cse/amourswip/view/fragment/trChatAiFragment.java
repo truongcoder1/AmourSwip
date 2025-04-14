@@ -30,6 +30,7 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
+import vn.edu.tlu.cse.amourswip.BuildConfig;
 import vn.edu.tlu.cse.amourswip.R;
 import vn.edu.tlu.cse.amourswip.model.data.trMessageAI;
 import vn.edu.tlu.cse.amourswip.view.adapter.trChatAiAdapter;
@@ -37,8 +38,7 @@ import vn.edu.tlu.cse.amourswip.view.adapter.trChatAiAdapter;
 public class trChatAiFragment extends Fragment {
 
     private static final String TAG = "ChatAIFragment";
-    private static final String HUGGINGFACE_API_URL = "https://api-inference.huggingface.co/models/meta-llama/Llama-3.2-1B-Instruct";
-    private static final String HUGGINGFACE_API_TOKEN = "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";
+    private static final String GEMINI_API_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent";
     private static final int MAX_MESSAGES = 100; // Giới hạn số lượng tin nhắn
 
     private TextView title;
@@ -143,31 +143,48 @@ public class trChatAiFragment extends Fragment {
     private void fetchAIResponse(String userMessage) {
         if (!isAdded()) return;
 
-        // Xây dựng ngữ cảnh hội thoại
-        StringBuilder conversationContext = new StringBuilder();
-        conversationContext.append("<|begin_of_text|>"); // Prompt bắt đầu cho Llama
+        // Xây dựng ngữ cảnh hội thoại cho Gemini
+        JSONArray messagesArray = new JSONArray();
         int maxContextMessages = 6;
         int startIndex = Math.max(0, messageList.size() - maxContextMessages);
         for (int i = startIndex; i < messageList.size(); i++) {
             trMessageAI msg = messageList.get(i);
-            conversationContext.append(msg.isUserMessage() ? "<|user|> " : "<|assistant|> ")
-                    .append(msg.getText())
-                    .append(" <|end|> ");
+            JSONObject messageObject = new JSONObject();
+            try {
+                messageObject.put("role", msg.isUserMessage() ? "user" : "model");
+                JSONArray partsArray = new JSONArray();
+                JSONObject partObject = new JSONObject();
+                partObject.put("text", msg.getText());
+                partsArray.put(partObject);
+                messageObject.put("parts", partsArray);
+                messagesArray.put(messageObject);
+            } catch (Exception e) {
+                Log.e(TAG, "Error building conversation context", e);
+            }
         }
-        conversationContext.append("<|user|> ").append(userMessage).append(" <|end|> ");
-        conversationContext.append("<|assistant|> ");
 
-        Log.d(TAG, "Conversation context: " + conversationContext.toString());
+        // Thêm tin nhắn người dùng hiện tại
+        JSONObject userMessageObject = new JSONObject();
+        try {
+            userMessageObject.put("role", "user");
+            JSONArray partsArray = new JSONArray();
+            JSONObject partObject = new JSONObject();
+            partObject.put("text", userMessage);
+            partsArray.put(partObject);
+            userMessageObject.put("parts", partsArray);
+            messagesArray.put(userMessageObject);
+        } catch (Exception e) {
+            Log.e(TAG, "Error adding user message to context", e);
+        }
 
-        // Tạo payload cho API
+        // Tạo payload cho Gemini API
         JSONObject jsonPayload = new JSONObject();
         try {
-            jsonPayload.put("inputs", conversationContext.toString());
-            jsonPayload.put("parameters", new JSONObject()
-                    .put("max_new_tokens", 250) // Tương đương max_length
-                    .put("top_p", 0.9)
-                    .put("temperature", 0.7)
-                    .put("return_full_text", false)); // Chỉ trả về phần mới
+            jsonPayload.put("contents", messagesArray);
+            jsonPayload.put("generationConfig", new JSONObject()
+                    .put("maxOutputTokens", 250)
+                    .put("topP", 0.9)
+                    .put("temperature", 0.7));
         } catch (Exception e) {
             Log.e(TAG, "Error creating API request", e);
             showError("Lỗi khi tạo yêu cầu API");
@@ -177,8 +194,7 @@ public class trChatAiFragment extends Fragment {
         // Tạo yêu cầu API
         RequestBody body = RequestBody.create(jsonPayload.toString(), MediaType.parse("application/json; charset=utf-8"));
         Request request = new Request.Builder()
-                .url(HUGGINGFACE_API_URL)
-                .addHeader("Authorization", "Bearer " + HUGGINGFACE_API_TOKEN)
+                .url(GEMINI_API_URL + "?key=" + BuildConfig.GEMINI_API_KEY)
                 .post(body)
                 .build();
 
@@ -210,22 +226,26 @@ public class trChatAiFragment extends Fragment {
                 Log.d(TAG, "Raw API response: " + responseBody);
 
                 try {
-                    // Phản hồi từ Llama là một mảng JSON
-                    JSONArray jsonArray = new JSONArray(responseBody);
-                    if (jsonArray.length() > 0) {
-                        String aiResponse = jsonArray.getJSONObject(0).getString("generated_text").trim();
-                        Log.d(TAG, "Generated text: " + aiResponse);
+                    JSONObject jsonResponse = new JSONObject(responseBody);
+                    JSONArray candidates = jsonResponse.getJSONArray("candidates");
+                    if (candidates.length() > 0) {
+                        JSONObject candidate = candidates.getJSONObject(0);
+                        JSONObject content = candidate.getJSONObject("content");
+                        JSONArray parts = content.getJSONArray("parts");
+                        if (parts.length() > 0) {
+                            String aiResponse = parts.getJSONObject(0).getString("text").trim();
+                            Log.d(TAG, "Generated text: " + aiResponse);
 
-                        // Loại bỏ các token đặc biệt nếu cần
-                        String finalResponse = aiResponse.replaceAll("<\\|.*?\\|>", "").trim();
-
-                        if (!finalResponse.isEmpty()) {
-                            requireActivity().runOnUiThread(() -> {
-                                trMessageAI aiMessage = new trMessageAI(finalResponse, false, System.currentTimeMillis());
-                                addMessage(aiMessage);
-                            });
+                            if (!aiResponse.isEmpty()) {
+                                requireActivity().runOnUiThread(() -> {
+                                    trMessageAI aiMessage = new trMessageAI(aiResponse, false, System.currentTimeMillis());
+                                    addMessage(aiMessage);
+                                });
+                            } else {
+                                requireActivity().runOnUiThread(() -> showError("Phản hồi từ AI trống"));
+                            }
                         } else {
-                            requireActivity().runOnUiThread(() -> showError("Phản hồi từ AI trống"));
+                            requireActivity().runOnUiThread(() -> showError("Không có nội dung trong phản hồi"));
                         }
                     } else {
                         requireActivity().runOnUiThread(() -> showError("Không có phản hồi từ API"));

@@ -15,10 +15,13 @@ android {
         versionName = "1.0"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
-        // Thêm dòng này để định nghĩa HUGGINGFACE_API_TOKEN
+        // Định nghĩa GEMINI_API_KEY
+        buildConfigField("String", "GEMINI_API_KEY", "\"AIzaSyAdJv3gEKJxHW76wTER4mVPh1gTUHszmhM\"")
     }
+
     buildFeatures {
         viewBinding = true
+        buildConfig = true // Thêm dòng này để kích hoạt BuildConfig
     }
 
     buildTypes {
@@ -28,8 +31,13 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+            buildConfigField("String", "GEMINI_API_KEY", "\"AIzaSyAdJv3gEKJxHW76wTER4mVPh1gTUHszmhM\"")
+        }
+        debug {
+            buildConfigField("String", "GEMINI_API_KEY", "\"AIzaSyAdJv3gEKJxHW76wTER4mVPh1gTUHszmhM\"")
         }
     }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
@@ -65,6 +73,5 @@ dependencies {
     implementation(libs.cardview)
     implementation(libs.okhttp)
     implementation(libs.gson)
-    implementation(libs.okhttp) // Lưu ý: Dependency này bị lặp, có thể xóa một dòng
     implementation(libs.firebase.messaging)
 }
