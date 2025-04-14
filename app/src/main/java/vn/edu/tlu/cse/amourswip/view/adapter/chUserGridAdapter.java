@@ -19,7 +19,7 @@ import vn.edu.tlu.cse.amourswip.model.data.xUser;
 
 public class chUserGridAdapter extends RecyclerView.Adapter<chUserGridAdapter.UserViewHolder> {
 
-    private static final String TAG = "UserGridAdapter";
+    private static final String TAG = "chUserGridAdapter";
     private List<xUser> userList;
     private final Consumer<xUser> onUserClicked;
     private double currentLatitude;
@@ -41,7 +41,7 @@ public class chUserGridAdapter extends RecyclerView.Adapter<chUserGridAdapter.Us
         this.showActionButtons = show;
         this.onLikeClicked = onLikeClicked;
         this.onDislikeClicked = onDislikeClicked;
-        notifyDataSetChanged();
+        // Không gọi notifyDataSetChanged() ở đây, vì chLikeFragment đã sử dụng DiffUtil
     }
 
     @NonNull
@@ -124,7 +124,7 @@ public class chUserGridAdapter extends RecyclerView.Adapter<chUserGridAdapter.Us
 
     public void updateList(List<xUser> newList) {
         this.userList = newList != null ? newList : new ArrayList<>();
-        notifyDataSetChanged();
+        // Không gọi notifyDataSetChanged() ở đây, vì chLikeFragment đã sử dụng DiffUtil
     }
 
     static class UserViewHolder extends RecyclerView.ViewHolder {

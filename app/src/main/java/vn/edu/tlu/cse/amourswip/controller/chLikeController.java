@@ -9,7 +9,9 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import vn.edu.tlu.cse.amourswip.R;
 import vn.edu.tlu.cse.amourswip.model.data.xUser;
@@ -18,7 +20,7 @@ import vn.edu.tlu.cse.amourswip.view.fragment.chLikeFragment;
 
 public class chLikeController {
 
-    private static final String TAG = "LikeController";
+    private static final String TAG = "chLikeController";
     private static final int PAGE_SIZE = 10;
     private final chLikeFragment fragment;
     private final chLikeRepository repository;
@@ -61,7 +63,7 @@ public class chLikeController {
         fragment.updateTabSelection(true);
         lastUserIdWhoLikedMe = null;
         usersWhoLikedMe.clear();
-        loadUsersWhoLikedMe(); // Tab "Lượt thích" hiển thị danh sách người đã thích bạn
+        loadUsersWhoLikedMe();
     }
 
     public void onLikedTabClicked() {
@@ -69,7 +71,7 @@ public class chLikeController {
         fragment.updateTabSelection(false);
         lastUserIdILiked = null;
         usersILiked.clear();
-        loadUsersILiked(); // Tab "Đã thích" hiển thị danh sách người bạn đã thích
+        loadUsersILiked();
     }
 
     public void loadMoreUsers() {
@@ -84,10 +86,22 @@ public class chLikeController {
         repository.getUsersWhoLikedMe(new chLikeRepository.OnResultListener() {
             @Override
             public void onSuccess(List<xUser> users) {
-                usersWhoLikedMe.addAll(users);
+                // Loại bỏ trùng lặp trước khi thêm
+                Set<String> existingUserIds = new HashSet<>();
+                for (xUser existingUser : usersWhoLikedMe) {
+                    existingUserIds.add(existingUser.getUid());
+                }
+                for (xUser newUser : users) {
+                    if (!existingUserIds.contains(newUser.getUid())) {
+                        usersWhoLikedMe.add(newUser);
+                        existingUserIds.add(newUser.getUid());
+                    }
+                }
                 applyFilterToUsers(usersWhoLikedMe);
                 fragment.updateUserList(usersWhoLikedMe);
-                lastUserIdWhoLikedMe = usersWhoLikedMe.get(usersWhoLikedMe.size() - 1).getUid();
+                if (!usersWhoLikedMe.isEmpty()) {
+                    lastUserIdWhoLikedMe = usersWhoLikedMe.get(usersWhoLikedMe.size() - 1).getUid();
+                }
             }
 
             @Override
@@ -111,10 +125,22 @@ public class chLikeController {
         repository.getUsersILiked(new chLikeRepository.OnResultListener() {
             @Override
             public void onSuccess(List<xUser> users) {
-                usersILiked.addAll(users);
+                // Loại bỏ trùng lặp trước khi thêm
+                Set<String> existingUserIds = new HashSet<>();
+                for (xUser existingUser : usersILiked) {
+                    existingUserIds.add(existingUser.getUid());
+                }
+                for (xUser newUser : users) {
+                    if (!existingUserIds.contains(newUser.getUid())) {
+                        usersILiked.add(newUser);
+                        existingUserIds.add(newUser.getUid());
+                    }
+                }
                 applyFilterToUsers(usersILiked);
                 fragment.updateUserList(usersILiked);
-                lastUserIdILiked = usersILiked.get(usersILiked.size() - 1).getUid();
+                if (!usersILiked.isEmpty()) {
+                    lastUserIdILiked = usersILiked.get(usersILiked.size() - 1).getUid();
+                }
             }
 
             @Override
@@ -145,8 +171,13 @@ public class chLikeController {
                         Log.d(TAG, "onLikeUser: Successfully liked user: " + otherUser.getName());
                         // Thêm người dùng vào danh sách đã thích
                         usersILiked.add(otherUser);
-                        usersWhoLikedMe.remove(otherUser);
-                        fragment.updateUserList(usersWhoLikedMe);
+
+                        // Xóa người dùng khỏi cả hai danh sách
+                        usersWhoLikedMe.removeIf(user -> user.getUid().equals(otherUser.getUid()));
+                        usersILiked.removeIf(user -> user.getUid().equals(otherUser.getUid()));
+
+                        // Cập nhật giao diện của tab hiện tại
+                        fragment.updateUserList(isLikesTabSelected ? usersWhoLikedMe : usersILiked);
 
                         // Lưu vào node likedBy của người được thích
                         database.child("likedBy").child(otherUser.getUid()).child(currentUserId).setValue(true)
@@ -176,7 +207,9 @@ public class chLikeController {
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
                         Log.d(TAG, "onDislikeUser: Successfully removed user from likedBy: " + otherUser.getName());
-                        usersWhoLikedMe.remove(otherUser);
+                        // Xóa người dùng khỏi cả hai danh sách
+                        usersWhoLikedMe.removeIf(user -> user.getUid().equals(otherUser.getUid()));
+                        usersILiked.removeIf(user -> user.getUid().equals(otherUser.getUid()));
                         fragment.updateUserList(usersWhoLikedMe);
                     } else {
                         Log.e(TAG, "onDislikeUser: Error removing user from likedBy: " + task.getException().getMessage());
@@ -207,8 +240,10 @@ public class chLikeController {
 
                             String matchedUserName = otherUser.getName() != null ? otherUser.getName() : "người dùng này";
                             Log.d(TAG, "Match successful with user: " + matchedUserName);
-                            usersWhoLikedMe.remove(otherUser);
-                            fragment.updateUserList(usersWhoLikedMe);
+                            // Xóa người dùng khỏi cả hai danh sách
+                            usersWhoLikedMe.removeIf(user -> user.getUid().equals(otherUser.getUid()));
+                            usersILiked.removeIf(user -> user.getUid().equals(otherUser.getUid()));
+                            fragment.updateUserList(isLikesTabSelected ? usersWhoLikedMe : usersILiked);
                         } else {
                             Log.d(TAG, "checkForMatch: No mutual like found with user: " + otherUser.getName());
                         }

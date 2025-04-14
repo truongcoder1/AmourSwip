@@ -12,12 +12,12 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import vn.edu.tlu.cse.amourswip.model.data.xUser;
 import android.util.Log;
+import vn.edu.tlu.cse.amourswip.model.data.xUser;
 
 public class chLikeRepository {
 
-    private static final String TAG = "LikeRepository";
+    private static final String TAG = "chLikeRepository";
     private final DatabaseReference database;
     private final String currentUserId;
     private long processedUsers;

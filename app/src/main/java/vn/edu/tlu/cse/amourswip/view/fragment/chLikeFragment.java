@@ -18,6 +18,7 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
+import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
@@ -49,12 +50,15 @@ public class chLikeFragment extends Fragment {
     private SwipeRefreshLayout swipeRefreshLayout;
     private chUserGridAdapter userAdapter;
     private List<xUser> userList;
+    private List<xUser> usersWhoLikedMe;
+    private List<xUser> usersILiked;
     private NavController navController;
     private chLikeController controller;
     private double currentLatitude;
     private double currentLongitude;
     private boolean isLoading;
     private boolean isFilterApplied;
+    private boolean isLikesTabSelected; // Thêm biến này để theo dõi trạng thái tab
 
     @Nullable
     @Override
@@ -77,6 +81,8 @@ public class chLikeFragment extends Fragment {
         swipeRefreshLayout = view.findViewById(R.id.swipe_refresh_layout);
 
         userList = new ArrayList<>();
+        usersWhoLikedMe = new ArrayList<>();
+        usersILiked = new ArrayList<>();
         userAdapter = new chUserGridAdapter(userList, this::onUserClicked, currentLatitude, currentLongitude);
         userRecyclerView.setAdapter(userAdapter);
         userRecyclerView.setLayoutManager(new GridLayoutManager(getContext(), 2));
@@ -117,24 +123,27 @@ public class chLikeFragment extends Fragment {
                 userAdapter.updateList(userList);
             }
             isFilterApplied = savedInstanceState.getBoolean(KEY_FILTER_APPLIED, false);
-            Log.d("LikeFragment", "Restored isFilterApplied: " + isFilterApplied);
+            isLikesTabSelected = savedInstanceState.getBoolean(KEY_IS_LIKES_TAB_SELECTED, true);
+            Log.d("chLikeFragment", "Restored isFilterApplied: " + isFilterApplied);
             controller.applyFilter(
                     savedInstanceState.getDouble(KEY_MAX_DISTANCE, Double.MAX_VALUE),
                     savedInstanceState.getInt(KEY_MIN_AGE, 0),
                     savedInstanceState.getInt(KEY_MAX_AGE, Integer.MAX_VALUE),
                     savedInstanceState.getString(KEY_RESIDENCE_FILTER)
             );
-            if (savedInstanceState.getBoolean(KEY_IS_LIKES_TAB_SELECTED, true)) {
+            if (isLikesTabSelected) {
                 controller.onLikesTabClicked();
             } else {
                 controller.onLikedTabClicked();
             }
+        } else {
+            isLikesTabSelected = true; // Giá trị mặc định khi khởi tạo
         }
 
         likesTab.setOnClickListener(v -> controller.onLikesTabClicked());
         likedTab.setOnClickListener(v -> controller.onLikedTabClicked());
 
-        updateTabSelection(true);
+        updateTabSelection(isLikesTabSelected);
     }
 
     @Override
@@ -152,7 +161,7 @@ public class chLikeFragment extends Fragment {
 
     private void showFilterDialog() {
         if (!isAdded() || getContext() == null) {
-            Log.e("LikeFragment", "Cannot show filter dialog: Fragment is not attached to an Activity");
+            Log.e("chLikeFragment", "Cannot show filter dialog: Fragment is not attached to an Activity");
             return;
         }
         Dialog dialog = new Dialog(getContext());
@@ -209,7 +218,7 @@ public class chLikeFragment extends Fragment {
 
             controller.applyFilter(maxDistance, minAge, maxAge, residence);
             isFilterApplied = true;
-            Log.d("LikeFragment", "Applied filter - isFilterApplied: " + isFilterApplied);
+            Log.d("chLikeFragment", "Applied filter - isFilterApplied: " + isFilterApplied);
             dialog.dismiss();
         });
 
@@ -228,7 +237,7 @@ public class chLikeFragment extends Fragment {
     private void clearFilter() {
         controller.applyFilter(Double.MAX_VALUE, 0, Integer.MAX_VALUE, null);
         isFilterApplied = false;
-        Log.d("LikeFragment", "Cleared filter - isFilterApplied: " + isFilterApplied);
+        Log.d("chLikeFragment", "Cleared filter - isFilterApplied: " + isFilterApplied);
     }
 
     public void setCurrentLocation(double latitude, double longitude) {
@@ -239,10 +248,22 @@ public class chLikeFragment extends Fragment {
     }
 
     public void updateUserList(List<xUser> users) {
-        Log.d("LikeFragment", "updateUserList: Updating with " + users.size() + " users");
+        Log.d("chLikeFragment", "updateUserList: Updating with " + users.size() + " users");
+        // Sử dụng DiffUtil để tối ưu hóa cập nhật danh sách
+        DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(new UserDiffCallback(userList, users));
         userList.clear();
         userList.addAll(users);
-        userAdapter.updateList(users);
+
+        // Cập nhật danh sách tương ứng dựa trên tab hiện tại
+        if (isLikesTabSelected) {
+            usersWhoLikedMe.clear();
+            usersWhoLikedMe.addAll(users);
+        } else {
+            usersILiked.clear();
+            usersILiked.addAll(users);
+        }
+
+        diffResult.dispatchUpdatesTo(userAdapter);
         isLoading = false;
         if (users.isEmpty()) {
             if (isAdded() && getContext() != null) {
@@ -252,12 +273,13 @@ public class chLikeFragment extends Fragment {
     }
 
     public void setActionButtons(boolean show, Consumer<xUser> onLikeClicked, Consumer<xUser> onDislikeClicked) {
-        Log.d("LikeFragment", "setActionButtons: show=" + show);
+        Log.d("chLikeFragment", "setActionButtons: show=" + show);
         userAdapter.setShowActionButtons(show, onLikeClicked, onDislikeClicked);
     }
 
     public void updateTabSelection(boolean isLikesTab) {
-        Log.d("LikeFragment", "updateTabSelection: isLikesTab=" + isLikesTab);
+        Log.d("chLikeFragment", "updateTabSelection: isLikesTab=" + isLikesTab);
+        this.isLikesTabSelected = isLikesTab; // Cập nhật trạng thái tab
         if (isLikesTab) {
             // Tab "Lượt thích" hiển thị danh sách người đã thích bạn
             likesTab.animate().alpha(1f).setDuration(200).start();
@@ -265,6 +287,7 @@ public class chLikeFragment extends Fragment {
             likesLabel.setTextColor(ContextCompat.getColor(getContext(), android.R.color.white));
             likedLabel.setTextColor(ContextCompat.getColor(getContext(), android.R.color.black));
             setActionButtons(true, controller::onLikeUser, controller::onDislikeUser); // Tab "Lượt thích" có nút X và Trái tim
+            updateUserList(usersWhoLikedMe); // Cập nhật giao diện với danh sách đã lưu
         } else {
             // Tab "Đã thích" hiển thị danh sách người bạn đã thích
             likesTab.animate().alpha(0.5f).setDuration(200).start();
@@ -272,6 +295,7 @@ public class chLikeFragment extends Fragment {
             likesLabel.setTextColor(ContextCompat.getColor(getContext(), android.R.color.black));
             likedLabel.setTextColor(ContextCompat.getColor(getContext(), android.R.color.white));
             setActionButtons(false, null, null); // Tab "Đã thích" không có nút X và Trái tim
+            updateUserList(usersILiked); // Cập nhật giao diện với danh sách đã lưu
         }
     }
 
@@ -279,7 +303,7 @@ public class chLikeFragment extends Fragment {
         if (isAdded() && getContext() != null) {
             Toast.makeText(getContext(), error, Toast.LENGTH_SHORT).show();
         } else {
-            Log.e("LikeFragment", "Cannot show error: Fragment is not attached to an Activity");
+            Log.e("chLikeFragment", "Cannot show error: Fragment is not attached to an Activity");
         }
     }
 
@@ -289,5 +313,41 @@ public class chLikeFragment extends Fragment {
 
     private void onUserClicked(xUser user) {
         controller.onUserClicked(user);
+    }
+
+    // DiffUtil Callback để tối ưu hóa cập nhật danh sách
+    private static class UserDiffCallback extends DiffUtil.Callback {
+        private final List<xUser> oldList;
+        private final List<xUser> newList;
+
+        UserDiffCallback(List<xUser> oldList, List<xUser> newList) {
+            this.oldList = oldList;
+            this.newList = newList;
+        }
+
+        @Override
+        public int getOldListSize() {
+            return oldList.size();
+        }
+
+        @Override
+        public int getNewListSize() {
+            return newList.size();
+        }
+
+        @Override
+        public boolean areItemsTheSame(int oldItemPosition, int newItemPosition) {
+            return oldList.get(oldItemPosition).getUid().equals(newList.get(newItemPosition).getUid());
+        }
+
+        @Override
+        public boolean areContentsTheSame(int oldItemPosition, int newItemPosition) {
+            xUser oldUser = oldList.get(oldItemPosition);
+            xUser newUser = newList.get(newItemPosition);
+            return oldUser.getName().equals(newUser.getName()) &&
+                    oldUser.getPhotos().equals(newUser.getPhotos()) &&
+                    oldUser.getLatitude() == newUser.getLatitude() &&
+                    oldUser.getLongitude() == newUser.getLongitude();
+        }
     }
 }

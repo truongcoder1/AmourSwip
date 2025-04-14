@@ -3,8 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/background_gradient"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:background="@drawable/background_gradient">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -17,24 +17,24 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:gravity="center"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:gravity="center">
 
             <ImageButton
                 android:id="@+id/likes_tab"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@android:color/transparent"
-                android:src="@drawable/ic_heart" />
+                android:src="@drawable/ic_heart"
+            android:background="@android:color/transparent"/>
 
             <TextView
                 android:id="@+id/likes_label"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
                 android:text="Lượt thích (Thích tôi)"
                 android:textColor="@android:color/white"
-                android:textSize="16sp" />
+                android:textSize="16sp"
+                android:layout_marginStart="8dp"/>
 
         </LinearLayout>
 
@@ -43,24 +43,24 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:gravity="center"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:gravity="center">
 
             <ImageButton
                 android:id="@+id/liked_tab"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@android:color/transparent"
-                android:src="@drawable/ic_heart" />
+                android:src="@drawable/ic_heart"
+            android:background="@android:color/transparent"/>
 
             <TextView
                 android:id="@+id/liked_label"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
                 android:text="Đã thích (Tôi thích)"
                 android:textColor="@android:color/white"
-                android:textSize="16sp" />
+                android:textSize="16sp"
+                android:layout_marginStart="8dp"/>
 
         </LinearLayout>
 
@@ -68,8 +68,8 @@
             android:id="@+id/filter_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@android:color/transparent"
-            android:src="@drawable/ic_filter" />
+            android:src="@drawable/ic_filter"
+            android:background="@android:color/transparent"/>
 
     </LinearLayout>
 
@@ -82,7 +82,7 @@
             android:id="@+id/user_recycler_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:padding="8dp" />
+            android:padding="8dp"/>
 
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
