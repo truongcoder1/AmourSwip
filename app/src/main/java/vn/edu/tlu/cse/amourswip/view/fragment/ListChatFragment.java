@@ -23,7 +23,7 @@ import vn.edu.tlu.cse.amourswip.controller.ListChatController;
 import vn.edu.tlu.cse.amourswip.model.data.Notification;
 
 public class ListChatFragment extends Fragment {
-
+    //alo
     private RecyclerView notificationsRecyclerView;
     private ImageButton chatbotButton;
     private List<Notification> notificationList;

@@ -114,7 +114,7 @@ public class NotificationRepository {
             matchesListener = null;
         }
     }
-
+    //
     public interface OnResultListener {
         void onSuccess(List<Notification> notifications);
         void onEmpty();

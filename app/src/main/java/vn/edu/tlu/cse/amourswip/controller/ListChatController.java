@@ -74,7 +74,7 @@ public class ListChatController {
                     fragment.showError("Lỗi khi cập nhật trạng thái đọc: " + e.getMessage());
                 });
     }
-
+    //
     public void onDestroy() {
         notificationRepository.removeListeners();
         Log.d(TAG, "onDestroy: Removed Firebase listeners");
