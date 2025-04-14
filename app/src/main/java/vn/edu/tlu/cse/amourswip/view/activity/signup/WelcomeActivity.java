@@ -7,6 +7,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewTreeObserver;
 import android.view.animation.AlphaAnimation;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -91,11 +92,22 @@ public class WelcomeActivity extends AppCompatActivity {
     }
 
     private void startHeartAnimation() {
-        Log.d(TAG, "startHeartAnimation: Starting heart falling animation");
-        // Tạo và phát các trái tim liên tục
-        for (int i = 0; i < HEART_COUNT; i++) {
-            handler.postDelayed(this::createHeart, i * HEART_SPAWN_INTERVAL);
-        }
+        Log.d(TAG, "startHeartAnimation: Waiting for heartContainer layout");
+        heartContainer.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                // Remove listener to avoid multiple calls
+                heartContainer.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                if (heartContainer.getWidth() > 30) {
+                    Log.d(TAG, "startHeartAnimation: Layout ready, starting heart animation");
+                    for (int i = 0; i < HEART_COUNT; i++) {
+                        handler.postDelayed(() -> createHeart(), i * HEART_SPAWN_INTERVAL);
+                    }
+                } else {
+                    Log.e(TAG, "startHeartAnimation: heartContainer width too small: " + heartContainer.getWidth());
+                }
+            }
+        });
     }
 
     private void createHeart() {
