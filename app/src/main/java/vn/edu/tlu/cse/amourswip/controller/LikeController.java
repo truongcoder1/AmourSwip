@@ -59,24 +59,24 @@ public class LikeController {
     public void onLikesTabClicked() {
         isLikesTabSelected = true;
         fragment.updateTabSelection(true);
-        lastUserIdWhoLikedMe = null;
-        usersWhoLikedMe.clear();
-        loadUsersWhoLikedMe();
+        lastUserIdILiked = null;
+        usersILiked.clear();
+        loadUsersILiked(); // Tab "Lượt thích" giờ hiển thị danh sách người bạn đã thích
     }
 
     public void onLikedTabClicked() {
         isLikesTabSelected = false;
         fragment.updateTabSelection(false);
-        lastUserIdILiked = null;
-        usersILiked.clear();
-        loadUsersILiked();
+        lastUserIdWhoLikedMe = null;
+        usersWhoLikedMe.clear();
+        loadUsersWhoLikedMe(); // Tab "Đã thích" giờ hiển thị danh sách người đã thích bạn
     }
 
     public void loadMoreUsers() {
         if (isLikesTabSelected) {
-            loadUsersWhoLikedMe();
-        } else {
             loadUsersILiked();
+        } else {
+            loadUsersWhoLikedMe();
         }
     }
 
@@ -227,8 +227,8 @@ public class LikeController {
         this.maxAge = maxAge;
         this.residenceFilter = residenceFilter != null && !residenceFilter.isEmpty() ? residenceFilter : null;
 
-        applyFilterToUsers(isLikesTabSelected ? usersWhoLikedMe : usersILiked);
-        fragment.updateUserList(isLikesTabSelected ? usersWhoLikedMe : usersILiked);
+        applyFilterToUsers(isLikesTabSelected ? usersILiked : usersWhoLikedMe);
+        fragment.updateUserList(isLikesTabSelected ? usersILiked : usersWhoLikedMe);
     }
 
     private void applyFilterToUsers(List<User> users) {
